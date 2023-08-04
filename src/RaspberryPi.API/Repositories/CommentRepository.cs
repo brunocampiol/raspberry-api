@@ -71,7 +71,7 @@ namespace RaspberryPi.API.Repositories
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
 
-        public async Task<IEnumerable<Comment>> GetAllAsync()
+        public async Task<IEnumerable<Comment>> ListAsync()
         {
             throw new NotImplementedException();
         }

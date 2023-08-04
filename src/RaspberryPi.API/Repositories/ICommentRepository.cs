@@ -8,7 +8,7 @@ namespace RaspberryPi.API.Repositories
 
         Task<Comment?> GetAsync(Guid id);
 
-        Task<IEnumerable<Comment>> GetAllAsync();
+        Task<IEnumerable<Comment>> ListAsync();
 
         Task<bool> UpdateAsync(Comment user);
 
