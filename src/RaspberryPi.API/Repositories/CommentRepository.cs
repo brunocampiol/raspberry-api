@@ -1,4 +1,5 @@
 ﻿using Amazon.DynamoDBv2;
+using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Fetchgoods.Text.Json.Extensions;
@@ -73,7 +74,21 @@ namespace RaspberryPi.API.Repositories
 
         public async Task<IEnumerable<Comment>> ListAsync()
         {
-            throw new NotImplementedException();
+            // TODO: review performance
+            var scanResponse = await _dynamoDb.ScanAsync(_tableName, new List<string>());
+
+            if (scanResponse.Count == 0)
+            {
+                return Enumerable.Empty<Comment>();
+            }
+
+            var dbEntries = scanResponse.Items.Select(e =>
+            {
+                var document = Document.FromAttributeMap(e);
+                return document.ToJson().FromJsonTo<Comment>();
+            });
+
+            return dbEntries;
         }
 
         public async Task<bool> UpdateAsync(Comment user)

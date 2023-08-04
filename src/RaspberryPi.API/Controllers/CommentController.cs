@@ -21,6 +21,12 @@ namespace RaspberryPi.API.Controllers
             return await _repository.GetAsync(id);
         }
 
+        [HttpGet("list")]
+        public async Task<IEnumerable<Comment>> List()
+        {
+            return await _repository.ListAsync();
+        }
+
         [HttpPost]
         public async Task<bool> Post([FromBody] Comment comment)
         {
