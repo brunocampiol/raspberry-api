@@ -26,6 +26,7 @@ namespace RaspberryPi.API.Controllers
             var settings = new
             {
                 EnvironmentName = _hostEnv.EnvironmentName,
+                UserName = Environment.UserName,
                 ASPNetCore_Environment = aspNetCoreEnv,
                 OSDescription = osDescription,
                 FrameworkName = frameworkName,

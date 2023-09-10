@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Contracts.Options;
+using RaspberryPi.API.Database;
 using RaspberryPi.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,8 @@ var config = builder.Configuration;
 var jsonOptions = AppJsonSerializerOptions.Default;
 
 // Add services to the container.
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+                .AddSqlite(config["Database:ConnectionString"]);
 builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -30,6 +32,10 @@ var dbClient = new AmazonDynamoDBClient(awsOptions.AccessKeyId,
                                         awsOptions.SecretAccessKey,
                                         RegionEndpoint.USEast1);
 
+builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
+    new SqliteConnectionFactory(config["Database:ConnectionString"]));
+builder.Services.AddSingleton<DatabaseInitializer>();
+builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IAmazonDynamoDB>(_ => dbClient);
 builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
 
@@ -66,5 +72,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
+//var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
+////await databaseInitializer.InitializeAsync();
 
 app.Run();
