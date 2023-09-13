@@ -1,4 +1,4 @@
-namespace RaspberryPi.API;
+namespace RaspberryPi.API.Contracts.Response;
 
 public class WeatherForecast
 {

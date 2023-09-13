@@ -6,12 +6,12 @@ namespace RaspberryPi.API.Repositories
     {
         Task<bool> CreateAsync(Comment user);
 
-        Task<Comment?> GetAsync(string id);
+        Task<Comment?> GetAsync(Guid id);
 
-        Task<IEnumerable<Comment>> GetAllAsync();
+        Task<IEnumerable<Comment>> ListAsync();
 
         Task<bool> UpdateAsync(Comment user);
 
-        Task<bool> DeleteAsync(string id);
+        Task<bool> DeleteAsync(Guid id);
     }
 }
