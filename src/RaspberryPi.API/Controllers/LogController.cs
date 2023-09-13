@@ -14,7 +14,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet("info/{message}")]
-        public async Task<IActionResult> Info(string message)
+        public IActionResult Info(string message)
         {
             _logger.LogInformation(message);
 
@@ -22,7 +22,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet("warn/{message}")]
-        public async Task<IActionResult> Warn(string message)
+        public IActionResult Warn(string message)
         {
             _logger.LogWarning(message);
 
@@ -30,7 +30,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet("error/{message}")]
-        public async Task<IActionResult> Error(string message)
+        public IActionResult Error(string message)
         {
             _logger.LogError(message);
 
