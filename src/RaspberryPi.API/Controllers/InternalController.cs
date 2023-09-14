@@ -7,17 +7,17 @@ namespace RaspberryPi.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SettingsController : ControllerBase
+    public class InternalController : ControllerBase
     {
         private readonly IWebHostEnvironment _hostEnv;
 
-        public SettingsController(IWebHostEnvironment hostEnv)
+        public InternalController(IWebHostEnvironment hostEnv)
         {
             _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("settings")]
+        public IActionResult Settings()
         {
             string? frameworkName = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
             string? aspNetCoreEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -37,10 +37,16 @@ namespace RaspberryPi.API.Controllers
             return Ok(settings);
         }
 
-        [HttpGet("datetime")]
-        public async Task<IActionResult> DateAndTime()
+        [HttpGet("timestamp")]
+        public IActionResult Timestamp()
         {
             return Ok(DateTime.Now);
+        }
+
+        [HttpDelete("exception")]
+        public IActionResult Exception(string? exceptionMessage)
+        {
+            throw new NotImplementedException(exceptionMessage);
         }
     }
 }

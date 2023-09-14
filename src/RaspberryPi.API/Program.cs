@@ -22,6 +22,7 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.PropertyNamingPolicy = jsonOptions.PropertyNamingPolicy;
                     options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
                 });
+//builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -42,7 +43,7 @@ builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
-app.UseDeveloperExceptionPage();
+
 app.UseSwagger(x =>
 {
     x.PreSerializeFilters.Add((swaggerDoc, httpRequest) =>
