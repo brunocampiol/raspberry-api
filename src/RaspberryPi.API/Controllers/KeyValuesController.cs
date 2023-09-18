@@ -14,31 +14,37 @@ namespace RaspberryPi.API.Controllers
         public KeyValuesController(ISqlLiteKeyValueRepository sqlLiteKeyValueRepository, DatabaseInitializer databaseInitializer)
         {
             _repository = sqlLiteKeyValueRepository ?? throw new ArgumentNullException(nameof(sqlLiteKeyValueRepository));
-            _databaseInitializer = databaseInitializer ?? throw new ArgumentNullException(nameof(_databaseInitializer));
+            _databaseInitializer = databaseInitializer ?? throw new ArgumentNullException(nameof(databaseInitializer));
         }
 
         [HttpGet]
-        public async Task<SqlLiteKeyValue?> Get(int id)
+        public SqlLiteKeyValue? Get(int id)
         {
-            return await _repository.GetAsync(id);
+            return _repository.Get(id);
         }
 
         [HttpGet("list")]
-        public async Task<IEnumerable<SqlLiteKeyValue>> List()
+        public IEnumerable<SqlLiteKeyValue> List()
         {
-            return await _repository.ListAsync();
+            return _repository.List();
         }
 
         [HttpPost]
         public async Task<bool> Post([FromBody] SqlLiteKeyValue keyValue)
         {
-            return await _repository.CreateAsync(keyValue);
+            return _repository.Create(keyValue);
         }
 
         [HttpPost("initialize")]
-        public async Task Initialize()
+        public void Initialize()
         {
-            await _databaseInitializer.InitializeAsync();
+            _databaseInitializer.Initialize();
+        }
+
+        [HttpPost("truncate")]
+        public void Truncate()
+        {
+            _repository.Truncate();
         }
     }
 }

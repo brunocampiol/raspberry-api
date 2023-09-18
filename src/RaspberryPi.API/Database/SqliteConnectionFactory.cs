@@ -12,10 +12,10 @@ namespace RaspberryPi.API.Database
             _connectionString = connectionString;
         }
 
-        public async Task<IDbConnection> CreateConnectionAsync()
+        public IDbConnection CreateConnection()
         {
             var connection = new SqliteConnection(_connectionString);
-            await connection.OpenAsync();
+            connection.Open();
             return connection;
         }
     }

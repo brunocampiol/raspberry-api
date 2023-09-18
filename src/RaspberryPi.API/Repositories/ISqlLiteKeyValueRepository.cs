@@ -4,14 +4,16 @@ namespace RaspberryPi.API.Repositories
 {
     public interface ISqlLiteKeyValueRepository
     {
-        Task<bool> CreateAsync(SqlLiteKeyValue keyValue);
+        bool Create(SqlLiteKeyValue keyValue);
 
-        Task<SqlLiteKeyValue?> GetAsync(int id);
+        SqlLiteKeyValue? Get(int id);
 
-        Task<IEnumerable<SqlLiteKeyValue>> ListAsync();
+        IEnumerable<SqlLiteKeyValue> List();
 
-        Task<bool> UpdateAsync(SqlLiteKeyValue keyValue);
+        bool Update(SqlLiteKeyValue keyValue);
 
-        Task<bool> DeleteAsync(int id);
+        bool Delete(int id);
+
+        int Truncate();
     }
 }
