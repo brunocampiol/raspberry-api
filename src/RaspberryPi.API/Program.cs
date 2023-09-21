@@ -4,8 +4,8 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
-using RaspberryPi.API.Contracts.Options;
 using RaspberryPi.API.Database;
+using RaspberryPi.API.Models.Options;
 using RaspberryPi.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);

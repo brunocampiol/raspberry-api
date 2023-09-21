@@ -1,6 +1,6 @@
 ﻿using Dapper;
-using RaspberryPi.API.Contracts.Data;
 using RaspberryPi.API.Database;
+using RaspberryPi.API.Models.Data;
 
 namespace RaspberryPi.API.Repositories
 {

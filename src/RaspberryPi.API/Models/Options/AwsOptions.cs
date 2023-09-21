@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.API.Contracts.Options
+﻿namespace RaspberryPi.API.Models.Options
 {
     public sealed class AwsOptions
     {

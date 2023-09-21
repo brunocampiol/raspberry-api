@@ -1,4 +1,4 @@
-﻿using RaspberryPi.API.Contracts.Data;
+﻿using RaspberryPi.API.Models.Data;
 
 namespace RaspberryPi.API.Repositories
 {

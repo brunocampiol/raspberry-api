@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Contracts.Response;
+using RaspberryPi.API.Models.Response;
 
 namespace RaspberryPi.API.Controllers;
 

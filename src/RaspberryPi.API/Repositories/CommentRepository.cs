@@ -1,9 +1,8 @@
 ﻿using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.DynamoDBv2.Model;
 using Fetchgoods.Text.Json.Extensions;
-using RaspberryPi.API.Contracts.Data;
+using RaspberryPi.API.Models.Data;
 using System.Net;
 using System.Text.Json;
 

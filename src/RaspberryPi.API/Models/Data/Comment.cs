@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.API.Contracts.Data
+﻿namespace RaspberryPi.API.Models.Data
 {
     public class Comment : BaseEntity
     {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Contracts.Data;
+using RaspberryPi.API.Models.Data;
 using RaspberryPi.API.Database;
 using RaspberryPi.API.Repositories;
 
