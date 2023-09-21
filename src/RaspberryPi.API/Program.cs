@@ -9,11 +9,14 @@ using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Database;
 using RaspberryPi.API.Models.Options;
 using RaspberryPi.API.Repositories;
+using RaspberryPi.API.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var jsonOptions = AppJsonSerializerOptions.Default;
+
+builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 
 // Add services to the container.
 builder.Services.AddHealthChecks()
@@ -30,13 +33,13 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
+    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "Example: Bearer 12345abcdef",
-        Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
+        Description = "Please provide a valid token",
+        Name = "Authorization",
         Scheme = "Bearer",
         BearerFormat = "JWT",
     });
@@ -56,12 +59,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-var key = Encoding.ASCII.GetBytes(ApplicationConfiguration.Secret);
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(x =>
 {
@@ -69,10 +71,16 @@ builder.Services.AddAuthentication(x =>
     x.SaveToken = true;
     x.TokenValidationParameters = new TokenValidationParameters
     {
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Jwt:Key"])),
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        //ValidIssuer = config["Jwt:Issuer"],
+        //ValidAudience = config["Jwt:Audience"],
+        //ValidateIssuer = true,
+        //ValidateAudience = true,
+        //ValidateLifetime = true,
     };
 });
 
@@ -89,10 +97,13 @@ builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IAmazonDynamoDB>(_ => dbClient);
 builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
 
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
+
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
