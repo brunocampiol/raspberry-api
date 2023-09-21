@@ -1,14 +1,7 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-
-namespace RaspberryPi.API.Configuration
+﻿namespace RaspberryPi.API.Configuration
 {
-    //public static class ApplicationConfiguration
-    //{
-    //    public ApplicationConfiguration()
-    //    {
-    //        JsonExtensionMethods.DefaultOptions = jsonOptions;
-    //    }
-
-        
-    //}
+    public static class ApplicationConfiguration
+    {
+        public static string Secret = "fedaf7d8863b48e197b9287d492b708e";
+    }
 }

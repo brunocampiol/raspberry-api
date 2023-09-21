@@ -1,12 +1,15 @@
 using Amazon;
 using Amazon.DynamoDBv2;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Database;
 using RaspberryPi.API.Models.Options;
 using RaspberryPi.API.Repositories;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -24,7 +27,54 @@ builder.Services.AddControllers()
                 });
 //builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Example: Bearer 12345abcdef",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+
+var key = Encoding.ASCII.GetBytes(ApplicationConfiguration.Secret);
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 var awsOptions = config.GetSection(AwsOptions.Aws)
                        .Get<AwsOptions>();
@@ -43,6 +93,9 @@ builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseSwagger(x =>
 {
