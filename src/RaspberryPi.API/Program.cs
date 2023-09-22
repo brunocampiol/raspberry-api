@@ -29,11 +29,9 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
                 });
 //builder.Services.AddProblemDetails();
-builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    //c.SwaggerDoc("v1", new OpenApiInfo { Title = "APIContagem", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -73,14 +71,11 @@ builder.Services.AddAuthentication(x =>
     {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(config["Jwt:Key"])),
         ValidateIssuerSigningKey = true,
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidIssuer = config["Jwt:Issuer"],
+        ValidAudience = config["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidateAudience = true,
         ValidateLifetime = true,
-        //ValidIssuer = config["Jwt:Issuer"],
-        //ValidAudience = config["Jwt:Audience"],
-        //ValidateIssuer = true,
-        //ValidateAudience = true,
-        //ValidateLifetime = true,
     };
 });
 

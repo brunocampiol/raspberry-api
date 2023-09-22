@@ -30,6 +30,8 @@ namespace RaspberryPi.API.Services
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
+                Issuer = _options.Issuer,
+                Audience = _options.Audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
