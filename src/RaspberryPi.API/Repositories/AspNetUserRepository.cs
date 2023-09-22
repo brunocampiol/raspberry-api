@@ -21,10 +21,16 @@ namespace RaspberryPi.API.Repositories
             _context.SaveChanges();
         }
 
-        public AspNetUser? Get(Guid id)
+        public AspNetUser? GetNoTracking(Guid id)
         {
             return _context.AspNetUsers.AsNoTracking()
                                        .FirstOrDefault(x => x.Id == id);
+        }
+
+        public IEnumerable<AspNetUser> ListNoTracking()
+        {
+            return _context.AspNetUsers.AsNoTracking()
+                                       .AsEnumerable();
         }
 
         public void Dispose()

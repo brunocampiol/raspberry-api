@@ -18,7 +18,13 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         public AspNetUser? Get(Guid id)
         {
-            return _repository.Get(id);
+            return _repository.GetNoTracking(id);
+        }
+
+        [HttpGet("list")]
+        public IEnumerable<AspNetUser> List()
+        {
+            return _repository.ListNoTracking();
         }
 
         [HttpPost]
