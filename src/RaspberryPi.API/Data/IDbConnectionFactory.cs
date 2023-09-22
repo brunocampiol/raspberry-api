@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace RaspberryPi.API.Database
+namespace RaspberryPi.API.Data
 {
     public interface IDbConnectionFactory
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
-using RaspberryPi.API.Database;
+using RaspberryPi.API.Data;
 using RaspberryPi.API.Models.Options;
 using RaspberryPi.API.Repositories;
 using RaspberryPi.API.Services;
@@ -119,6 +119,6 @@ app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
 //var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
-////await databaseInitializer.InitializeAsync();
+//databaseInitializer.Initialize();
 
 app.Run();

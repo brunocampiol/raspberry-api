@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System.Data;
 
-namespace RaspberryPi.API.Database
+namespace RaspberryPi.API.Data
 {
     public class SqliteConnectionFactory : IDbConnectionFactory
     {
