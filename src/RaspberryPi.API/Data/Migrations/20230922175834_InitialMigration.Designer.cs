@@ -10,7 +10,7 @@ using RaspberryPi.API.Data;
 
 namespace RaspberryPi.API.Data.Migrations
 {
-    [DbContext(typeof(BloggingContext))]
+    [DbContext(typeof(RaspberryContext))]
     [Migration("20230922175834_InitialMigration")]
     partial class InitialMigration
     {

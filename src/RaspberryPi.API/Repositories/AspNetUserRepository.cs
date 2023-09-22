@@ -6,9 +6,9 @@ namespace RaspberryPi.API.Repositories
 {
     public class AspNetUserRepository : IAspNetUserRepository
     {
-        private readonly BloggingContext _context;
+        private readonly RaspberryContext _context;
 
-        public AspNetUserRepository(BloggingContext context)
+        public AspNetUserRepository(RaspberryContext context)
         {
             _context = context;
         }

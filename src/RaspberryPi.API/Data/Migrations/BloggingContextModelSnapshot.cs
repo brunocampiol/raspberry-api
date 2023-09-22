@@ -9,7 +9,7 @@ using RaspberryPi.API.Data;
 
 namespace RaspberryPi.API.Data.Migrations
 {
-    [DbContext(typeof(BloggingContext))]
+    [DbContext(typeof(RaspberryContext))]
     partial class BloggingContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

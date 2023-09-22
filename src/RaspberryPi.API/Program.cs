@@ -1,6 +1,7 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
@@ -11,13 +12,15 @@ using RaspberryPi.API.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
 var jsonOptions = AppJsonSerializerOptions.Default;
+var config = builder.Configuration;
+var connectionString = config.GetConnectionString("ConnectionString");
+
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 
 builder.Services.AddHealthChecks()
-                .AddSqlite(config["Database:ConnectionString"]);
+                .AddSqlite(connectionString);
 builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -25,6 +28,10 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.PropertyNamingPolicy = jsonOptions.PropertyNamingPolicy;
                     options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
                 });
+
+
+
+builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -76,12 +83,12 @@ builder.Services.AddAuthentication(x =>
 });
 
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
-    new SqliteConnectionFactory(config["Database:ConnectionString"]));
+    new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
-builder.Services.AddScoped<BloggingContext>();
+builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 
 var app = builder.Build();
