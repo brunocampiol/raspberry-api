@@ -1,5 +1,3 @@
-using Amazon;
-using Amazon.DynamoDBv2;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -79,19 +77,10 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-var awsOptions = config.GetSection(AwsOptions.Aws)
-                       .Get<AwsOptions>();
-
-var dbClient = new AmazonDynamoDBClient(awsOptions.AccessKeyId, 
-                                        awsOptions.SecretAccessKey,
-                                        RegionEndpoint.USEast1);
-
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(config["Database:ConnectionString"]));
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
-builder.Services.AddSingleton<IAmazonDynamoDB>(_ => dbClient);
-builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
 var app = builder.Build();
