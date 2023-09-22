@@ -93,9 +93,16 @@ builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 
 var app = builder.Build();
 
-//if (app.Environment.IsDevelopment())
-//app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<RaspberryContext>();
+        db.Database.EnsureCreated();
+    }
+}
 
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -130,11 +137,5 @@ app.MapControllers();
 AppJsonSerializerOptions.SetDefaultOptions();
 //var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
 //databaseInitializer.Initialize();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<RaspberryContext>();
-    db.Database.EnsureCreated();
-}
 
 app.Run();
