@@ -14,7 +14,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 var jsonOptions = AppJsonSerializerOptions.Default;
 var config = builder.Configuration;
-var connectionString = config.GetConnectionString("ConnectionString");
+var connectionString = config.GetConnectionString("SqlLite");
 
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
@@ -130,5 +130,11 @@ app.MapControllers();
 AppJsonSerializerOptions.SetDefaultOptions();
 //var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
 //databaseInitializer.Initialize();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RaspberryContext>();
+    db.Database.EnsureCreated();
+}
 
 app.Run();
