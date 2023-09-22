@@ -17,7 +17,7 @@ namespace RaspberryPi.API.Services
             _options = options.Value;
         }
 
-        public string GenerateToken(User user)
+        public string GenerateToken(AspNetUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_options.Key);

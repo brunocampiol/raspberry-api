@@ -81,6 +81,9 @@ builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 
+builder.Services.AddScoped<BloggingContext>();
+builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
+
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())

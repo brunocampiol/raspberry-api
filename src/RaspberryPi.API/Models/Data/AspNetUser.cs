@@ -1,8 +1,7 @@
 ﻿namespace RaspberryPi.API.Models.Data
 {
-    public class User
+    public class AspNetUser : BaseEntity
     {
-        public Guid Id { get; init; }
         public string Username { get; init; } = default!;
         public string Password { get; init; } = default!;
         public string Email { get; init; } = default!;

@@ -6,6 +6,8 @@
 # Production settings
 appsettings.Production.json
 database.sqlite
+database.sqlite-shm
+database.sqlite-wal
 
 # User-specific files
 *.rsuser
