@@ -16,7 +16,6 @@ var jsonOptions = AppJsonSerializerOptions.Default;
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 
-// Add services to the container.
 builder.Services.AddHealthChecks()
                 .AddSqlite(config["Database:ConnectionString"]);
 builder.Services.AddControllers()
@@ -26,7 +25,6 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.PropertyNamingPolicy = jsonOptions.PropertyNamingPolicy;
                     options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
                 });
-//builder.Services.AddProblemDetails();
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -86,7 +84,6 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())
-
 //app.UseHttpsRedirection();
 
 app.UseAuthentication();
