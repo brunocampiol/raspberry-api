@@ -25,8 +25,8 @@ namespace RaspberryPi.API.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    //new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    //new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),

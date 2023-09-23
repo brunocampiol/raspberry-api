@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaspberryPi.API.Data;
 
@@ -10,9 +11,11 @@ using RaspberryPi.API.Data;
 namespace RaspberryPi.API.Data.Migrations
 {
     [DbContext(typeof(RaspberryContext))]
-    partial class BloggingContextModelSnapshot : ModelSnapshot
+    [Migration("20230923140151_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
@@ -38,10 +41,6 @@ namespace RaspberryPi.API.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.ToTable("AspNetUsers");
@@ -60,6 +59,32 @@ namespace RaspberryPi.API.Data.Migrations
                     b.HasKey("BlogId");
 
                     b.ToTable("Blogs");
+                });
+
+            modelBuilder.Entity("RaspberryPi.API.Models.Data.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("AspNetUserId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateCreatedUTC")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("PageId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AspNetUserId");
+
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("RaspberryPi.API.Models.Data.Post", b =>
@@ -86,6 +111,17 @@ namespace RaspberryPi.API.Data.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("RaspberryPi.API.Models.Data.Comment", b =>
+                {
+                    b.HasOne("RaspberryPi.API.Models.Data.AspNetUser", "AspNetUser")
+                        .WithMany("Posts")
+                        .HasForeignKey("AspNetUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AspNetUser");
+                });
+
             modelBuilder.Entity("RaspberryPi.API.Models.Data.Post", b =>
                 {
                     b.HasOne("RaspberryPi.API.Models.Data.Blog", "Blog")
@@ -95,6 +131,11 @@ namespace RaspberryPi.API.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("RaspberryPi.API.Models.Data.AspNetUser", b =>
+                {
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("RaspberryPi.API.Models.Data.Blog", b =>

@@ -32,11 +32,16 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         [Route("authenticated")]
         [Authorize]
-        public string Authenticated() => string.Format("Authenticated - {0}", User.Identity.Name);
+        public string Authenticated() => $"Authenticated";
 
         [HttpGet]
         [Route("admin")]
         [Authorize(Roles = "admin")]
         public string Admin() => "Admin";
+
+        [HttpGet]
+        [Route("user")]
+        [Authorize(Roles = "user")]
+        public string User() => "User";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.Data;
+using RaspberryPi.API.Models.Requests;
 using RaspberryPi.API.Repositories;
 
 namespace RaspberryPi.API.Controllers
@@ -28,9 +29,17 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] AspNetUser model)
+        public void Post([FromBody] NewAspNetUserRequest model)
         {
-            _repository.Add(model);
+            var user = new AspNetUser()
+            {
+                Email = model.Email,
+                Password = model.Password,
+                Role = "user",
+                DateCreateUTC = DateTime.UtcNow
+            };
+
+            _repository.Add(user);
         }
     }
 }

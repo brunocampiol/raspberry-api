@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.API.Repositories
 {
-    public interface IAspNetUserRepository : IRepository
+    public interface IAspNetUserRepository : IRepository<AspNetUser>
     {
         void Add(AspNetUser AspNetUser);
         AspNetUser? GetNoTracking(Guid id);
