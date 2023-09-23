@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Data;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.Options;
 using RaspberryPi.API.Repositories;
 using RaspberryPi.API.Services;
@@ -87,6 +88,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 
 builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();

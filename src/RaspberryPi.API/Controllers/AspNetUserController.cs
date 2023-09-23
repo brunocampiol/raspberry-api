@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.Data;
 using RaspberryPi.API.Models.Requests;
 using RaspberryPi.API.Repositories;
@@ -10,10 +11,12 @@ namespace RaspberryPi.API.Controllers
     public class AspNetUserController : ControllerBase
     {
         private readonly IAspNetUserRepository _repository;
+        private readonly IRequestToDomainMapper _mapper;
 
-        public AspNetUserController(IAspNetUserRepository repository)
+        public AspNetUserController(IAspNetUserRepository repository, IRequestToDomainMapper mapper)
         {
-                _repository = repository;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -31,13 +34,9 @@ namespace RaspberryPi.API.Controllers
         [HttpPost]
         public void Post([FromBody] CreateAspNetUserRequest model)
         {
-            var user = new AspNetUser()
-            {
-                Email = model.Email,
-                Password = model.Password,
-                Role = "user",
-                DateCreateUTC = DateTime.UtcNow
-            };
+            var user = _mapper.CreateAspNetUserRequestToAspNetUser(model);
+            user.Role = "user";
+            user.DateCreateUTC = DateTime.UtcNow;
 
             _repository.Add(user);
         }
