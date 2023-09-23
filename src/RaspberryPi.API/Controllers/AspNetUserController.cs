@@ -39,6 +39,7 @@ namespace RaspberryPi.API.Controllers
             user.DateCreateUTC = DateTime.UtcNow;
 
             _repository.Add(user);
+            _repository.UnitOfWork.Commit();
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using RaspberryPi.API.Models.Data;
+﻿using RaspberryPi.API.Data;
+using RaspberryPi.API.Models.Data;
 
 namespace RaspberryPi.API.Repositories
 {
     public interface IRepository<T> : IDisposable where T : IEntity
     {
-        //IUnitOfWork UnitOfWork { get; }
+        IUnitOfWork UnitOfWork { get; }
     }
 }

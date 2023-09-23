@@ -13,12 +13,11 @@ namespace RaspberryPi.API.Repositories
             _context = context;
         }
 
-        // public IUnitOfWork UnitOfWork => _context;
+        public IUnitOfWork UnitOfWork => _context;
 
         public void Add(AspNetUser AspNetUser)
         {
             _context.AspNetUsers.Add(AspNetUser);
-            _context.SaveChanges();
         }
 
         public AspNetUser? GetNoTracking(Guid id)

@@ -3,7 +3,7 @@ using RaspberryPi.API.Models.Data;
 
 namespace RaspberryPi.API.Data
 {
-    public class RaspberryContext : DbContext
+    public class RaspberryContext : DbContext, IUnitOfWork
     {
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -12,6 +12,11 @@ namespace RaspberryPi.API.Data
         public RaspberryContext(DbContextOptions<RaspberryContext> options)
             : base(options)
         {
+        }
+
+        public bool Commit()
+        {
+            return SaveChanges() > 0;
         }
     }
 }
