@@ -29,7 +29,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] NewAspNetUserRequest model)
+        public void Post([FromBody] CreateAspNetUserRequest model)
         {
             var user = new AspNetUser()
             {
