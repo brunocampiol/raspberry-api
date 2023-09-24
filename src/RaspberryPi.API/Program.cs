@@ -9,6 +9,7 @@ using RaspberryPi.API.Mapping;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
+using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Data;
 using RaspberryPi.Domain.Data.Repositories;
 using System.Text;
@@ -82,6 +83,11 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = true,
         ValidateLifetime = true,
     };
+});
+
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+    cfg.RegisterServicesFromAssemblies(typeof(CreateAspNetUserHandler).Assembly);
 });
 
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>

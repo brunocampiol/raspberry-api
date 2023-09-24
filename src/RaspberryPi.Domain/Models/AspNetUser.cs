@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RaspberryPi.Domain.Models
+﻿namespace RaspberryPi.Domain.Models
 {
     public class AspNetUser : BaseEntity
     {

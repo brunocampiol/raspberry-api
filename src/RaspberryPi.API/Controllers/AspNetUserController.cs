@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Mapping;
-using RaspberryPi.API.Models.Requests;
+using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Data.Repositories;
 using RaspberryPi.Domain.Models;
 
@@ -12,11 +13,13 @@ namespace RaspberryPi.API.Controllers
     {
         private readonly IAspNetUserRepository _repository;
         private readonly IRequestToDomainMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public AspNetUserController(IAspNetUserRepository repository, IRequestToDomainMapper mapper)
+        public AspNetUserController(IAspNetUserRepository repository, IRequestToDomainMapper mapper, IMediator mediator)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -32,22 +35,30 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] CreateAspNetUserRequest model)
+        public CreateAspNetUserResponse Post([FromBody] CreateAspNetUserRequest model)
         {
             //var user = _mapper.CreateAspNetUserRequestToAspNetUser(model);
             //user.Role = "user";
             //user.DateCreateUTC = DateTime.UtcNow;
 
-            var user = new AspNetUser
+            //var user = new AspNetUser
+            //{
+            //    Email = model.Email,
+            //    Password = model.Password,
+            //    Role = "user",
+            //    DateCreateUTC = DateTime.UtcNow
+            //};
+
+            var request = new CreateAspNetUserRequest
             {
                 Email = model.Email,
-                Password = model.Password,
-                Role = "user",
-                DateCreateUTC = DateTime.UtcNow
+                Password = model.Password
             };
 
-            _repository.Add(user);
-            _repository.UnitOfWork.Commit();
+            var result = _mediator.Send(request);
+
+            return result.Result;
+   
         }
     }
 }
