@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
-using RaspberryPi.API.Data;
 using RaspberryPi.API.Mapping;
-using RaspberryPi.API.Models.Options;
-using RaspberryPi.API.Repositories;
-using RaspberryPi.API.Services;
+using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Models.Options;
+using RaspberryPi.Application.Services;
+using RaspberryPi.Domain.Data;
+using RaspberryPi.Domain.Data.Repositories;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,7 @@ var config = builder.Configuration;
 var connectionString = config.GetConnectionString("SqlLite");
 
 
-builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
+builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);
@@ -87,7 +88,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
-builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 
 builder.Services.AddScoped<RaspberryContext>();

@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.API.Models.Data
+﻿namespace RaspberryPi.Domain.Models
 {
     public interface IEntity
     {

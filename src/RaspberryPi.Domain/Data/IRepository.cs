@@ -1,7 +1,6 @@
-﻿using RaspberryPi.API.Data;
-using RaspberryPi.API.Models.Data;
+﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.API.Repositories
+namespace RaspberryPi.Domain.Data
 {
     public interface IRepository<T> : IDisposable where T : IEntity
     {

@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.API.Data
+﻿namespace RaspberryPi.Domain.Data
 {
     public interface IUnitOfWork
     {

@@ -1,6 +1,6 @@
-﻿using RaspberryPi.API.Models.Data;
+﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.API.Repositories
+namespace RaspberryPi.Domain.Data.Repositories
 {
     public static class UserRepository
     {

@@ -1,6 +1,6 @@
 ﻿using Dapper;
 
-namespace RaspberryPi.API.Data
+namespace RaspberryPi.Domain.Data
 {
     public class DatabaseInitializer
     {

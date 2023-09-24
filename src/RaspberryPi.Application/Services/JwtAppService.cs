@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using RaspberryPi.API.Models.Data;
-using RaspberryPi.API.Models.Options;
+using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Models.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace RaspberryPi.API.Services
+namespace RaspberryPi.Application.Services
 {
-    public class JwtService : IJwtService
+    public class JwtAppService : IJwtAppService
     {
-        private readonly JwtOptions _options;
+        private readonly JwtAppOptions _options;
 
-        public JwtService(IOptions<JwtOptions> options)
+        public JwtAppService(IOptions<JwtAppOptions> options)
         {
             _options = options.Value;
         }
 
-        public string GenerateToken(AspNetUser user)
+        public string GenerateToken(string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_options.Key);
@@ -25,9 +25,9 @@ namespace RaspberryPi.API.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Email, email),
                     //new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
                 Issuer = _options.Issuer,

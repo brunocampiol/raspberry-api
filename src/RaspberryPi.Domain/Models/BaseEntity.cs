@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.API.Models.Data
+﻿namespace RaspberryPi.Domain.Models
 {
     public abstract class BaseEntity : IEntity
     {

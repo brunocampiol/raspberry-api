@@ -1,13 +1,11 @@
-﻿using RaspberryPi.API.Models.Data;
-using RaspberryPi.API.Models.Requests;
-using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 
 namespace RaspberryPi.API.Mapping
 {
     [Mapper]
     public partial class RequestToDomainMapper : IRequestToDomainMapper
     {
-        public partial AspNetUser CreateAspNetUserRequestToAspNetUser(CreateAspNetUserRequest request);
+        //public partial AspNetUser CreateAspNetUserRequestToAspNetUser(CreateAspNetUserRequest request);
 
         //public AspNetUser CreateAspNetUserRequestToAspNetUser(CreateAspNetUserRequest request)
         //{

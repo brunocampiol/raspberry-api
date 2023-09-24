@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RaspberryPi.API.Models.Data;
+using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.API.Data
+namespace RaspberryPi.Domain.Data
 {
     public class RaspberryContext : DbContext, IUnitOfWork
     {
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Post> Posts { get; set; }
         public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         public RaspberryContext(DbContextOptions<RaspberryContext> options)

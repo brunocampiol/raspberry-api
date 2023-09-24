@@ -1,8 +1,7 @@
 ﻿using Dapper;
-using RaspberryPi.API.Data;
-using RaspberryPi.API.Models.Data;
+using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.API.Repositories
+namespace RaspberryPi.Domain.Data.Repositories
 {
     public class SqlLiteKeyValueRepository : ISqlLiteKeyValueRepository
     {
