@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Mapping;
-using RaspberryPi.API.Models.Data;
-using RaspberryPi.API.Models.Requests;
-using RaspberryPi.API.Repositories;
+﻿using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.Application.Models.ViewModels;
+using RaspberryPi.Application.Services;
+using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -10,36 +10,29 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]")]
     public class AspNetUserController : ControllerBase
     {
-        private readonly IAspNetUserRepository _repository;
-        private readonly IRequestToDomainMapper _mapper;
+        private readonly IAspNetUserAppService _appService;
 
-        public AspNetUserController(IAspNetUserRepository repository, IRequestToDomainMapper mapper)
+        public AspNetUserController(IAspNetUserAppService appService)
         {
-            _repository = repository;
-            _mapper = mapper;
+           _appService = appService;
         }
 
         [HttpGet]
         public AspNetUser? Get(Guid id)
         {
-            return _repository.GetNoTracking(id);
+            return _appService.Get(id);
         }
 
         [HttpGet("list")]
         public IEnumerable<AspNetUser> List()
         {
-            return _repository.ListNoTracking();
+            return _appService.List();
         }
 
         [HttpPost]
-        public void Post([FromBody] CreateAspNetUserRequest model)
+        public ValidationResult Post([FromBody] RegisterAspNetUserViewModel viewModel)
         {
-            var user = _mapper.CreateAspNetUserRequestToAspNetUser(model);
-            user.Role = "user";
-            user.DateCreateUTC = DateTime.UtcNow;
-
-            _repository.Add(user);
-            _repository.UnitOfWork.Commit();
+            return _appService.Register(viewModel);
         }
     }
 }

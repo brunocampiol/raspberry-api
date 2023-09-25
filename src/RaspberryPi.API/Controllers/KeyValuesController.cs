@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Models.Data;
-using RaspberryPi.API.Data;
-using RaspberryPi.API.Repositories;
+using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Domain.Models;
+using RaspberryPi.Infrastructure.Data;
 
 namespace RaspberryPi.API.Controllers
 {

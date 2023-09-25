@@ -5,6 +5,12 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.API", "src\RaspberryPi.API\RaspberryPi.API.csproj", "{AFCADACE-7472-448A-9F30-74E2A6CE9D01}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.Application", "src\RaspberryPi.Application\RaspberryPi.Application.csproj", "{015655EC-C46D-4A0F-9BD9-44BF00DF0589}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.Domain", "src\RaspberryPi.Domain\RaspberryPi.Domain.csproj", "{741B9B74-B8F0-46C8-8CFC-2A80165CB412}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaspberryPi.Infrastructure", "src\RaspberryPi.Infrastructure\RaspberryPi.Infrastructure.csproj", "{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,8 +21,23 @@ Global
 		{AFCADACE-7472-448A-9F30-74E2A6CE9D01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFCADACE-7472-448A-9F30-74E2A6CE9D01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFCADACE-7472-448A-9F30-74E2A6CE9D01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{015655EC-C46D-4A0F-9BD9-44BF00DF0589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{015655EC-C46D-4A0F-9BD9-44BF00DF0589}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{015655EC-C46D-4A0F-9BD9-44BF00DF0589}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{015655EC-C46D-4A0F-9BD9-44BF00DF0589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{741B9B74-B8F0-46C8-8CFC-2A80165CB412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{741B9B74-B8F0-46C8-8CFC-2A80165CB412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{741B9B74-B8F0-46C8-8CFC-2A80165CB412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{741B9B74-B8F0-46C8-8CFC-2A80165CB412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65662A39-FC32-439A-A79A-04C6E956560F}
 	EndGlobalSection
 EndGlobal

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.Requests;
-using RaspberryPi.API.Repositories;
-using RaspberryPi.API.Services;
+using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Services;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -10,9 +10,9 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]")]
     public class IdentityController : ControllerBase
     {
-        private readonly IJwtService _jwtService;
+        private readonly IJwtAppService _jwtService;
 
-        public IdentityController(IJwtService jwtService)
+        public IdentityController(IJwtAppService jwtService)
         {
             _jwtService = jwtService;
         }
@@ -20,11 +20,11 @@ namespace RaspberryPi.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody] TokenGenerationRequest model)
         {
-            var user = UserRepository.Get(model.UserName, model.Password);
+            var user = IdentityAppService.Get(model.UserName, model.Password);
 
             if (user is null) return BadRequest("Invalid user or password");
             
-            var token = _jwtService.GenerateToken(user);
+            var token = _jwtService.GenerateToken(user.Email, user.Role);
 
             return Ok(token);
         }
