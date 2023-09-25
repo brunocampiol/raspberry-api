@@ -11,8 +11,11 @@ using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Data;
-using RaspberryPi.Domain.Data.Repositories;
+using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Infrastructure.Data;
+using RaspberryPi.Infrastructure.Data.Connection;
+using RaspberryPi.Infrastructure.Data.Context;
+using RaspberryPi.Infrastructure.Data.Repositories;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

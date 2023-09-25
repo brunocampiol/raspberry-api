@@ -2,7 +2,7 @@
 using Fetchgoods.Text.Json.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaspberryPi.Domain.Data;
+using RaspberryPi.Infrastructure.Data.Connection;
 
 namespace RaspberryPi.API.Controllers
 {

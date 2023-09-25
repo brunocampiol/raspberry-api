@@ -1,8 +1,8 @@
 ﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Domain.Data.Repositories
+namespace RaspberryPi.Application.Services
 {
-    public static class UserRepository
+    public static class IdentityAppService
     {
         public static AspNetUser? Get(string email, string password)
         {

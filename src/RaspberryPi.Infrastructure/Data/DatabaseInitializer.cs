@@ -1,8 +1,9 @@
 ﻿using Dapper;
+using RaspberryPi.Infrastructure.Data.Connection;
 
-namespace RaspberryPi.Domain.Data
+namespace RaspberryPi.Infrastructure.Data
 {
-    public class DatabaseInitializer
+    public sealed class DatabaseInitializer
     {
         private readonly IDbConnectionFactory _connectionFactory;
 

@@ -1,6 +1,6 @@
 ﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Domain.Data.Repositories
+namespace RaspberryPi.Domain.Interfaces
 {
     public interface ISqlLiteKeyValueRepository
     {

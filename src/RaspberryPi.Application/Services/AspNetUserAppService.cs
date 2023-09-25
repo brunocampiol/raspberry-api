@@ -2,7 +2,7 @@
 using RaspberryPi.Application.Models.ViewModels;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Data.Repositories;
+using RaspberryPi.Domain.Interfaces;
 using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Application.Services

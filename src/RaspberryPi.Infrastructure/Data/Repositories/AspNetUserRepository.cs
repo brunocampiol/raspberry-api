@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Interfaces;
 using RaspberryPi.Domain.Models;
+using RaspberryPi.Infrastructure.Data.Context;
 
-namespace RaspberryPi.Domain.Data.Repositories
+namespace RaspberryPi.Infrastructure.Data.Repositories
 {
     public class AspNetUserRepository : IAspNetUserRepository
     {

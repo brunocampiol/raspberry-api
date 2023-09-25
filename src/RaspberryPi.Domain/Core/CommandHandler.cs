@@ -1,5 +1,4 @@
 ﻿using FluentValidation.Results;
-using RaspberryPi.Domain.Data;
 
 namespace RaspberryPi.Domain.Core
 {

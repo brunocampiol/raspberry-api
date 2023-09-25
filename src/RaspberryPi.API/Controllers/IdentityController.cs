@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.Requests;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Domain.Data.Repositories;
+using RaspberryPi.Application.Services;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -20,7 +20,7 @@ namespace RaspberryPi.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody] TokenGenerationRequest model)
         {
-            var user = UserRepository.Get(model.UserName, model.Password);
+            var user = IdentityAppService.Get(model.UserName, model.Password);
 
             if (user is null) return BadRequest("Invalid user or password");
             

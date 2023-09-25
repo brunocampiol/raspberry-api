@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Domain.Data
+namespace RaspberryPi.Infrastructure.Data.Context
 {
     public class RaspberryContext : DbContext, IUnitOfWork
     {
