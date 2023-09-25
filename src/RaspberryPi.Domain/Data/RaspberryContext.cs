@@ -16,5 +16,11 @@ namespace RaspberryPi.Domain.Data
         {
             return SaveChanges() > 0;
         }
+
+        public Task<bool> CommitAsync()
+        {
+            // SQLite should not use async
+            throw new NotSupportedException();
+        }
     }
 }

@@ -10,6 +10,7 @@ using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
+using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Data;
 using RaspberryPi.Domain.Data.Repositories;
 using System.Text;
@@ -87,8 +88,11 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-    cfg.RegisterServicesFromAssemblies(typeof(CreateAspNetUserHandler).Assembly);
+    cfg.RegisterServicesFromAssemblies(typeof(AspNetUserCommandHandler).Assembly);
+    //cfg.RegisterServicesFromAssemblies(typeof(JwtAppOptions).Assembly);
 });
+
+//
 
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
@@ -98,7 +102,9 @@ builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 
 builder.Services.AddScoped<RaspberryContext>();
+builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
+builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 
 var app = builder.Build();
 

@@ -1,8 +1,7 @@
-﻿using MediatR;
+﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Mapping;
-using RaspberryPi.Domain.Commands;
-using RaspberryPi.Domain.Data.Repositories;
+using RaspberryPi.Application.Models.ViewModels;
+using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.API.Controllers
@@ -11,54 +10,29 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]")]
     public class AspNetUserController : ControllerBase
     {
-        private readonly IAspNetUserRepository _repository;
-        private readonly IRequestToDomainMapper _mapper;
-        private readonly IMediator _mediator;
+        private readonly IAspNetUserAppService _appService;
 
-        public AspNetUserController(IAspNetUserRepository repository, IRequestToDomainMapper mapper, IMediator mediator)
+        public AspNetUserController(IAspNetUserAppService appService)
         {
-            _repository = repository;
-            _mapper = mapper;
-            _mediator = mediator;
+           _appService = appService;
         }
 
         [HttpGet]
         public AspNetUser? Get(Guid id)
         {
-            return _repository.GetNoTracking(id);
+            return _appService.Get(id);
         }
 
         [HttpGet("list")]
         public IEnumerable<AspNetUser> List()
         {
-            return _repository.ListNoTracking();
+            return _appService.List();
         }
 
         [HttpPost]
-        public CreateAspNetUserResponse Post([FromBody] CreateAspNetUserRequest model)
+        public ValidationResult Post([FromBody] RegisterAspNetUserViewModel viewModel)
         {
-            //var user = _mapper.CreateAspNetUserRequestToAspNetUser(model);
-            //user.Role = "user";
-            //user.DateCreateUTC = DateTime.UtcNow;
-
-            //var user = new AspNetUser
-            //{
-            //    Email = model.Email,
-            //    Password = model.Password,
-            //    Role = "user",
-            //    DateCreateUTC = DateTime.UtcNow
-            //};
-
-            var request = new CreateAspNetUserRequest
-            {
-                Email = model.Email,
-                Password = model.Password
-            };
-
-            var result = _mediator.Send(request);
-
-            return result.Result;
-   
+            return _appService.Register(viewModel);
         }
     }
 }

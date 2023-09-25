@@ -1,20 +1,25 @@
-﻿using MediatR;
+﻿using FluentValidation.Results;
+using MediatR;
+using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Data.Repositories;
 using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Domain.Commands
 {
-    public sealed class CreateAspNetUserHandler : IRequestHandler<CreateAspNetUserRequest, CreateAspNetUserResponse>
+    public sealed class AspNetUserCommandHandler : CommandHandler,
+        IRequestHandler<CreateAspNetUserCommand, ValidationResult>
     {
         private readonly IAspNetUserRepository _repository;
 
-        public CreateAspNetUserHandler(IAspNetUserRepository repository)
+        public AspNetUserCommandHandler(IAspNetUserRepository repository)
         {
             _repository = repository;
         }
 
-        public Task<CreateAspNetUserResponse> Handle(CreateAspNetUserRequest request, CancellationToken cancellationToken)
+        public Task<ValidationResult> Handle(CreateAspNetUserCommand request, CancellationToken cancellationToken)
         {
+            request.IsValid();
+
             // Verifica se o cliente ja existe
             // Valida dados
             // Insere o cliente
@@ -26,14 +31,11 @@ namespace RaspberryPi.Domain.Commands
                 DateCreateUTC = DateTime.UtcNow,
             };
             _repository.Add(user);
-            _repository.UnitOfWork.Commit();
-            // Envia email de boas vindas
-            var result = new CreateAspNetUserResponse
-            {
-                IsSuccess = true,
-                Message = $"user '{user.Email}' created"
-            };
+            //_repository.UnitOfWork.Commit();
+            Commit(_repository.UnitOfWork);
 
+            // Envia email de boas vindas
+            var result = new ValidationResult();
             return Task.FromResult(result);
         }
     }
