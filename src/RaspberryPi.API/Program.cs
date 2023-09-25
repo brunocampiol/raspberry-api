@@ -108,6 +108,7 @@ builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
+builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
 
 var app = builder.Build();
 

@@ -11,7 +11,7 @@ using RaspberryPi.Infrastructure.Data.Context;
 namespace RaspberryPi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(RaspberryContext))]
-    [Migration("20230925213021_InitialMigration")]
+    [Migration("20230925220415_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -19,6 +19,24 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
+
+            modelBuilder.Entity("RaspberryPi.Domain.Models.AnonymousComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateCreatedUTC")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AnonymousComments");
+                });
 
             modelBuilder.Entity("RaspberryPi.Domain.Models.AspNetUser", b =>
                 {

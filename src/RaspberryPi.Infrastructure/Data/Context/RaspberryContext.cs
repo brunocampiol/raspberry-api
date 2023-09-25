@@ -7,6 +7,7 @@ namespace RaspberryPi.Infrastructure.Data.Context
     public class RaspberryContext : DbContext, IUnitOfWork
     {
         public DbSet<AspNetUser> AspNetUsers { get; set; }
+        public DbSet<AnonymousComment> AnonymousComments { get; set; }
 
         public RaspberryContext(DbContextOptions<RaspberryContext> options)
             : base(options)
