@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RaspberryPi.Domain\RaspberryPi.Domain.csproj" />
+    <ProjectReference Include="..\RaspberryPi.Infrastructure\RaspberryPi.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

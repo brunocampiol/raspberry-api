@@ -1,6 +1,6 @@
 ﻿using Fetchgoods.Text.Json.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.Infrastructure.Interfaces;
+using RaspberryPi.Application.Interfaces;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -9,10 +9,10 @@ namespace RaspberryPi.API.Controllers
     public class WeatherController : ControllerBase
     {
         private readonly ILogger _logger;
-        private readonly IAccuWeatherService _service;
+        private readonly IWeatherAppService _service;
 
         public WeatherController(ILogger<WeatherController> logger,
-                                 IAccuWeatherService service)
+                                 IWeatherAppService service)
         {
             _logger = logger;
             _service = service;
@@ -22,15 +22,12 @@ namespace RaspberryPi.API.Controllers
         public async Task<IActionResult> FromIpAddress()
         {
             var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            remoteIpAddress = "189.6.243.110";
-            var locationResult = await _service.LocationIpAddressSearchAsync(remoteIpAddress);
-            var weather = await _service.CurrentConditionsAsync(locationResult.Key);
+            var result = await _service.GetWeatherFromIpAddress(remoteIpAddress);
+            
+            var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{result.ToJson()}'";
+            _logger.LogInformation(logMessage);
 
-
-            //var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{locationResult.ToJson()}'";
-            //_logger.LogInformation(logMessage);
-
-            return Ok(weather);
+            return Ok(result);
         }
     }
 }
