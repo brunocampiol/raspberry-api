@@ -101,6 +101,7 @@ builder.Services.AddMediatR(cfg => {
 
 //
 
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();

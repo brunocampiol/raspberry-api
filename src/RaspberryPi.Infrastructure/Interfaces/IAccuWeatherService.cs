@@ -1,8 +1,10 @@
-﻿namespace RaspberryPi.Infrastructure.Interfaces
+﻿using RaspberryPi.Infrastructure.Models.AccuWeather;
+
+namespace RaspberryPi.Infrastructure.Interfaces
 {
     public interface IAccuWeatherService
     {
-        Task<string> CurrentConditions(int key);
-        Task<string> LocationIpAddressSearchAsync(string ipAddress);
+        Task<IEnumerable<AccuWeatherCurrentConditionsResponse>> CurrentConditionsAsync(string key);
+        Task<AccuWeatherLocationResponse> LocationIpAddressSearchAsync(string ipAddress);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Fetchgoods.Text.Json.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Infrastructure.Interfaces;
 
 namespace RaspberryPi.API.Controllers
@@ -17,15 +18,19 @@ namespace RaspberryPi.API.Controllers
             _service = service;
         }
 
+        [HttpGet]
         public async Task<IActionResult> FromIpAddress()
         {
             var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            var result = await _service.LocationIpAddressSearchAsync(remoteIpAddress);
+            remoteIpAddress = "189.6.243.110";
+            var locationResult = await _service.LocationIpAddressSearchAsync(remoteIpAddress);
+            var weather = await _service.CurrentConditionsAsync(locationResult.Key);
 
-            var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{result}'";
-            _logger.LogInformation(logMessage);
 
-            return Ok(result);
+            //var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{locationResult.ToJson()}'";
+            //_logger.LogInformation(logMessage);
+
+            return Ok(weather);
         }
     }
 }
