@@ -16,6 +16,9 @@ using RaspberryPi.Infrastructure.Data;
 using RaspberryPi.Infrastructure.Data.Connection;
 using RaspberryPi.Infrastructure.Data.Context;
 using RaspberryPi.Infrastructure.Data.Repositories;
+using RaspberryPi.Infrastructure.Interfaces;
+using RaspberryPi.Infrastructure.Models.Options;
+using RaspberryPi.Infrastructure.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,7 @@ var connectionString = config.GetConnectionString("SqlLite");
 
 
 builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
+builder.Services.Configure<AccuWeatherOptions>(config.GetSection(AccuWeatherOptions.SectionName));
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);
@@ -109,6 +113,7 @@ builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
+builder.Services.AddScoped<IAccuWeatherService, AccuWeatherService>();
 
 var app = builder.Build();
 
