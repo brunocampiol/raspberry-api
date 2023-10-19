@@ -19,11 +19,22 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FromIpAddress()
+        public async Task<IActionResult> FromIpAddress(string ipAddress)
+        {            
+            var result = await _service.GetWeatherFromIpAddress(ipAddress);
+            
+            var logMessage = $"Location for '{ipAddress}' resulted in: '{result.ToJson()}'";
+            _logger.LogInformation(logMessage);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FromContextIpAddress()
         {
             var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
             var result = await _service.GetWeatherFromIpAddress(remoteIpAddress);
-            
+
             var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{result.ToJson()}'";
             _logger.LogInformation(logMessage);
 
