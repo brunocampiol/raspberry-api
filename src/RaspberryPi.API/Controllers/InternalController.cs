@@ -6,7 +6,7 @@ using System.Runtime.Versioning;
 namespace RaspberryPi.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class InternalController : ControllerBase
     {
         private readonly IWebHostEnvironment _hostEnv;
@@ -16,7 +16,7 @@ namespace RaspberryPi.API.Controllers
             _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
         }
 
-        [HttpGet("settings")]
+        [HttpGet]
         public IActionResult Settings()
         {
             string? frameworkName = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
@@ -37,16 +37,40 @@ namespace RaspberryPi.API.Controllers
             return Ok(settings);
         }
 
-        [HttpGet("timestamp")]
+        [HttpGet]
         public IActionResult Timestamp()
         {
             return Ok(DateTime.Now);
         }
 
-        [HttpDelete("exception")]
+        [HttpDelete]
         public IActionResult Exception(string? exceptionMessage)
         {
             throw new NotImplementedException(exceptionMessage);
+        }
+
+        [HttpGet]
+        public IActionResult EchoHeaders()
+        {
+            var headers = Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString())
+                                         .OrderBy(x => x.Key);
+
+            return Ok(headers);
+        }
+
+        [HttpGet]
+        public IActionResult EchoIpAddress()
+        {
+            return Ok(HttpContext.Connection.RemoteIpAddress?.ToString());
+        }
+
+        [HttpGet]
+        public IActionResult EchoCookies()
+        {
+            var cookies = Request.Cookies.ToDictionary(x => x.Key, x => x.Value.ToString())
+                                         .OrderBy(x => x.Key);
+
+            return Ok(cookies);
         }
     }
 }

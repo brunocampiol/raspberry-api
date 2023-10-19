@@ -1,6 +1,8 @@
 ﻿using Fetchgoods.Text.Json.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using RaspberryPi.Application.Interfaces;
+using System.Net;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -8,7 +10,7 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]/[action]")]
     public class WeatherController : ControllerBase
     {
-        private readonly ILogger _logger;
+        private readonly ILogger _logger; // TODO remove logger
         private readonly IWeatherAppService _service;
 
         public WeatherController(ILogger<WeatherController> logger,
@@ -32,13 +34,21 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         public async Task<IActionResult> FromContextIpAddress()
         {
-            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-            var result = await _service.GetWeatherFromIpAddress(remoteIpAddress);
+            // TODO move context logic to service
+            var clientIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            string forwardedHeader = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(forwardedHeader))
+            {
+                clientIp = forwardedHeader.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(ip => ip.Trim())
+                                          .FirstOrDefault(ip => !IPAddress.IsLoopback(IPAddress.Parse(ip)));
+            }
 
-            var logMessage = $"Location for '{remoteIpAddress}' resulted in: '{result.ToJson()}'";
-            _logger.LogInformation(logMessage);
-
+            var result = await _service.GetWeatherFromIpAddress(clientIp);
             return Ok(result);
+
+            //var logMessage = $"Location for '{clientIp}' resulted in: '{result.ToJson()}'";
+            //_logger.LogInformation(logMessage);
         }
     }
 }
