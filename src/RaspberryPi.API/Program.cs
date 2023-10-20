@@ -40,7 +40,16 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
                 });
 
-
+// TODO use more specific CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(connectionString));
 
@@ -99,8 +108,6 @@ builder.Services.AddMediatR(cfg => {
     //cfg.RegisterServicesFromAssemblies(typeof(JwtAppOptions).Assembly);
 });
 
-//
-
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
@@ -131,6 +138,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAll"); // TODO use more specific CORS policy
 
 app.UseSwagger(x =>
 {
