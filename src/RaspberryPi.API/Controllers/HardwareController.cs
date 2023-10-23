@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
+using RaspberryPi.Application.Interfaces;
 using System.Text;
 
 namespace RaspberryPi.API.Controllers
@@ -11,9 +12,11 @@ namespace RaspberryPi.API.Controllers
         // TODO: update to libre hardware monitor
         // https://github.com/LibreHardwareMonitor/LibreHardwareMonitor
 
-        public HardwareController()
-        {
+        private readonly IGpioAppService _gpioAppService;
 
+        public HardwareController(IGpioAppService gpioAppService)
+        {
+            _gpioAppService = gpioAppService;
         }
 
         [HttpGet]
@@ -60,6 +63,13 @@ namespace RaspberryPi.API.Controllers
             var report = computer.GetReport();
             computer.Close();
             return Ok(report);
+        }
+
+        [HttpGet]
+        public IActionResult ReadGpio26()
+        {
+            var result = _gpioAppService.ReadGpio26();
+            return Ok(result);
         }
 
         //[HttpGet("temperature")]

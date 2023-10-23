@@ -123,6 +123,7 @@ builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
 builder.Services.AddScoped<IAccuWeatherService, AccuWeatherService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
+builder.Services.AddScoped<IGpioAppService, GpioAppService>();
 
 var app = builder.Build();
 
