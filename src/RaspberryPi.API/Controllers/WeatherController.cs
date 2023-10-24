@@ -1,6 +1,5 @@
 ﻿using Fetchgoods.Text.Json.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using RaspberryPi.Application.Interfaces;
 using System.Net;
 
@@ -46,9 +45,6 @@ namespace RaspberryPi.API.Controllers
 
             var result = await _service.GetWeatherFromIpAddress(clientIp);
             return Ok(result);
-
-            //var logMessage = $"Location for '{clientIp}' resulted in: '{result.ToJson()}'";
-            //_logger.LogInformation(logMessage);
         }
     }
 }

@@ -25,8 +25,19 @@ namespace RaspberryPi.Application.Services
         {
             const int pin = 26; // GPIO26 or 37 physical/board
             using var controller = new GpioController();
+            controller.SetPinMode(pin, PinMode.Input);
             var readValue = controller.Read(pin);
             return readValue.ToJson();
+        }
+
+        public void TogglePin18()
+        {
+            const int pin = 18; // GPIO18 or 12 physical/board
+            using var controller = new GpioController();
+            controller.SetPinMode(pin, PinMode.Output);
+            controller.Write(pin, PinValue.High);
+            Thread.Sleep(1000);
+            controller.Write(pin, PinValue.Low);
         }
 
         //public string ReadAllGpio()

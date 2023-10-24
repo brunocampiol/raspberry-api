@@ -72,6 +72,14 @@ namespace RaspberryPi.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult TogglePin18()
+        {
+            _gpioAppService.TogglePin18();
+            return NoContent();
+        }
+
         //[HttpGet("temperature")]
         //public IActionResult Cpu()
         //{
