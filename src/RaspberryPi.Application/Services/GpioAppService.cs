@@ -9,7 +9,7 @@ namespace RaspberryPi.Application.Services
         // Refers to Raspberry Pi 2 model b+
         // https://pinout.xyz/
 
-        // https://learn.microsoft.com/pt-br/dotnet/iot/
+        // https://learn.microsoft.com/en-us/dotnet/iot/
 
         // https://github.com/andycb/PiSharp
         // https://github.com/Ramon-Balaguer/raspberry-sharp-io
