@@ -4,7 +4,7 @@ using System.Device.Gpio;
 
 namespace RaspberryPi.Application.Services
 {
-    public class GpioAppService : IGpioAppService
+    public class HardwareAppService : IHardwareAppService
     {
         // Refers to Raspberry Pi 2 model b+
         // https://pinout.xyz/
@@ -15,9 +15,26 @@ namespace RaspberryPi.Application.Services
         // https://github.com/Ramon-Balaguer/raspberry-sharp-io
         // https://github.com/AlexSartori/Raspberry-GPIO-Manager
 
-        public GpioAppService()
+        public HardwareAppService()
         {
 
+        }
+
+        // Buzzer on GPIO17
+
+        public void BlinkLedGpio26()
+        {
+            const int pin = 26; // GPIO26 or 37 physical/board
+            using var controller = new GpioController();
+            controller.OpenPin(pin, PinMode.Output);
+
+            for (int i = 0; i < 10; i++)
+            {
+                controller.Write(pin, PinValue.High);
+                Thread.Sleep(1000);
+                controller.Write(pin, PinValue.Low);
+                Thread.Sleep(1000);
+            }            
         }
 
         // GPIO 26
@@ -25,19 +42,9 @@ namespace RaspberryPi.Application.Services
         {
             const int pin = 26; // GPIO26 or 37 physical/board
             using var controller = new GpioController();
-            controller.SetPinMode(pin, PinMode.Input);
+            controller.OpenPin(pin, PinMode.Input);
             var readValue = controller.Read(pin);
             return readValue.ToJson();
-        }
-
-        public void TogglePin18()
-        {
-            const int pin = 18; // GPIO18 or 12 physical/board
-            using var controller = new GpioController();
-            controller.SetPinMode(pin, PinMode.Output);
-            controller.Write(pin, PinValue.High);
-            Thread.Sleep(1000);
-            controller.Write(pin, PinValue.Low);
         }
 
         //public string ReadAllGpio()

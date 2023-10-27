@@ -1,8 +1,8 @@
 ﻿namespace RaspberryPi.Application.Interfaces
 {
-    public interface IGpioAppService
+    public interface IHardwareAppService
     {
+        void BlinkLedGpio26();
         string ReadGpio26();
-        void TogglePin18();
     }
 }

@@ -12,9 +12,9 @@ namespace RaspberryPi.API.Controllers
         // TODO: update to libre hardware monitor
         // https://github.com/LibreHardwareMonitor/LibreHardwareMonitor
 
-        private readonly IGpioAppService _gpioAppService;
+        private readonly IHardwareAppService _gpioAppService;
 
-        public HardwareController(IGpioAppService gpioAppService)
+        public HardwareController(IHardwareAppService gpioAppService)
         {
             _gpioAppService = gpioAppService;
         }
@@ -66,18 +66,18 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult BlinkLedGpio26()
+        {
+            _gpioAppService.BlinkLedGpio26();
+            return NoContent();
+        }
+
+        [HttpGet]
         public IActionResult ReadGpio26()
         {
             var result = _gpioAppService.ReadGpio26();
             return Ok(result);
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult TogglePin18()
-        {
-            _gpioAppService.TogglePin18();
-            return NoContent();
         }
 
         //[HttpGet("temperature")]
