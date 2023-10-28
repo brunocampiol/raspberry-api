@@ -1,5 +1,4 @@
-﻿using System.Device.Gpio;
-using System.Device.Pwm;
+﻿using System.Device.Pwm;
 
 namespace RaspberryPi.Domain.Services
 {
@@ -17,6 +16,7 @@ namespace RaspberryPi.Domain.Services
 
         public void Play()
         {
+            // PWM will use GPIO12
             using var pwm = PwmChannel.Create(_chip, _channel, 400, 0.5);
             pwm.Start();
             Thread.Sleep(2000);
