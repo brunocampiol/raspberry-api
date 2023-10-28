@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace RaspberryPi.API.Controllers
@@ -87,6 +89,24 @@ namespace RaspberryPi.API.Controllers
         {
             var service = new BuzzerService();
             service.Play();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayTones()
+        {
+            var service = new BuzzerService();
+            service.PlayTones();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayMusic([FromBody][Required] Music music)
+        {
+            var service = new BuzzerService();
+            service.PlayMusic(music);
             return NoContent();
         }
 
