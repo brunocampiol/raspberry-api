@@ -1,6 +1,7 @@
 ﻿using Fetchgoods.Text.Json.Extensions;
 using RaspberryPi.Application.Interfaces;
 using System.Device.Gpio;
+using System.Device.Pwm;
 
 namespace RaspberryPi.Application.Services
 {
@@ -19,8 +20,6 @@ namespace RaspberryPi.Application.Services
         {
 
         }
-
-        // Buzzer on GPIO17
 
         public void BlinkLedGpio26()
         {
@@ -53,5 +52,6 @@ namespace RaspberryPi.Application.Services
         //    using var controller = new GpioController();
         //    controller.OpenPin(Pin, PinMode.InputPullUp);
         //}
+
     }
 }

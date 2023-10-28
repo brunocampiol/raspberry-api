@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Services;
 using System.Text;
 
 namespace RaspberryPi.API.Controllers
@@ -78,6 +79,24 @@ namespace RaspberryPi.API.Controllers
         {
             var result = _gpioAppService.ReadGpio26();
             return Ok(result);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult Play()
+        {
+            var service = new BuzzerService();
+            service.Play();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayStarWarsTheme()
+        {
+            var service = new BuzzerService();
+            service.PlayStarWarsTheme();
+            return NoContent();
         }
 
         //[HttpGet("temperature")]
