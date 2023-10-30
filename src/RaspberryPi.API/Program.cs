@@ -29,6 +29,7 @@ var connectionString = config.GetConnectionString("SqlLite");
 
 builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
 builder.Services.Configure<AccuWeatherOptions>(config.GetSection(AccuWeatherOptions.SectionName));
+builder.Services.Configure<IpGeoLocationOptions>(config.GetSection(IpGeoLocationOptions.SectionName));
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);
@@ -122,6 +123,7 @@ builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
 builder.Services.AddScoped<IAccuWeatherService, AccuWeatherService>();
+builder.Services.AddScoped<IIpGeoLocationService, IpGeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 
