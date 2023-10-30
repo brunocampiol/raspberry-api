@@ -119,6 +119,15 @@ namespace RaspberryPi.API.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlaySuperMarioWorld()
+        {
+            var service = new BuzzerService();
+            service.PlaySuperMarioWorld();
+            return NoContent();
+        }
+
         //[HttpGet("temperature")]
         //public IActionResult Cpu()
         //{

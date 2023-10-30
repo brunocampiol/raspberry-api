@@ -10,7 +10,7 @@
             ArgumentNullException.ThrowIfNull(melody);
             ArgumentNullException.ThrowIfNull(noteDurations);
 
-            if (melody.Count() != noteDurations.Count())
+            if (melody.Length != noteDurations.Length)
             {
                 throw new ArgumentException("Melody and note durations must be the same length.");
             }

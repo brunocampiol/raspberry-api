@@ -45,8 +45,12 @@ namespace RaspberryPi.Domain.Services
 
         public void PlayStarWarsTheme()
         {
-            var starWarsMusic = StarWarsTheme();
-            PlayMusic(starWarsMusic);
+            PlayMusic(StarWarsTheme());
+        }
+
+        public void PlaySuperMarioWorld()
+        {
+            PlayMusic(SuperMarioWorld());
         }
 
         public void PlayMusic(Music music)
@@ -61,7 +65,7 @@ namespace RaspberryPi.Domain.Services
             pwm.Stop();
         }
 
-
+        // TODO needs to fix the sound quality
         static Music StarWarsTheme()
         {
             int[] starWarsMelody = new int[] {
@@ -83,7 +87,7 @@ namespace RaspberryPi.Domain.Services
                 392, 392, 392, 311, 466, 392
             };
 
-                        int[] starWarsNoteDurations = new int[] {
+                int[] starWarsNoteDurations = new int[] {
                 // Note Durations for Star Wars Theme
                 500, 500, 500, 350, 150, 500,
                 350, 150, 500, 500, 350, 150,
@@ -104,6 +108,48 @@ namespace RaspberryPi.Domain.Services
 
             var starWarsMusic = new Music(starWarsMelody, starWarsNoteDurations);
             return starWarsMusic;
+        }
+
+        // TODO needs to fix the sound quality
+        static Music SuperMarioWorld()
+        {
+            int[] marioMelody = new int[] {
+                // Super Mario World - Main Theme Melody
+                55, 55, 55, 51, 58, 55, 51, 63,
+                66, 63, 58, 55, 51, 55, 63, 63,
+                66, 55, 55, 61, 61, 58, 58,
+                55, 55, 51, 58, 55, 51, 63,
+                66, 63, 58, 55, 51, 55, 63, 63,
+                66, 70, 70, 63, 63, 61, 61,
+                63, 58, 58, 55, 55, 58, 58,
+                63, 63, 66, 63, 58, 55, 51, 55, 63, 63,
+                66, 70, 70, 63, 63, 61, 61,
+                63, 58, 58, 55, 55, 58, 58,
+                63, 63, 66, 70, 70, 66, 63, 61,
+                58, 55, 61, 61, 63, 58, 55, 51,
+                55, 63, 63, 66, 70, 70, 66, 63,
+                61, 58, 55, 61, 61, 63, 58, 55, 51
+            };
+
+            int[] noteDurations = new int[] {
+                // Durations for the Super Mario World - Main Theme Melody
+                500, 500, 500, 500, 500, 500, 1000, 500,
+                500, 500, 500, 500, 500, 500, 1000, 500,
+                500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 1000, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 1000, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 500, 500,
+                500, 500, 500, 500, 500, 500, 1000, 500, 500, 500,
+                500, 500, 500, 500, 500, 500
+            };
+
+            return new Music(marioMelody, noteDurations);
         }
     }
 }
