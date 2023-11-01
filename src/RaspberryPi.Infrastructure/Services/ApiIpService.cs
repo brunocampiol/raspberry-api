@@ -7,38 +7,38 @@ using RaspberryPi.Infrastructure.Models.Options;
 
 namespace RaspberryPi.Infrastructure.Services
 {
-    public class IpGeoLocationService : IIpGeoLocationService
+    public class ApiIpService : IApiIpService
     {
-        private readonly IpGeoLocationOptions _settings;
+        private readonly ApiIpOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public IpGeoLocationService(IOptions<IpGeoLocationOptions> settings,
+        public ApiIpService(IOptions<ApiIpOptions> settings,
                                     IHttpClientFactory httpClientFactory)
         {
             _settings = settings.Value;
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IpGeoLocationLookup> LookUp(string ipAddress)
+        public async Task<ApiIpCheck> Check(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-            const string endpoint = "ipgeo";
+            const string endpoint = "api/check";
             var httpClient = _httpClientFactory.CreateClient();
-            var uri = new Uri($"{_settings.BaseUrl}{endpoint}?apiKey={_settings.APIKey}&ip={ipAddress}");
+            var uri = new Uri($"{_settings.BaseUrl}{endpoint}?accessKey={_settings.APIKey}&ip={ipAddress}");
 
             var httpResponse = await httpClient.GetAsync(uri);
             var httpContent = await httpResponse.Content.ReadAsStringAsync();
 
             if (!httpResponse.IsSuccessStatusCode)
             {
-                var errorMessage = $"Failed to get IpGeolocationLookup. " +
+                var errorMessage = $"Failed to get API IP check. " +
                                    $"The HTTP response '{httpResponse.StatusCode}' " +
                                    $"is not in 2XX range for '{uri}'. Received " +
                                    $"content is '{httpContent}'";
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<IpGeoLocationLookup>();
+            var result = httpContent.FromJsonTo<ApiIpCheck>();
             return result;
         }
     }

@@ -6,11 +6,11 @@ namespace RaspberryPi.API.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
-    public class IpGeoLocationController : ControllerBase
+    public class ApiIpController : ControllerBase
     {
-        private readonly IIpGeoLocationService _service;
+        private readonly IApiIpService _service;
 
-        public IpGeoLocationController(IIpGeoLocationService service)
+        public ApiIpController(IApiIpService service)
         {
             _service = service;
         }
@@ -18,7 +18,7 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         public async Task<IActionResult> LookUp([FromQuery][Required] string ipAddress)
         {
-            var result = await _service.LookUp(ipAddress);
+            var result = await _service.Check(ipAddress);
             return Ok(result);
         }
     }

@@ -2,8 +2,8 @@
 
 namespace RaspberryPi.Infrastructure.Interfaces
 {
-    public interface IIpGeoLocationService
+    public interface IApiIpService
     {
-        Task<IpGeoLocationLookup> LookUp(string ipAddress);
+        Task<ApiIpCheck> Check(string ipAddress);
     }
 }
