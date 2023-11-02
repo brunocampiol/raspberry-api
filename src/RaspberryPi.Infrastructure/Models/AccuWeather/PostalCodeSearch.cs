@@ -21,7 +21,7 @@
     {
         public string Code { get; set; }
         public string Name { get; set; }
-        public int GmtOffset { get; set; }
+        public float GmtOffset { get; set; }
         public bool IsDaylightSaving { get; set; }
         public object NextOffsetChange { get; set; }
     }

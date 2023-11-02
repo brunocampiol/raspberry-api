@@ -25,7 +25,7 @@ namespace RaspberryPi.Infrastructure.Services
             ArgumentException.ThrowIfNullOrEmpty(country);
             ArgumentException.ThrowIfNullOrEmpty(postalCode);
 
-            var endpoint = $"locations/v1/cities/postalcodes/{country}/search";
+            var endpoint = $"locations/v1/postalcodes/{country}/search";
             var httpClient = _httpClientFactory.CreateClient();
             var uri = new Uri($"{_settings.BaseUrl}{endpoint}?apikey={_settings.ApiKey}&q={postalCode}");
 

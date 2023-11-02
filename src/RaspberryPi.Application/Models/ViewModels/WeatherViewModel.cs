@@ -2,8 +2,18 @@
 {
     public class WeatherViewModel
     {
-        public string EnglishName { get; set; }
-        public string WeatherText { get; set; }
-        public string Temperature { get; set; }
+        public string EnglishName { get; init; }
+        public string WeatherText { get; init; }
+        public string Temperature { get; init; }
+
+        public static WeatherViewModel NotAvailable()
+        {
+            return new WeatherViewModel
+            {
+                EnglishName = "N/A",
+                WeatherText = "N/A",
+                Temperature = "N/A"
+            };
+        }
     }
 }
