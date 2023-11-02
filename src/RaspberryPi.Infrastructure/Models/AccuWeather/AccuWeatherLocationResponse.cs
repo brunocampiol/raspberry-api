@@ -21,13 +21,6 @@
         //public List<string> DataSets { get; init; }
     }
 
-    public class Region
-    {
-        public string ID { get; init; }
-        public string LocalizedName { get; init; }
-        public string EnglishName { get; init; }
-    }
-
     public class Country
     {
         public string ID { get; init; }

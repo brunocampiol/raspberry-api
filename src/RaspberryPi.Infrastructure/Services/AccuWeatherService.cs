@@ -4,6 +4,7 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.AccuWeather;
 using RaspberryPi.Infrastructure.Models.Options;
+using System.Net;
 
 namespace RaspberryPi.Infrastructure.Services
 {
@@ -17,6 +18,31 @@ namespace RaspberryPi.Infrastructure.Services
         {
             _httpClientFactory = httpClientFactory;
             _settings = settings.Value;
+        }
+
+        public async Task<IEnumerable<PostalCodeSearch>> PostalCodeSearch(string country, string postalCode)
+        {
+            ArgumentException.ThrowIfNullOrEmpty(country);
+            ArgumentException.ThrowIfNullOrEmpty(postalCode);
+
+            var endpoint = $"locations/v1/cities/postalcodes/{country}/search";
+            var httpClient = _httpClientFactory.CreateClient();
+            var uri = new Uri($"{_settings.BaseUrl}{endpoint}?apikey={_settings.ApiKey}&q={postalCode}");
+
+            var httpResponse = await httpClient.GetAsync(uri);
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = $"Failed to get PostalCodeSearch. " +
+                                   $"The HTTP response '{httpResponse.StatusCode}' " +
+                                   $"is not in 2XX range for '{uri}'. Received " +
+                                   $"content is '{httpContent}'";
+                throw new AppException(errorMessage);
+            }
+
+            var result = httpContent.FromJsonTo<IEnumerable<PostalCodeSearch>>();
+            return result;
         }
 
         public async Task<AccuWeatherLocationResponse> LocationIpAddressSearchAsync(string ipAddress)
