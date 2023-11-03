@@ -1,4 +1,4 @@
-﻿using RaspberryPi.Infrastructure.Models.AccuWeather;
+﻿using RaspberryPi.Infrastructure.Models.Weather;
 
 namespace RaspberryPi.Infrastructure.Interfaces
 {

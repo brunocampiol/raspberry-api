@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.Infrastructure.Models.AccuWeather
+﻿namespace RaspberryPi.Infrastructure.Models.Weather
 {
     public class Region
     {

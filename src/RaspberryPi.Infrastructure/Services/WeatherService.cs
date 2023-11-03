@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.AccuWeather;
+using RaspberryPi.Infrastructure.Models.Weather;
 using RaspberryPi.Infrastructure.Models.Options;
 
 namespace RaspberryPi.Infrastructure.Services
