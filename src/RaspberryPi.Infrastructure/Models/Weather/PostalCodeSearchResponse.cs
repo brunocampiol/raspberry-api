@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Infrastructure.Models.Weather
 {
-    public class PostalCodeSearch
+    public class PostalCodeSearchResponse
     {
         public int Version { get; set; }
         public string Key { get; set; }

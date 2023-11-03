@@ -21,7 +21,7 @@ namespace RaspberryPi.Infrastructure.Services
             _settings = settings.Value;
         }
 
-        public async Task<IEnumerable<PostalCodeSearch>> PostalCodeSearch(string country, string postalCode)
+        public async Task<IEnumerable<PostalCodeSearchResponse>> PostalCodeSearch(string country, string postalCode)
         {
             ArgumentException.ThrowIfNullOrEmpty(country);
             ArgumentException.ThrowIfNullOrEmpty(postalCode);
@@ -42,11 +42,11 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<IEnumerable<PostalCodeSearch>>();
+            var result = httpContent.FromJsonTo<IEnumerable<PostalCodeSearchResponse>>();
             return result;
         }
 
-        public async Task<AccuWeatherLocationResponse> LocationIpAddressSearchAsync(string ipAddress)
+        public async Task<WeatherLocationResponse> LocationIpAddressSearchAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             const string endpoint = "locations/v1/cities/ipaddress";
@@ -65,11 +65,11 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<AccuWeatherLocationResponse>();
+            var result = httpContent.FromJsonTo<WeatherLocationResponse>();
             return result;
         }
 
-        public async Task<IEnumerable<AccuWeatherCurrentConditionsResponse>> CurrentConditionsAsync(string key)
+        public async Task<IEnumerable<WeatherCurrentConditionsResponse>> CurrentConditionsAsync(string key)
         {
             ArgumentException.ThrowIfNullOrEmpty(key);
             const string endpoint = "currentconditions/v1/";
@@ -88,7 +88,7 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<IEnumerable<AccuWeatherCurrentConditionsResponse>>();
+            var result = httpContent.FromJsonTo<IEnumerable<WeatherCurrentConditionsResponse>>();
             return result;
         }
     }

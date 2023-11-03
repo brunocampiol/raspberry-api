@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Infrastructure.Models.Weather
 {
-    public class AccuWeatherLocationResponse
+    public class WeatherLocationResponse
     {
         public int Version { get; init; }
         public string Key { get; init; }

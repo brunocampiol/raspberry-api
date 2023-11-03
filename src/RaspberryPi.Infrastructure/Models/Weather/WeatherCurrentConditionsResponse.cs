@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Infrastructure.Models.Weather
 {
-    public class AccuWeatherCurrentConditionsResponse
+    public class WeatherCurrentConditionsResponse
     {
         public string LocalObservationDateTime { get; init; }
 
@@ -21,26 +21,5 @@
         public string MobileLink { get; init; }
 
         public string Link { get; init; }
-    }
-
-    public class Temperature
-    {
-        public Metric Metric { get; init; }
-
-        public Imperial Imperial { get; init; }
-    }
-
-    public class Metric
-    {
-        public double Value { get; init; }
-        public string Unit { get; init; }
-        public int UnitType { get; init; }
-    }
-
-    public class Imperial
-    {
-        public double Value { get; init; }
-        public string Unit { get; init; }
-        public int UnitType { get; init; }
     }
 }
