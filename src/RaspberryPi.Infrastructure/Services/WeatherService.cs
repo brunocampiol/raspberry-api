@@ -4,16 +4,17 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.AccuWeather;
 using RaspberryPi.Infrastructure.Models.Options;
-using System.Net;
 
 namespace RaspberryPi.Infrastructure.Services
 {
-    public class AccuWeatherService : IAccuWeatherService
+    // This class depends on AccuWeather services
+    // APIs reference https://developer.accuweather.com/apis
+    public class WeatherService : IWeatherService
     {
-        private readonly AccuWeatherOptions _settings;
+        private readonly WeatherOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccuWeatherService(IOptions<AccuWeatherOptions> settings,
+        public WeatherService(IOptions<WeatherOptions> settings,
                                   IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;

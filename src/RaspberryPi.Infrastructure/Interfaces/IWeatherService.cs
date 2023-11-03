@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Infrastructure.Interfaces
 {
-    public interface IAccuWeatherService
+    public interface IWeatherService
     {
         Task<IEnumerable<PostalCodeSearch>> PostalCodeSearch(string country, string postalCode);
         Task<IEnumerable<AccuWeatherCurrentConditionsResponse>> CurrentConditionsAsync(string key);
