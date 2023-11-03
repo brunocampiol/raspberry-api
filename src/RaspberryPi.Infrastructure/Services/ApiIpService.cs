@@ -7,12 +7,12 @@ using RaspberryPi.Infrastructure.Models.Options;
 
 namespace RaspberryPi.Infrastructure.Services
 {
-    public class ApiIpService : IApiIpService
+    public class ApiIPService : IApiIPService
     {
         private readonly ApiIpOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ApiIpService(IOptions<ApiIpOptions> settings,
+        public ApiIPService(IOptions<ApiIpOptions> settings,
                                     IHttpClientFactory httpClientFactory)
         {
             _settings = settings.Value;

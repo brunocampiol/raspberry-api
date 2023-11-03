@@ -8,11 +8,11 @@ namespace RaspberryPi.Application.Services
     public class WeatherAppService : IWeatherAppService
     {
         private readonly IAccuWeatherService _accuWeatherService;
-        private readonly IApiIpService _apiIpService;
+        private readonly IApiIPService _apiIpService;
         private readonly ILogger _logger;
 
         public WeatherAppService(IAccuWeatherService accuWeatherService,
-                                    IApiIpService apiIpService,
+                                    IApiIPService apiIpService,
                                     ILogger<WeatherAppService> logger)
         {
             _accuWeatherService = accuWeatherService;

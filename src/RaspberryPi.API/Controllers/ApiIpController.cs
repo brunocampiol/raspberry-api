@@ -8,9 +8,9 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]/[action]")]
     public class ApiIpController : ControllerBase
     {
-        private readonly IApiIpService _service;
+        private readonly IApiIPService _service;
 
-        public ApiIpController(IApiIpService service)
+        public ApiIpController(IApiIPService service)
         {
             _service = service;
         }

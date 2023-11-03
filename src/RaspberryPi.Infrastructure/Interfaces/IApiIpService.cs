@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Infrastructure.Interfaces
 {
-    public interface IApiIpService
+    public interface IApiIPService
     {
         Task<ApiIpCheck> Check(string ipAddress);
     }
