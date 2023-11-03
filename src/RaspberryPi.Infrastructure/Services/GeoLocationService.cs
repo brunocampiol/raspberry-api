@@ -10,10 +10,10 @@ namespace RaspberryPi.Infrastructure.Services
     // This class uses https://apiip.net/ service
     public class GeoLocationService : IGeoLocationService
     {
-        private readonly ApiIpOptions _settings;
+        private readonly GeoLocationOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public GeoLocationService(IOptions<ApiIpOptions> settings,
+        public GeoLocationService(IOptions<GeoLocationOptions> settings,
                                     IHttpClientFactory httpClientFactory)
         {
             _settings = settings.Value;

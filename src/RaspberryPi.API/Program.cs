@@ -29,7 +29,7 @@ var connectionString = config.GetConnectionString("SqlLite");
 
 builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
 builder.Services.Configure<AccuWeatherOptions>(config.GetSection(AccuWeatherOptions.SectionName));
-builder.Services.Configure<ApiIpOptions>(config.GetSection(ApiIpOptions.SectionName));
+builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);
