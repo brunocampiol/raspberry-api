@@ -8,11 +8,11 @@ namespace RaspberryPi.Application.Services
     public class WeatherAppService : IWeatherAppService
     {
         private readonly IAccuWeatherService _accuWeatherService;
-        private readonly IApiIPService _apiIpService;
+        private readonly IGeoLocationService _apiIpService;
         private readonly ILogger _logger;
 
         public WeatherAppService(IAccuWeatherService accuWeatherService,
-                                    IApiIPService apiIpService,
+                                    IGeoLocationService apiIpService,
                                     ILogger<WeatherAppService> logger)
         {
             _accuWeatherService = accuWeatherService;
@@ -22,7 +22,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<WeatherViewModel> GetWeatherFromIpAddress(string ipAddress)
         {
-            var geoPositioning = await _apiIpService.Check(ipAddress);
+            var geoPositioning = await _apiIpService.LookUp(ipAddress);
 
             if (string.IsNullOrEmpty(geoPositioning.CountryCode))
             {

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace RaspberryPi.Infrastructure.Models.IpGeolocation
+namespace RaspberryPi.Infrastructure.Models.GeoLocation
 {
-    public class ApiIpCheck
+    public class LookUpResponse
     {
         [JsonPropertyName("ip")]
         public string Ip { get; set; }

@@ -2,24 +2,25 @@
 using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.IpGeolocation;
+using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Options;
 
 namespace RaspberryPi.Infrastructure.Services
 {
-    public class ApiIPService : IApiIPService
+    // This class uses https://apiip.net/ service
+    public class GeoLocationService : IGeoLocationService
     {
         private readonly ApiIpOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ApiIPService(IOptions<ApiIpOptions> settings,
+        public GeoLocationService(IOptions<ApiIpOptions> settings,
                                     IHttpClientFactory httpClientFactory)
         {
             _settings = settings.Value;
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<ApiIpCheck> Check(string ipAddress)
+        public async Task<LookUpResponse> LookUp(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             const string endpoint = "api/check";
@@ -38,7 +39,7 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<ApiIpCheck>();
+            var result = httpContent.FromJsonTo<LookUpResponse>();
             return result;
         }
     }

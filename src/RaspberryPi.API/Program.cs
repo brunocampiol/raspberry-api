@@ -123,7 +123,7 @@ builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
 builder.Services.AddScoped<IAccuWeatherService, AccuWeatherService>();
-builder.Services.AddScoped<IApiIpService, ApiIpService>();
+builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 
