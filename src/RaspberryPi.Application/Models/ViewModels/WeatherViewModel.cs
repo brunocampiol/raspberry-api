@@ -3,7 +3,7 @@
     public class WeatherViewModel
     {
         public string EnglishName { get; init; } = default!;
-        public string CountyCode { get; init; } = default!;
+        public string CountryCode { get; init; } = default!;
         public string WeatherText { get; init; } = default!;
         public string Temperature { get; init; } = default!;
 
@@ -12,7 +12,7 @@
             return new WeatherViewModel
             {
                 EnglishName = "N/A",
-                CountyCode = "N/A",
+                CountryCode = "N/A",
                 WeatherText = "N/A",
                 Temperature = "N/A"
             };
