@@ -53,6 +53,7 @@ namespace RaspberryPi.Application.Services
             var viewModel = new WeatherViewModel
             {
                 EnglishName = geoPositioning.City,
+                CountyCode = geoPositioning.CountryCode,
                 WeatherText = currentConditions.First().WeatherText,
                 Temperature = currentConditions.First().Temperature.Metric.Value + "°C"
             };
