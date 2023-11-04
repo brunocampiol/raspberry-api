@@ -21,11 +21,11 @@ using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Services;
 using System.Text;
 
+const string _corsPolicyName = "AllowAll";
 var builder = WebApplication.CreateBuilder(args);
 var jsonOptions = AppJsonSerializerOptions.Default;
 var config = builder.Configuration;
 var connectionString = config.GetConnectionString("SqlLite");
-
 
 builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
@@ -44,7 +44,7 @@ builder.Services.AddControllers()
 // TODO use more specific CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy(_corsPolicyName, builder =>
     {
         builder.AllowAnyOrigin()
                .AllowAnyMethod()
@@ -141,7 +141,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowAll"); // TODO use more specific CORS policy
+app.UseCors(_corsPolicyName); // TODO use more specific CORS policy
 
 app.UseSwagger(x =>
 {
