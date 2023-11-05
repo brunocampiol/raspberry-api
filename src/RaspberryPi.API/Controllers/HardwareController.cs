@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Services;
 using System.ComponentModel.DataAnnotations;
@@ -16,10 +17,12 @@ namespace RaspberryPi.API.Controllers
         // https://github.com/LibreHardwareMonitor/LibreHardwareMonitor
 
         private readonly IHardwareAppService _gpioAppService;
+        private readonly IMusicService _musicService;
 
-        public HardwareController(IHardwareAppService gpioAppService)
+        public HardwareController(IHardwareAppService gpioAppService, IMusicService musicService)
         {
             _gpioAppService = gpioAppService;
+            _musicService = musicService;
         }
 
         [HttpGet]
@@ -96,8 +99,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayMusic([FromBody][Required] Music music)
         {
-            var service = new MusicService();
-            service.PlayMusic(music);
+            _musicService.PlayMusic(music);
             return NoContent();
         }
 
@@ -105,8 +107,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayImperialMarch()
         {
-            var service = new MusicService();
-            service.PlayImperialMarch();
+            _musicService.PlayImperialMarch();
             return NoContent();
         }
 
@@ -114,8 +115,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlaySuperMarioWorld()
         {
-            var service = new MusicService();
-            service.PlaySuperMarioWorld();
+            _musicService.PlaySuperMarioWorld();
             return NoContent();
         }
 
@@ -123,8 +123,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayPinkPanther()
         {
-            var service = new MusicService();
-            service.PlayPinkPanther();
+            _musicService.PlayPinkPanther();
             return NoContent();
         }
 
@@ -132,8 +131,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayNokiaRingtone()
         {
-            var service = new MusicService();
-            service.PlayNokiaRingtone();
+            _musicService.PlayNokiaRingtone();
             return NoContent();
         }
 

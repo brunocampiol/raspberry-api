@@ -1,15 +1,17 @@
 ﻿using RaspberryPi.Domain.Constants;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
-using System.Security.Cryptography;
 
 namespace RaspberryPi.Domain.Services
 {
-    public class MusicService
+    public class MusicService : IMusicService, IDisposable
     {
+        private readonly IBuzzerService _buzzerService;
+        private bool _disposed;
+
         public MusicService(IBuzzerService buzzerService)
         {
-
+            _buzzerService = buzzerService;
         }
 
         public void PlayMusic(Music music)
@@ -295,6 +297,30 @@ namespace RaspberryPi.Domain.Services
                 // stop the waveform generation before the next note.
                 //Console.Beep(0, (int)(noteDuration * 0.1));
             }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _buzzerService.Dispose();
+                }
+
+                _disposed = true;
+            }
+        }
+
+        ~MusicService()
+        {
+            Dispose(false);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace RaspberryPi.Domain.Services
         private const int _channel = 0;
 
         private readonly PwmChannel _pwmChannel;
-        private bool _disposed = false;
+        private bool _disposed;
 
         public BuzzerService()
         {
