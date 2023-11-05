@@ -1,4 +1,5 @@
 ﻿using RaspberryPi.Domain.Constants;
+using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
 using System.Security.Cryptography;
 
@@ -6,7 +7,7 @@ namespace RaspberryPi.Domain.Services
 {
     public class MusicService
     {
-        public MusicService()
+        public MusicService(IBuzzerService buzzerService)
         {
 
         }

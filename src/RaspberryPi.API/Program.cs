@@ -12,6 +12,8 @@ using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Domain.Interfaces.Services;
+using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Data;
 using RaspberryPi.Infrastructure.Data.Connection;
 using RaspberryPi.Infrastructure.Data.Context;
@@ -113,8 +115,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
+builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
-builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 
 builder.Services.AddScoped<RaspberryContext>();
@@ -126,6 +128,7 @@ builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
+builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 
 var app = builder.Build();
 
