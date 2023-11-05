@@ -85,15 +85,6 @@ namespace RaspberryPi.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Play()
-        {
-            var service = new BuzzerService();
-            service.Play();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayTones()
         {
             var service = new BuzzerService();
@@ -105,17 +96,17 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayMusic([FromBody][Required] Music music)
         {
-            var service = new BuzzerService();
+            var service = new MusicService();
             service.PlayMusic(music);
             return NoContent();
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayStarWarsTheme()
+        public IActionResult PlayImperialMarch()
         {
-            var service = new BuzzerService();
-            service.PlayStarWarsTheme();
+            var service = new MusicService();
+            service.PlayImperialMarch();
             return NoContent();
         }
 
@@ -123,8 +114,26 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlaySuperMarioWorld()
         {
-            var service = new BuzzerService();
+            var service = new MusicService();
             service.PlaySuperMarioWorld();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayPinkPanther()
+        {
+            var service = new MusicService();
+            service.PlayPinkPanther();
+            return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayNokiaRingtone()
+        {
+            var service = new MusicService();
+            service.PlayNokiaRingtone();
             return NoContent();
         }
 
