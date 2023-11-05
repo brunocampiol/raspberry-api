@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using MediatR;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Domain.Commands

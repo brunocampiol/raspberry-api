@@ -1,5 +1,5 @@
 ﻿using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Infrastructure.Data.Context;
 

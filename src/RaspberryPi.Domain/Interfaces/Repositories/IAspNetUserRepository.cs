@@ -1,7 +1,7 @@
 ﻿using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Domain.Interfaces
+namespace RaspberryPi.Domain.Interfaces.Repositories
 {
     public interface IAspNetUserRepository : IRepository<AspNetUser>
     {

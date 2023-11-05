@@ -11,7 +11,7 @@ using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Interfaces;
+using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Data;
