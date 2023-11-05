@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Domain.Interfaces.Services;
-using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Services;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace RaspberryPi.API.Controllers
@@ -16,13 +13,11 @@ namespace RaspberryPi.API.Controllers
         // TODO: update to libre hardware monitor
         // https://github.com/LibreHardwareMonitor/LibreHardwareMonitor
 
-        private readonly IHardwareAppService _gpioAppService;
-        private readonly IMusicService _musicService;
-
-        public HardwareController(IHardwareAppService gpioAppService, IMusicService musicService)
+        private readonly IHardwareAppService _service;
+   
+        public HardwareController(IHardwareAppService hardwareAppService)
         {
-            _gpioAppService = gpioAppService;
-            _musicService = musicService;
+            _service = hardwareAppService;
         }
 
         [HttpGet]
@@ -75,14 +70,14 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult BlinkLedGpio26()
         {
-            _gpioAppService.BlinkLedGpio26();
+            _service.BlinkLedGpio26();
             return NoContent();
         }
 
         [HttpGet]
         public IActionResult ReadGpio26()
         {
-            var result = _gpioAppService.ReadGpio26();
+            var result = _service.ReadGpio26();
             return Ok(result);
         }
 
@@ -92,46 +87,6 @@ namespace RaspberryPi.API.Controllers
         {
             var service = new BuzzerService();
             service.PlayTones();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayMusic([FromBody][Required] Music music)
-        {
-            _musicService.PlayMusic(music);
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayImperialMarch()
-        {
-            _musicService.PlayImperialMarch();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlaySuperMarioWorld()
-        {
-            _musicService.PlaySuperMarioWorld();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayPinkPanther()
-        {
-            _musicService.PlayPinkPanther();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayNokiaRingtone()
-        {
-            _musicService.PlayNokiaRingtone();
             return NoContent();
         }
 
