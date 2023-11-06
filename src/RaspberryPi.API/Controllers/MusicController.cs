@@ -55,5 +55,13 @@ namespace RaspberryPi.API.Controllers
             _musicService.PlayNokiaRingtone();
             return NoContent();
         }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PlayPiratesOfTheCaribbean()
+        {
+            _musicService.PlayPiratesOfTheCaribbean();
+            return NoContent();
+        }
     }
 }
