@@ -27,12 +27,12 @@ namespace RaspberryPi.Application.Services
             using var controller = new GpioController();
             controller.OpenPin(pin, PinMode.Output);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 40; i++)
             {
                 controller.Write(pin, PinValue.High);
-                Thread.Sleep(1000);
+                Thread.Sleep(250);
                 controller.Write(pin, PinValue.Low);
-                Thread.Sleep(1000);
+                Thread.Sleep(250);
             }            
         }
 
