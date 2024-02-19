@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.Domain", "src\RaspberryPi.Domain\RaspberryPi.Domain.csproj", "{741B9B74-B8F0-46C8-8CFC-2A80165CB412}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaspberryPi.Infrastructure", "src\RaspberryPi.Infrastructure\RaspberryPi.Infrastructure.csproj", "{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaspberryPi.Infrastructure", "src\RaspberryPi.Infrastructure\RaspberryPi.Infrastructure.csproj", "{7EBCDFBE-A640-46B4-BDC8-EF950EE2D92B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{35DDBE40-7980-4640-AD16-8C286B6B1DD4}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
