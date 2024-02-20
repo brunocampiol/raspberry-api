@@ -14,10 +14,11 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
-using RaspberryPi.Infrastructure.Data;
-using RaspberryPi.Infrastructure.Data.Connection;
-using RaspberryPi.Infrastructure.Data.Context;
-using RaspberryPi.Infrastructure.Data.Repositories;
+using RaspberryPi.Infrastructure.Data.Dapper;
+using RaspberryPi.Infrastructure.Data.Dapper.Connection;
+using RaspberryPi.Infrastructure.Data.Dapper.Repositories;
+using RaspberryPi.Infrastructure.Data.EFCore.Context;
+using RaspberryPi.Infrastructure.Data.EFCore.Repositories;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Services;
@@ -121,7 +122,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
-builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
+builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 
@@ -181,7 +182,5 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
-//var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
-//databaseInitializer.Initialize();
 
 app.Run();

@@ -1,15 +1,16 @@
 ﻿using Dapper;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
-using RaspberryPi.Infrastructure.Data.Connection;
+using RaspberryPi.Infrastructure.Data.Dapper.Connection;
 
-namespace RaspberryPi.Infrastructure.Data.Repositories
+namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
 {
-    public class SqlLiteKeyValueRepository : ISqlLiteKeyValueRepository
+    public class DapperRepository : IDapperRepository
     {
         private readonly IDbConnectionFactory _connectionFactory;
 
-        public SqlLiteKeyValueRepository(IDbConnectionFactory connectionFactory)
+        // TODO: migrate to use same tables from EF Core
+        public DapperRepository(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
