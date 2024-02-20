@@ -60,7 +60,7 @@ builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(con
 builder.Services.AddSwaggerGen(c =>
 {
     //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
-    var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.XML";
+    var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
