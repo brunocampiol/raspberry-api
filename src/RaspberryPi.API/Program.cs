@@ -112,6 +112,7 @@ builder.Services.AddMediatR(cfg => {
 });
 
 builder.Services.AddHttpClient();
+
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
@@ -119,6 +120,7 @@ builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicService, MusicService>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
+builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 
 builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
@@ -129,7 +131,7 @@ builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
-builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
+builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
 
 var app = builder.Build();
 

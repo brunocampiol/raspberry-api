@@ -1,10 +1,11 @@
-﻿using RaspberryPi.Infrastructure.Interfaces;
+﻿using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using System.Net;
 
 namespace RaspberryPi.Application.Services
 {
-    public sealed class GeoLocationAppService
+    public sealed class GeoLocationAppService : IGeoLocationAppService
     {
         private readonly IGeoLocationService _geoLocationService;
 
@@ -13,13 +14,13 @@ namespace RaspberryPi.Application.Services
             _geoLocationService = geoLocationService;
         }
 
-        public async Task<LookUpResponse> LookUp(string ipAddress)
+        public async Task<LookUpResponse> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             return await _geoLocationService.LookUp(ipAddress);
         }
 
-        public async Task<LookUpResponse> LookUpFromRandomIpAddress()
+        public async Task<LookUpResponse> LookUpFromRandomIpAddressAsync()
         {
             var random = new Random();
             byte[] ipAddressBytes = new byte[4];
