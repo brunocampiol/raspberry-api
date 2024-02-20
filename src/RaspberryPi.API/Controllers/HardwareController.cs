@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Domain.Services;
 using System.Text;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Raspberry Pi 2 and hardware specific methods
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class HardwareController : ControllerBase
@@ -20,6 +22,10 @@ namespace RaspberryPi.API.Controllers
             _service = hardwareAppService;
         }
 
+        /// <summary>
+        /// Lists current hardware components
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult List()
         {
@@ -46,6 +52,10 @@ namespace RaspberryPi.API.Controllers
             return Ok(sb.ToString());
         }
 
+        /// <summary>
+        /// Returns the Open Hardware Monitor report
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Report()
         {
@@ -66,6 +76,10 @@ namespace RaspberryPi.API.Controllers
             return Ok(report);
         }
 
+        /// <summary>
+        /// Blinks a LED in GPIO 26
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult BlinkLedGpio26()
@@ -74,97 +88,15 @@ namespace RaspberryPi.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Reads GPIO 26
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult ReadGpio26()
         {
             var result = _service.ReadGpio26();
             return Ok(result);
         }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayTones()
-        {
-            var service = new BuzzerService();
-            service.PlayTones();
-            return NoContent();
-        }
-
-        //[HttpGet("temperature")]
-        //public IActionResult Cpu()
-        //{
-        //    var sb = new StringBuilder();
-
-        //    var computer = new Computer()
-        //    {
-        //        CPUEnabled = true
-        //    };
-        //    computer.Open();
-        //    var report = computer.GetReport();
-
-        //    foreach (var hardwareItem in computer.Hardware)
-        //    {
-        //        if (hardwareItem.HardwareType == HardwareType.CPU)
-        //        {
-        //            sb.Append($"CPU {hardwareItem.Name}");
-        //            sb.Append(Environment.NewLine);
-
-        //            hardwareItem.Update();
-        //            foreach (var sensor in hardwareItem.Sensors)
-        //            {
-        //                if (sensor.SensorType == SensorType.Temperature)
-        //                {
-        //                    sb.Append($"CPU ({sensor.Index}) Temperature: {sensor.Value} °C");
-        //                    sb.Append(Environment.NewLine);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    computer.Close();
-
-        //    return Ok(sb.ToString());
-        //}
-
-        //[HttpGet("temperature")]
-        //public IActionResult Gpu()
-        //{
-        //    var sb = new StringBuilder();
-
-        //    var computer = new Computer()
-        //    {
-        //        GPUEnabled = true
-        //    };
-        //    computer.Open();
-
-        //    if (computer.Hardware.Length == 0)
-        //    {
-        //        sb.Append("There are no GPUs to display data");
-        //    }
-
-        //    foreach (var hardwareItem in computer.Hardware)
-        //    {
-        //        if (hardwareItem.HardwareType == HardwareType.GpuNvidia ||
-        //            hardwareItem.HardwareType == HardwareType.GpuAti)
-        //        {
-        //            sb.Append($"GPU {hardwareItem.Name}");
-        //            sb.Append(Environment.NewLine);
-
-        //            hardwareItem.Update();
-        //            foreach (var sensor in hardwareItem.Sensors)
-        //            {
-        //                if (sensor.SensorType == SensorType.Temperature)
-        //                {
-        //                    sb.Append($"GPU ({sensor.Index}) Temperature: {sensor.Value} °C");
-        //                    sb.Append(Environment.NewLine);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    computer.Close();
-
-        //    return Ok(sb.ToString());
-        //}
     }
 }
