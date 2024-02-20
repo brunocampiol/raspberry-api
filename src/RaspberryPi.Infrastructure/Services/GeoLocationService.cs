@@ -32,10 +32,9 @@ namespace RaspberryPi.Infrastructure.Services
 
             if (!httpResponse.IsSuccessStatusCode)
             {
-                var errorMessage = $"Failed to get API IP check. " +
-                                   $"The HTTP response '{httpResponse.StatusCode}' " +
-                                   $"is not in 2XX range for '{uri}'. Received " +
-                                   $"content is '{httpContent}'";
+                var errorMessage = $"API IP response '{httpResponse.StatusCode}' " +
+                                  $"is not in 2XX range: '{httpContent}'";
+
                 throw new AppException(errorMessage);
             }
 
