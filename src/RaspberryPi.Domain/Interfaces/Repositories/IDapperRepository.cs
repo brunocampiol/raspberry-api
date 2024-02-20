@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Domain.Interfaces.Repositories
 {
-    public interface ISqlLiteKeyValueRepository
+    public interface IDapperRepository
     {
         bool Create(SqlLiteKeyValue keyValue);
 

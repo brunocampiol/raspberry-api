@@ -5,6 +5,9 @@ using System.Runtime.Versioning;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Developer related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class InternalController : ControllerBase

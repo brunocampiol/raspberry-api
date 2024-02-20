@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
-using RaspberryPi.Infrastructure.Data;
+using RaspberryPi.Infrastructure.Data.Dapper;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Dapper related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
-    public class KeyValuesController : ControllerBase
+    public class DapperRepositoryController : ControllerBase
     {
-        private readonly ISqlLiteKeyValueRepository _repository;
+        private readonly IDapperRepository _repository;
         private readonly DatabaseInitializer _databaseInitializer;
-        public KeyValuesController(ISqlLiteKeyValueRepository sqlLiteKeyValueRepository, DatabaseInitializer databaseInitializer)
+        public DapperRepositoryController(IDapperRepository sqlLiteKeyValueRepository, DatabaseInitializer databaseInitializer)
         {
             _repository = sqlLiteKeyValueRepository ?? throw new ArgumentNullException(nameof(sqlLiteKeyValueRepository));
             _databaseInitializer = databaseInitializer ?? throw new ArgumentNullException(nameof(databaseInitializer));
@@ -30,7 +33,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> Post([FromBody] SqlLiteKeyValue keyValue)
+        public bool Post([FromBody] SqlLiteKeyValue keyValue)
         {
             return _repository.Create(keyValue);
         }

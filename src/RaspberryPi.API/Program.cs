@@ -14,10 +14,11 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
-using RaspberryPi.Infrastructure.Data;
-using RaspberryPi.Infrastructure.Data.Connection;
-using RaspberryPi.Infrastructure.Data.Context;
-using RaspberryPi.Infrastructure.Data.Repositories;
+using RaspberryPi.Infrastructure.Data.Dapper;
+using RaspberryPi.Infrastructure.Data.Dapper.Connection;
+using RaspberryPi.Infrastructure.Data.Dapper.Repositories;
+using RaspberryPi.Infrastructure.Data.EFCore.Context;
+using RaspberryPi.Infrastructure.Data.EFCore.Repositories;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Services;
@@ -58,6 +59,9 @@ builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(con
 
 builder.Services.AddSwaggerGen(c =>
 {
+    var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -112,13 +116,15 @@ builder.Services.AddMediatR(cfg => {
 });
 
 builder.Services.AddHttpClient();
+
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
-builder.Services.AddSingleton<IMusicService, MusicService>();
-builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
+builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
+builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
+builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
 
 builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
@@ -129,7 +135,7 @@ builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
-builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
+builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
 
 var app = builder.Build();
 
@@ -176,7 +182,5 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
-//var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
-//databaseInitializer.Initialize();
 
 app.Run();

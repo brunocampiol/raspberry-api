@@ -22,7 +22,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<WeatherViewModel> GetWeatherFromIpAddress(string ipAddress)
         {
-            var geoPositioning = await _apiIpService.LookUp(ipAddress);
+            var geoPositioning = await _apiIpService.LookUpAsync(ipAddress);
 
             if (string.IsNullOrEmpty(geoPositioning.CountryCode))
             {

@@ -1,8 +1,11 @@
 ﻿using Dapper;
-using RaspberryPi.Infrastructure.Data.Connection;
+using RaspberryPi.Infrastructure.Data.Dapper.Connection;
 
-namespace RaspberryPi.Infrastructure.Data
+namespace RaspberryPi.Infrastructure.Data.Dapper
 {
+    /// <summary>
+    /// Database Initializer for non EF core repository
+    /// </summary>
     public sealed class DatabaseInitializer
     {
         private readonly IDbConnectionFactory _connectionFactory;

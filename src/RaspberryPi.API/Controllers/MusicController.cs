@@ -1,26 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Buzzer music related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class MusicController : ControllerBase
     {
-        private readonly IMusicService _musicService;
+        private readonly IMusicAppService _appService;
 
-        public MusicController(IMusicService musicService)
+        public MusicController(IMusicAppService appService)
         {
-            _musicService = musicService;
+            _appService = appService;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayMusic([FromBody][Required] Music music)
         {
-            _musicService.PlayMusic(music);
+            _appService.PlayMusic(music);
             return NoContent();
         }
 
@@ -28,7 +32,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayImperialMarch()
         {
-            _musicService.PlayImperialMarch();
+            _appService.PlayImperialMarch();
             return NoContent();
         }
 
@@ -36,7 +40,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlaySuperMarioWorld()
         {
-            _musicService.PlaySuperMarioWorld();
+            _appService.PlaySuperMarioWorld();
             return NoContent();
         }
 
@@ -44,7 +48,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayPinkPanther()
         {
-            _musicService.PlayPinkPanther();
+            _appService.PlayPinkPanther();
             return NoContent();
         }
 
@@ -52,7 +56,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayNokiaRingtone()
         {
-            _musicService.PlayNokiaRingtone();
+            _appService.PlayNokiaRingtone();
             return NoContent();
         }
 
@@ -60,7 +64,7 @@ namespace RaspberryPi.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayPiratesOfTheCaribbean()
         {
-            _musicService.PlayPiratesOfTheCaribbean();
+            _appService.PlayPiratesOfTheCaribbean();
             return NoContent();
         }
     }

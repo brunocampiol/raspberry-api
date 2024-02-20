@@ -1,9 +1,9 @@
 ﻿using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
-using RaspberryPi.Infrastructure.Data.Context;
+using RaspberryPi.Infrastructure.Data.EFCore.Context;
 
-namespace RaspberryPi.Infrastructure.Data.Repositories
+namespace RaspberryPi.Infrastructure.Data.EFCore.Repositories
 {
     public class AnonymousCommentRepository : IAnonymousCommentRepository
     {
