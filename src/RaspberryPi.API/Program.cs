@@ -21,7 +21,6 @@ using RaspberryPi.Infrastructure.Data.Repositories;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Services;
-using System.Reflection;
 using System.Text;
 
 const string _corsPolicyName = "AllowAll";
@@ -59,7 +58,6 @@ builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(con
 
 builder.Services.AddSwaggerGen(c =>
 {
-    //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.XML";
     var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
