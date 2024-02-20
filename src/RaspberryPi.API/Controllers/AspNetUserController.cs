@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Models.ViewModels;
 using RaspberryPi.Application.Services;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.API.Controllers
 {

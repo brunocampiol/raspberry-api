@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Data.EFCore.Context;
 
 namespace RaspberryPi.Infrastructure.Data.EFCore.Repositories

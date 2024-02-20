@@ -1,5 +1,5 @@
 ﻿using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Interfaces.Repositories
 {

@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.Domain.Models
+﻿namespace RaspberryPi.Domain.Models.Entity
 {
     public class AnonymousComment : BaseEntity
     {

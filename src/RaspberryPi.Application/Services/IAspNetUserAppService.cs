@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
 using RaspberryPi.Application.Models.ViewModels;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Application.Services
 {

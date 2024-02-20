@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Infrastructure.Data.EFCore.Context
 {
