@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Domain.Interfaces.Repositories;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Data.Dapper;
 
 namespace RaspberryPi.API.Controllers
@@ -13,35 +13,28 @@ namespace RaspberryPi.API.Controllers
     public class DapperRepositoryController : ControllerBase
     {
         private readonly IDapperRepository _repository;
-        private readonly DatabaseInitializer _databaseInitializer;
-        public DapperRepositoryController(IDapperRepository sqlLiteKeyValueRepository, DatabaseInitializer databaseInitializer)
+
+        public DapperRepositoryController(IDapperRepository sqlLiteKeyValueRepository)
         {
             _repository = sqlLiteKeyValueRepository ?? throw new ArgumentNullException(nameof(sqlLiteKeyValueRepository));
-            _databaseInitializer = databaseInitializer ?? throw new ArgumentNullException(nameof(databaseInitializer));
         }
 
         [HttpGet]
-        public SqlLiteKeyValue? Get(int id)
+        public AspNetUser? Get(Guid id)
         {
             return _repository.Get(id);
         }
 
         [HttpGet("list")]
-        public IEnumerable<SqlLiteKeyValue> List()
+        public IEnumerable<AspNetUser> List()
         {
             return _repository.List();
         }
 
         [HttpPost]
-        public bool Post([FromBody] SqlLiteKeyValue keyValue)
+        public bool Post([FromBody] AspNetUser keyValue)
         {
             return _repository.Create(keyValue);
-        }
-
-        [HttpPost("initialize")]
-        public void Initialize()
-        {
-            _databaseInitializer.Initialize();
         }
 
         [HttpPost("truncate")]

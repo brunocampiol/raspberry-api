@@ -1,18 +1,18 @@
-﻿using RaspberryPi.Domain.Models;
+﻿using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Interfaces.Repositories
 {
     public interface IDapperRepository
     {
-        bool Create(SqlLiteKeyValue keyValue);
+        bool Create(AspNetUser user);
 
-        SqlLiteKeyValue? Get(int id);
+        AspNetUser? Get(Guid id);
 
-        IEnumerable<SqlLiteKeyValue> List();
+        IEnumerable<AspNetUser> List();
 
-        bool Update(SqlLiteKeyValue keyValue);
+        bool Update(AspNetUser user);
 
-        bool Delete(int id);
+        bool Delete(Guid id);
 
         int Truncate();
     }

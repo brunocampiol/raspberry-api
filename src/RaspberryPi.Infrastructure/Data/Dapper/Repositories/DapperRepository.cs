@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using RaspberryPi.Domain.Interfaces.Repositories;
-using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
 
 namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
@@ -9,13 +9,14 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
     {
         private readonly IDbConnectionFactory _connectionFactory;
 
-        // TODO: migrate to use same tables from EF Core
+        // TODO: fix this dapper repository
+        // breaks the string to GUID when mapping in the list
         public DapperRepository(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        public bool Create(SqlLiteKeyValue keyValue)
+        public bool Create(AspNetUser keyValue)
         {
             using var connection = _connectionFactory.CreateConnection();
             var result = connection.Execute(
@@ -25,22 +26,25 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
             return result == 1;
         }
 
-        public SqlLiteKeyValue? Get(int id)
+        public AspNetUser? Get(Guid id)
         {
             using var connection = _connectionFactory.CreateConnection();
-            return connection.QuerySingleOrDefault<SqlLiteKeyValue>(
+            return connection.QuerySingleOrDefault<AspNetUser>(
                 "SELECT * FROM SqlLiteKeyValue WHERE Id = @Id LIMIT 1",
                 new { Id = id });
         }
 
-        public IEnumerable<SqlLiteKeyValue> List()
+        public IEnumerable<AspNetUser> List()
         {
             using var connection = _connectionFactory.CreateConnection();
-            return connection.Query<SqlLiteKeyValue>("SELECT * FROM SqlLiteKeyValue");
+            return connection.Query<AspNetUser>("SELECT * FROM AspNetUsers");
         }
 
-        public bool Update(SqlLiteKeyValue keyValue)
+        public bool Update(AspNetUser keyValue)
         {
+            // TODO implement
+            throw new NotImplementedException();
+
             using var connection = _connectionFactory.CreateConnection();
             var result = connection.Execute(
                 @"UPDATE SqlLiteKeyValue SET Value = @Value, 
@@ -50,11 +54,11 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
             return result == 1;
         }
 
-        public bool Delete(int id)
+        public bool Delete(Guid id)
         {
             using var connection = _connectionFactory.CreateConnection();
             var result = connection.Execute(
-                @"DELETE FROM SqlLiteKeyValue WHERE Id = @Id",
+                @"DELETE FROM AspNetUsers WHERE Id = @Id",
                 new { Id = id });
             return result > 0;
         }
@@ -62,7 +66,7 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
         public int Truncate()
         {
             using var connection = _connectionFactory.CreateConnection();
-            return connection.Execute(@"DELETE FROM SqlLiteKeyValue");
+            return connection.Execute(@"DELETE FROM AspNetUsers");
         }
     }
 }

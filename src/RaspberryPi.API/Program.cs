@@ -14,7 +14,6 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
-using RaspberryPi.Infrastructure.Data.Dapper;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
 using RaspberryPi.Infrastructure.Data.Dapper.Repositories;
 using RaspberryPi.Infrastructure.Data.EFCore.Context;
@@ -119,7 +118,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
-builder.Services.AddSingleton<DatabaseInitializer>();
+
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
 builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
