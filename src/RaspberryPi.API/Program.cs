@@ -120,7 +120,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
     new SqliteConnectionFactory(connectionString));
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
-builder.Services.AddSingleton<IMusicService, MusicService>();
+builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
 builder.Services.AddSingleton<ISqlLiteKeyValueRepository, SqlLiteKeyValueRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtAppService, JwtAppService>();

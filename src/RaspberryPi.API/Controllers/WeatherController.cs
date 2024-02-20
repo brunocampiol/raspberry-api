@@ -5,7 +5,7 @@ using System.Net;
 namespace RaspberryPi.API.Controllers
 {
     /// <summary>
-    /// AccuWeather related methods 
+    /// AccuWeather service related methods 
     /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]

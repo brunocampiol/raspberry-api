@@ -1,15 +1,17 @@
-﻿using RaspberryPi.Domain.Constants;
+﻿using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Constants;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
+using RaspberryPi.Domain.Services;
 
-namespace RaspberryPi.Domain.Services
+namespace RaspberryPi.Application.Services
 {
-    public class MusicService : IMusicService, IDisposable
+    public class MusicAppService : IDisposable, IMusicAppService
     {
         private readonly IBuzzerService _buzzerService;
         private bool _disposed;
 
-        public MusicService(IBuzzerService buzzerService)
+        public MusicAppService(IBuzzerService buzzerService)
         {
             _buzzerService = buzzerService;
         }
@@ -318,7 +320,7 @@ namespace RaspberryPi.Domain.Services
             }
         }
 
-        ~MusicService()
+        ~MusicAppService()
         {
             Dispose(false);
         }

@@ -1,8 +1,8 @@
 ﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Domain.Interfaces.Services
+namespace RaspberryPi.Application.Interfaces
 {
-    public interface IMusicService
+    public interface IMusicAppService
     {
         void Dispose();
         void PlayImperialMarch();
