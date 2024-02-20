@@ -20,7 +20,7 @@ namespace RaspberryPi.Infrastructure.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<LookUpResponse> LookUp(string ipAddress)
+        public async Task<LookUpResponse> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             const string endpoint = "api/check";

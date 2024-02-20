@@ -17,7 +17,7 @@ namespace RaspberryPi.Application.Services
         public async Task<LookUpResponse> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-            return await _geoLocationService.LookUp(ipAddress);
+            return await _geoLocationService.LookUpAsync(ipAddress);
         }
 
         public async Task<LookUpResponse> LookUpFromRandomIpAddressAsync()
@@ -26,7 +26,7 @@ namespace RaspberryPi.Application.Services
             byte[] ipAddressBytes = new byte[4];
             random.NextBytes(ipAddressBytes);
             var ipAddress = new IPAddress(ipAddressBytes);
-            return await _geoLocationService.LookUp(ipAddress.ToString());
+            return await _geoLocationService.LookUpAsync(ipAddress.ToString());
         }
     }
 }
