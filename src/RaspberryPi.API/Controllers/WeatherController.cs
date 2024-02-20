@@ -4,6 +4,9 @@ using System.Net;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// AccuWeather related methods 
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class WeatherController : ControllerBase
@@ -15,6 +18,11 @@ namespace RaspberryPi.API.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Returns weather data from given IP address
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> FromIpAddress(string ipAddress)
         {            
@@ -22,6 +30,10 @@ namespace RaspberryPi.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Returns weather data from a random IP address
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> FromContextIpAddress()
         {

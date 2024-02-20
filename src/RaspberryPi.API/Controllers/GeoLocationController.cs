@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// API IP service related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]/[action]")]
     public class GeoLocationController : ControllerBase
@@ -15,6 +18,11 @@ namespace RaspberryPi.API.Controllers
             _appService = appService;
         }
 
+        /// <summary>
+        /// Returns geolocation data based on given IP address
+        /// </summary>
+        /// <param name="ipAddress"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> LookUp([FromQuery][Required] string ipAddress)
         {
@@ -22,6 +30,10 @@ namespace RaspberryPi.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Returns geolocation data for a random IP address
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> LookUpFromRandomIpAddress()
         {

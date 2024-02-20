@@ -2,6 +2,9 @@
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Log related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class LogController : ControllerBase
@@ -13,6 +16,11 @@ namespace RaspberryPi.API.Controllers
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        /// <summary>
+        /// Logs message at information level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpGet("info/{message}")]
         public IActionResult Info(string message)
         {
@@ -21,6 +29,11 @@ namespace RaspberryPi.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Logs message at warning level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpGet("warn/{message}")]
         public IActionResult Warn(string message)
         {
@@ -29,6 +42,11 @@ namespace RaspberryPi.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Logs message at error level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpGet("error/{message}")]
         public IActionResult Error(string message)
         {
