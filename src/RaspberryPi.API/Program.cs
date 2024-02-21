@@ -1,3 +1,4 @@
+using Dapper;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -15,6 +16,7 @@ using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
+using RaspberryPi.Infrastructure.Data.Dapper.Handlers;
 using RaspberryPi.Infrastructure.Data.Dapper.Repositories;
 using RaspberryPi.Infrastructure.Data.EFCore.Context;
 using RaspberryPi.Infrastructure.Data.EFCore.Repositories;
@@ -181,5 +183,10 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
+
+// Adds proper conversion from Text -> Guid conversion in SQL Lite
+SqlMapper.AddTypeHandler(new GuidTypeHandler());
+//SqlMapper.RemoveTypeMap(typeof(Guid));
+//SqlMapper.RemoveTypeMap(typeof(Guid?));
 
 app.Run();
