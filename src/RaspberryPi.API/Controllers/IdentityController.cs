@@ -6,6 +6,9 @@ using RaspberryPi.Application.Services;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// Authentication and identity related methods (Bearer token header)
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class IdentityController : ControllerBase
@@ -17,6 +20,11 @@ namespace RaspberryPi.API.Controllers
             _jwtService = jwtService;
         }
 
+        /// <summary>
+        /// Given a user name and password generates the Bearer token
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody] TokenGenerationRequest model)
         {
@@ -29,18 +37,26 @@ namespace RaspberryPi.API.Controllers
             return Ok(token);
         }
 
+        /// <summary>
+        /// Returns HTTP status 200 OK when user is authenticated
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("authenticated")]
         [Authorize]
         public string Authenticated() => $"Authenticated";
 
+        /// <summary>
+        /// Returns HTTP status 200 OK when user is admin
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [Route("admin")]
+        [Route("isAdmin")]
         [Authorize(Roles = "admin")]
         public string Admin() => "Admin";
 
         [HttpGet]
-        [Route("user")]
+        [Route("isUser")]
         [Authorize(Roles = "user")]
         public string User() => "User";
     }
