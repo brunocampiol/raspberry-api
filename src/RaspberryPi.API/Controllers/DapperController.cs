@@ -10,11 +10,11 @@ namespace RaspberryPi.API.Controllers
     /// </summary>
     [ApiController]
     [Route("[controller]")]
-    public class DapperRepositoryController : ControllerBase
+    public class DapperController : ControllerBase
     {
         private readonly IDapperRepository _repository;
 
-        public DapperRepositoryController(IDapperRepository sqlLiteKeyValueRepository)
+        public DapperController(IDapperRepository sqlLiteKeyValueRepository)
         {
             _repository = sqlLiteKeyValueRepository ?? throw new ArgumentNullException(nameof(sqlLiteKeyValueRepository));
         }
@@ -37,10 +37,16 @@ namespace RaspberryPi.API.Controllers
             return _repository.Create(keyValue);
         }
 
-        [HttpPost("truncate")]
-        public void Truncate()
+        [HttpDelete("Delete")]
+        public bool Delete(Guid id)
         {
-            _repository.Truncate();
+            return _repository.Delete(id);
+        }
+
+        [HttpDelete("DeleteAll")]
+        public int DeleteAll()
+        {
+            return _repository.DeleteAll();
         }
     }
 }

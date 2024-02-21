@@ -14,6 +14,6 @@ namespace RaspberryPi.Domain.Interfaces.Repositories
 
         bool Delete(Guid id);
 
-        int Truncate();
+        int DeleteAll();
     }
 }

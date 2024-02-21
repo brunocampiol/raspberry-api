@@ -9,8 +9,6 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
     {
         private readonly IDbConnectionFactory _connectionFactory;
 
-        // TODO: fix this dapper repository
-        // breaks the string to GUID when mapping in the list
         public DapperRepository(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
@@ -18,6 +16,8 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
 
         public bool Create(AspNetUser keyValue)
         {
+            // TODO implement
+            throw new NotImplementedException();
             using var connection = _connectionFactory.CreateConnection();
             var result = connection.Execute(
                 @"INSERT INTO SqlLiteKeyValue (Id, Value, DateModified) 
@@ -30,7 +30,7 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
         {
             using var connection = _connectionFactory.CreateConnection();
             return connection.QuerySingleOrDefault<AspNetUser>(
-                "SELECT * FROM SqlLiteKeyValue WHERE Id = @Id LIMIT 1",
+                "SELECT * FROM AspNetUsers WHERE Id = @Id LIMIT 1",
                 new { Id = id });
         }
 
@@ -63,7 +63,7 @@ namespace RaspberryPi.Infrastructure.Data.Dapper.Repositories
             return result > 0;
         }
 
-        public int Truncate()
+        public int DeleteAll()
         {
             using var connection = _connectionFactory.CreateConnection();
             return connection.Execute(@"DELETE FROM AspNetUsers");
