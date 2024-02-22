@@ -15,8 +15,4 @@
     <ProjectReference Include="..\RaspberryPi.Infrastructure\RaspberryPi.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Options\" />
-  </ItemGroup>
-
 </Project>

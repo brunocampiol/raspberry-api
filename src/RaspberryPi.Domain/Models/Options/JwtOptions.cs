@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.Domain.Interfaces.Options
+﻿namespace RaspberryPi.Domain.Models.Options
 {
     public sealed class JwtOptions
     {

@@ -8,12 +8,13 @@ using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Mapping;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Interfaces.Options;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
+using RaspberryPi.Domain.Models.Options;
 using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
 using RaspberryPi.Infrastructure.Data.Dapper.Handlers;
@@ -34,6 +35,7 @@ var connectionString = config.GetConnectionString("SqlLite");
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
+builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);

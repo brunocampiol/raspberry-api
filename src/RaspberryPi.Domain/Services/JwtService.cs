@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using RaspberryPi.Domain.Interfaces.Options;
 using RaspberryPi.Domain.Interfaces.Services;
+using RaspberryPi.Domain.Models.Options;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
