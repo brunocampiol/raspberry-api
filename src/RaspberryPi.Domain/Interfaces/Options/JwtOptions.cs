@@ -1,6 +1,6 @@
-﻿namespace RaspberryPi.Application.Models.Options
+﻿namespace RaspberryPi.Domain.Interfaces.Options
 {
-    public sealed class JwtAppOptions
+    public sealed class JwtOptions
     {
         public const string SectionName = "Jwt";
         public string Issuer { get; init; } = default!;

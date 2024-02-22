@@ -8,10 +8,10 @@ using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Mapping;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Commands;
 using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Interfaces.Options;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Services;
@@ -31,7 +31,7 @@ var jsonOptions = AppJsonSerializerOptions.Default;
 var config = builder.Configuration;
 var connectionString = config.GetConnectionString("SqlLite");
 
-builder.Services.Configure<JwtAppOptions>(config.GetSection(JwtAppOptions.SectionName));
+builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 
@@ -125,7 +125,7 @@ builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
 builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
-builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 
 builder.Services.AddScoped<RaspberryContext>();

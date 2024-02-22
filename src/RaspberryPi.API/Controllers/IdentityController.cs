@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.Requests;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Application.Services;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -30,7 +29,7 @@ namespace RaspberryPi.API.Controllers
         {
             var result = _appService.Authenticate(model.UserName, model.Password);
 
-            if (!result.IsSuccess) return BadRequest(result.Errors);
+            if (!result.IsSuccess) return BadRequest(result);
 
             return Ok(result.Value);
         }
