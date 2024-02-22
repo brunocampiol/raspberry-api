@@ -4,6 +4,7 @@
     {
         public T? Value { get; }
         public bool IsSuccess { get; }
+        public bool IsFailure { get { return !IsSuccess; } }
         public ICollection<string> Errors { get; } = new List<string>();
 
         /// <summary>
