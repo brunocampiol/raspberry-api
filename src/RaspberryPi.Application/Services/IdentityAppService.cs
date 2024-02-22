@@ -20,7 +20,7 @@ namespace RaspberryPi.Application.Services
 
         public Result<string> Authenticate(string username, string password)
         {
-            var user = GetUser(username, password);
+            var user = GetUserFromName(username, password);
 
             if (user == null)
             {
@@ -32,7 +32,14 @@ namespace RaspberryPi.Application.Services
             return Result<string>.Success(token);
         }
 
-        private AspNetUser? GetUser(string email, string password)
+        private AspNetUser? GetUserFromName(string username, string password)
+        {
+            return _settings.AspNetUsers?
+                    .FirstOrDefault(x => x.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) &&
+                                    x.Password.Equals(password, StringComparison.Ordinal));
+        }
+
+        private AspNetUser? GetUserFromEmail(string email, string password)
         {
             return _settings.AspNetUsers?
                     .FirstOrDefault(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase) &&
