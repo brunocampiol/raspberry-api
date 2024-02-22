@@ -44,13 +44,13 @@ namespace RaspberryPi.API.Controllers
         public string Authenticated() => $"Authenticated";
 
         /// <summary>
-        /// Returns HTTP status 200 OK when user is admin
+        /// Returns HTTP status 200 OK when user is root
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("isAdmin")]
-        [Authorize(Roles = "admin")]
-        public string Admin() => "Admin";
+        [Route("isRoot")]
+        [Authorize(Roles = "root")]
+        public string Root() => "Root";
 
         [HttpGet]
         [Route("isUser")]
