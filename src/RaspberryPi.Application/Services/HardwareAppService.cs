@@ -1,7 +1,6 @@
 ﻿using Fetchgoods.Text.Json.Extensions;
 using RaspberryPi.Application.Interfaces;
 using System.Device.Gpio;
-using System.Device.Pwm;
 
 namespace RaspberryPi.Application.Services
 {

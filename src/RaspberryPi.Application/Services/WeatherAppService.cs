@@ -5,7 +5,7 @@ using RaspberryPi.Infrastructure.Interfaces;
 
 namespace RaspberryPi.Application.Services
 {
-    public class WeatherAppService : IWeatherAppService
+    public sealed class WeatherAppService : IWeatherAppService
     {
         private readonly IWeatherService _accuWeatherService;
         private readonly IGeoLocationService _apiIpService;

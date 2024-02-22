@@ -1,10 +1,33 @@
-﻿using RaspberryPi.Domain.Models.Entity;
+﻿using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Application.Services
 {
-    public static class IdentityAppService
+    public sealed class IdentityAppService : IIdentityAppService
     {
-        public static AspNetUser? Get(string email, string password)
+        private readonly IJwtAppService _jwtAppService;
+
+        public IdentityAppService(IJwtAppService jwtAppService)
+        {
+            _jwtAppService = jwtAppService;
+        }
+
+        public OperationResult<string> Authenticate(string username, string password)
+        {
+            var user = GetUser(username, password);
+
+            if (user == null)
+            {
+                return OperationResult<string>.Failure("Invalid user name or password");
+            }
+
+            var token = _jwtAppService.GenerateToken(user.Email, user.Role);
+
+            return OperationResult<string>.Success(token);
+        }
+
+        private AspNetUser? GetUser(string email, string password)
         {
             var users = new List<AspNetUser>()
             {

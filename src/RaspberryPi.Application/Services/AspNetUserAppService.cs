@@ -7,7 +7,7 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Application.Services
 {
-    public class AspNetUserAppService : IAspNetUserAppService
+    public sealed class AspNetUserAppService : IAspNetUserAppService
     {
         private readonly IMediatorHandler _mediator;
         private readonly IAspNetUserRepository _repository;

@@ -8,7 +8,8 @@ using System.Text;
 
 namespace RaspberryPi.Application.Services
 {
-    public class JwtAppService : IJwtAppService
+    // TODO move to domain?
+    public sealed class JwtAppService : IJwtAppService
     {
         private readonly JwtAppOptions _options;
 

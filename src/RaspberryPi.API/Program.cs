@@ -126,6 +126,7 @@ builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
 builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtAppService, JwtAppService>();
+builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 
 builder.Services.AddScoped<RaspberryContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();

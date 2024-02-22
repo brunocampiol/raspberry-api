@@ -13,11 +13,11 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]")]
     public class IdentityController : ControllerBase
     {
-        private readonly IJwtAppService _jwtService;
+        private readonly IIdentityAppService _appService;
 
-        public IdentityController(IJwtAppService jwtService)
+        public IdentityController(IIdentityAppService appService)
         {
-            _jwtService = jwtService;
+            _appService = appService;
         }
 
         /// <summary>
@@ -28,13 +28,11 @@ namespace RaspberryPi.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Post([FromBody] TokenGenerationRequest model)
         {
-            var user = IdentityAppService.Get(model.UserName, model.Password);
+            var result = _appService.Authenticate(model.UserName, model.Password);
 
-            if (user is null) return BadRequest("Invalid user or password");
-            
-            var token = _jwtService.GenerateToken(user.Email, user.Role);
+            if (!result.IsSuccess) return BadRequest(result.Errors);
 
-            return Ok(token);
+            return Ok(result.Value);
         }
 
         /// <summary>
