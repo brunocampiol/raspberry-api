@@ -2,14 +2,9 @@
 
 namespace RaspberryPi.Application.Interfaces
 {
-    public interface IMusicAppService
+    public interface IMusicAppService : IDisposable
     {
-        void Dispose();
-        void PlayImperialMarch();
         void PlayMusic(Music music);
-        void PlayNokiaRingtone();
-        void PlayPinkPanther();
-        void PlayPiratesOfTheCaribbean();
-        void PlaySuperMarioWorld();
+        void PlayNokiaRingTone();
     }
 }

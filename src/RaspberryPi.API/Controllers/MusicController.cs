@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,6 +19,11 @@ namespace RaspberryPi.API.Controllers
             _appService = appService;
         }
 
+        /// <summary>
+        /// Plays a music based on the melody and duration
+        /// </summary>
+        /// <param name="music"></param>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayMusic([FromBody][Required] Music music)
@@ -28,43 +32,15 @@ namespace RaspberryPi.API.Controllers
             return NoContent();
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayImperialMarch()
-        {
-            _appService.PlayImperialMarch();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlaySuperMarioWorld()
-        {
-            _appService.PlaySuperMarioWorld();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayPinkPanther()
-        {
-            _appService.PlayPinkPanther();
-            return NoContent();
-        }
-
+        /// <summary>
+        /// Plays Nokia ring tone (1994)
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult PlayNokiaRingtone()
         {
-            _appService.PlayNokiaRingtone();
-            return NoContent();
-        }
-
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult PlayPiratesOfTheCaribbean()
-        {
-            _appService.PlayPiratesOfTheCaribbean();
+            _appService.PlayNokiaRingTone();
             return NoContent();
         }
     }
