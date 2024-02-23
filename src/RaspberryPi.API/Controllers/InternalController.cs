@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.Domain.Core;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -13,10 +15,12 @@ namespace RaspberryPi.API.Controllers
     public class InternalController : ControllerBase
     {
         private readonly IWebHostEnvironment _hostEnv;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public InternalController(IWebHostEnvironment hostEnv)
+        public InternalController(IWebHostEnvironment hostEnv, IHttpClientFactory httpClientFactory)
         {
             _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
+            _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         [HttpGet]
@@ -74,6 +78,27 @@ namespace RaspberryPi.API.Controllers
                                          .OrderBy(x => x.Key);
 
             return Ok(cookies);
+        }
+
+        [HttpGet]
+        public async Task<Result<string>> WwwGetAsString([FromHeader][Required] string url,
+                                                         [FromHeader][Required] int timeoutInSeconds = 15)
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            var uri = new Uri(url);
+
+            var httpResponse = await httpClient.GetAsync(uri);
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = $"Response '{httpResponse.StatusCode}' " +
+                                   $"is not in 2XX range: '{httpContent}'";
+
+                return Result<string>.Failure(errorMessage);
+            }
+
+            return Result<string>.Success(httpContent);
         }
     }
 }
