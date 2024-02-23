@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models.Options;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -17,18 +18,25 @@ namespace RaspberryPi.Domain.Services
             _options = options.Value;
         }
 
-        public string GenerateTokenForEmail(string email, string role)
+        public string GenerateTokenForEmail(string email, IEnumerable<string> roles)
+        {
+            return GenerateToken(null, email, roles);
+        }
+
+        public string GenerateTokenForUserName(string userName, IEnumerable<string> roles)
+        {
+            return GenerateToken(userName, null, roles);
+        }
+
+        private string GenerateToken(string userName, string email, IEnumerable<string> roles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_options.Key);
+            var claims = GetClaims(userName, email, roles);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Email, email),
-                    //new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(ClaimTypes.Role, role)
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
                 Issuer = _options.Issuer,
                 Audience = _options.Audience,
@@ -38,24 +46,27 @@ namespace RaspberryPi.Domain.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public string GenerateTokenForUserName(string userName, string role)
+        private IEnumerable<Claim> GetClaims(string userName, string email, IEnumerable<string> roles)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_options.Key);
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new List<Claim>();
+
+            if (!string.IsNullOrWhiteSpace(userName))
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, userName),
-                    new Claim(ClaimTypes.Role, role)
-                }),
-                Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
-                Issuer = _options.Issuer,
-                Audience = _options.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+                claims.Add(new Claim(ClaimTypes.Name, userName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                claims.Add(new Claim(ClaimTypes.Email, email));
+            }
+     
+            // Adds roles
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            return claims;
         }
     }
 }

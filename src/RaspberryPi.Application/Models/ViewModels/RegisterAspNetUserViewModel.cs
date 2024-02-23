@@ -2,7 +2,8 @@
 {
     public class RegisterAspNetUserViewModel
     {
-        public string Email { get; init; } = default!;
-        public string Password { get; init; } = default!;
+        public required string UserName { get; init; }
+        public required string Email { get; init; }
+        public required string Password { get; init; }
     }
 }

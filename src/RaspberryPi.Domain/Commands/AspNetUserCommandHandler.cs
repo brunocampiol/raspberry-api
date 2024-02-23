@@ -25,9 +25,10 @@ namespace RaspberryPi.Domain.Commands
             // Insere o cliente
             var user = new AspNetUser
             {
+                UserName = request.UserName,
                 Email = request.Email,
                 Password = request.Password,
-                Role = "user",
+                Roles = "user",
                 DateCreateUTC = DateTime.UtcNow,
             };
             _repository.Add(user);

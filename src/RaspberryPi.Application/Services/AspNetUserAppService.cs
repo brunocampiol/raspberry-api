@@ -32,6 +32,7 @@ namespace RaspberryPi.Application.Services
         {
             var command = new CreateAspNetUserCommand
             {
+                UserName = viewModel.UserName,
                 Email = viewModel.Email,
                 Password = viewModel.Password,
             };

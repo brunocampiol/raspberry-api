@@ -2,7 +2,7 @@
 {
     public interface IJwtService
     {
-        string GenerateTokenForUserName(string userName, string role);
-        string GenerateTokenForEmail(string email, string role);
+        string GenerateTokenForUserName(string userName, IEnumerable<string> roles);
+        string GenerateTokenForEmail(string email, IEnumerable<string> roles);
     }
 }

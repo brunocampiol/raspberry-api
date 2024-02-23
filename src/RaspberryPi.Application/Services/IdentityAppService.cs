@@ -27,7 +27,8 @@ namespace RaspberryPi.Application.Services
                 return Result<string>.Failure("Invalid user name or password");
             }
 
-            var token = _jwtService.GenerateTokenForUserName(user.UserName, user.Role);
+            var roles = user.Roles.Split(',');
+            var token = _jwtService.GenerateTokenForUserName(user.UserName, roles);
 
             return Result<string>.Success(token);
         }
