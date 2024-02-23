@@ -25,7 +25,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("login")]
-        public async Task<IActionResult> Post([FromBody] TokenGenerationRequest model)
+        public IActionResult Post([FromBody] TokenGenerationRequest model)
         {
             var result = _appService.Authenticate(model.UserName, model.Password);
 
@@ -50,7 +50,7 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         [Route("isRoot")]
         [Authorize(Roles = "root")]
-        public string Root() => "Root";
+        public string IsRoot() => "Root";
 
         /// <summary>
         /// Returns HTTP status 200 OK when user has user role
@@ -59,6 +59,6 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         [Route("isUser")]
         [Authorize(Roles = "user")]
-        public string User() => "User";
+        public string IsUser() => "User";
     }
 }
