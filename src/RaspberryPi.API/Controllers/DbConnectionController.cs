@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Fetchgoods.Text.Json.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
@@ -18,6 +19,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost("execute")]
+        [Authorize(Roles = "root")]
         public int Execute([FromHeader] string sql)
         {
             using var connection = _connectionFactory.CreateConnection();
@@ -25,6 +27,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpPost("executeReader")]
+        [Authorize(Roles = "root")]
         public string? ExecuteReader([FromHeader] string sql)
         {
             using var connection = _connectionFactory.CreateConnection();
