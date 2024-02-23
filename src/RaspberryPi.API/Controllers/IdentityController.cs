@@ -44,7 +44,7 @@ namespace RaspberryPi.API.Controllers
         public string Authenticated() => $"Authenticated";
 
         /// <summary>
-        /// Returns HTTP status 200 OK when user is root
+        /// Returns HTTP status 200 OK when user has root role
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -52,6 +52,10 @@ namespace RaspberryPi.API.Controllers
         [Authorize(Roles = "root")]
         public string Root() => "Root";
 
+        /// <summary>
+        /// Returns HTTP status 200 OK when user has user role
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("isUser")]
         [Authorize(Roles = "user")]
