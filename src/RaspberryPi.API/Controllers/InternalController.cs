@@ -85,8 +85,9 @@ namespace RaspberryPi.API.Controllers
                                                          [FromHeader][Required] int timeoutInSeconds = 15)
         {
             var httpClient = _httpClientFactory.CreateClient();
-            var uri = new Uri(url);
+            httpClient.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
 
+            var uri = new Uri(url);
             var httpResponse = await httpClient.GetAsync(uri);
             var httpContent = await httpResponse.Content.ReadAsStringAsync();
 
