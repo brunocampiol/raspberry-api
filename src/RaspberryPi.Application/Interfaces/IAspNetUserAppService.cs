@@ -2,7 +2,7 @@
 using RaspberryPi.Application.Models.ViewModels;
 using RaspberryPi.Domain.Models.Entity;
 
-namespace RaspberryPi.Application.Services
+namespace RaspberryPi.Application.Interfaces
 {
     public interface IAspNetUserAppService
     {

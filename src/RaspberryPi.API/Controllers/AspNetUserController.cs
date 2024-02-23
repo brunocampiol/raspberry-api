@@ -1,7 +1,7 @@
 ﻿using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.ViewModels;
-using RaspberryPi.Application.Services;
 using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.API.Controllers
