@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Infrastructure.Data.Dapper.Connection;
+using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers
 {
+    /// <summary>
+    /// DbConnection related methods
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class DbConnectionController : ControllerBase
@@ -18,14 +22,24 @@ namespace RaspberryPi.API.Controllers
             _connectionFactory = dbConnectionFactory;
         }
 
+        /// <summary>
+        /// Executes a sql query
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         [HttpPost("execute")]
         [Authorize(Roles = "root")]
-        public int Execute([FromHeader] string sql)
+        public int Execute([FromHeader][Required] string sql)
         {
             using var connection = _connectionFactory.CreateConnection();
             return connection.Execute(sql);
         }
 
+        /// <summary>
+        /// Executes a sql query and returns data
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
         [HttpPost("executeReader")]
         [Authorize(Roles = "root")]
         public string? ExecuteReader([FromHeader] string sql)
