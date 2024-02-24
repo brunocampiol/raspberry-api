@@ -187,7 +187,7 @@ app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
 
-// Adds proper conversion from Text -> Guid conversion in SQL Lite
+// Adds Dapper proper conversion from Text -> Guid conversion in SQL Lite
 SqlMapper.AddTypeHandler(new GuidTypeHandler());
 //SqlMapper.RemoveTypeMap(typeof(Guid));
 //SqlMapper.RemoveTypeMap(typeof(Guid?));
