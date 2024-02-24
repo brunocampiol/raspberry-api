@@ -82,7 +82,6 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        [Route("isRoot")]
         [Authorize(Roles = "root")]
         public async Task<Result<string>> WwwGetAsString([FromHeader][Required] string url,
                                                          [FromHeader][Required] int timeoutInSeconds = 15)
