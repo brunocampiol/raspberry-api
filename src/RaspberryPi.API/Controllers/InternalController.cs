@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Domain.Core;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
@@ -81,6 +82,8 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
+        [Route("isRoot")]
+        [Authorize(Roles = "root")]
         public async Task<Result<string>> WwwGetAsString([FromHeader][Required] string url,
                                                          [FromHeader][Required] int timeoutInSeconds = 15)
         {
