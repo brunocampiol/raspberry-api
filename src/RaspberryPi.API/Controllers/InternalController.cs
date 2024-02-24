@@ -82,6 +82,27 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
+        public async Task<Result<string>> WwwGetGoogle()
+        {
+            var httpClient = _httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+            var uri = new Uri("http://www.google.com");
+            var httpResponse = await httpClient.GetAsync(uri);
+            var httpContent = await httpResponse.Content.ReadAsStringAsync();
+
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                var errorMessage = $"Response '{httpResponse.StatusCode}' " +
+                                   $"is not in 2XX range: '{httpContent}'";
+
+                return Result<string>.Failure(errorMessage);
+            }
+
+            return Result<string>.Success(httpContent);
+        }
+
+        [HttpGet]
         [Authorize(Roles = "root")]
         public async Task<Result<string>> WwwGetAsString([FromHeader][Required] string url,
                                                          [FromHeader][Required] int timeoutInSeconds = 15)
