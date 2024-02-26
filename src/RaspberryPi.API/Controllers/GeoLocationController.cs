@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Infrastructure.Models.GeoLocation;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -24,10 +26,27 @@ namespace RaspberryPi.API.Controllers
         /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> LookUp([FromQuery][Required] string ipAddress)
+        public async Task<LookUpResponse> LookUp([FromQuery][Required] string ipAddress)
         {
-            var result = await _appService.LookUpAsync(ipAddress);
-            return Ok(result);
+            return await _appService.LookUpAsync(ipAddress);
+        }
+
+        /// <summary>
+        /// Returns geolocation data based on user IP address
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<LookUpResponse> LookUpFromContextIpAddress()
+        {
+            var clientIp = HttpContext.Connection.RemoteIpAddress.ToString();
+            string forwardedHeader = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrEmpty(forwardedHeader))
+            {
+                clientIp = forwardedHeader.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                          .Select(ip => ip.Trim())
+                                          .FirstOrDefault(ip => !IPAddress.IsLoopback(IPAddress.Parse(ip)));
+            }
+            return await _appService.LookUpAsync(clientIp);
         }
 
         /// <summary>
@@ -35,10 +54,9 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> LookUpFromRandomIpAddress()
+        public async Task<LookUpResponse> LookUpFromRandomIpAddress()
         {
-            var result = await _appService.LookUpFromRandomIpAddressAsync();
-            return Ok(result);
+            return await _appService.LookUpFromRandomIpAddressAsync();
         }
     }
 }

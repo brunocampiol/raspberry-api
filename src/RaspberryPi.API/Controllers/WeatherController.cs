@@ -31,7 +31,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         /// <summary>
-        /// Returns weather data from a random IP address
+        /// Returns weather data from user IP address
         /// </summary>
         /// <returns></returns>
         [HttpGet]
