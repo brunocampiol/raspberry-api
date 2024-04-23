@@ -25,6 +25,7 @@ namespace RaspberryPi.Application.Services
             var random = new Random();
             byte[] ipAddressBytes = new byte[4];
             random.NextBytes(ipAddressBytes);
+            ipAddressBytes[0] = (byte)random.Next(1, 256); // Valid range for first octet is 1-255
             var ipAddress = new IPAddress(ipAddressBytes);
             return await _geoLocationService.LookUpAsync(ipAddress.ToString());
         }
