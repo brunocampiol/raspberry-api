@@ -8,37 +8,19 @@ using RaspberryPi.Infrastructure.Data.EFCore.Context;
 
 #nullable disable
 
-namespace RaspberryPi.Infrastructure.Data.Migrations
+namespace RaspberryPi.Infrastructure.Data.EFCore.Migrations
 {
-    [DbContext(typeof(RaspberryContext))]
-    [Migration("20230925220415_InitialMigration")]
+    [DbContext(typeof(RaspberryDbContext))]
+    [Migration("20240501034327_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.11");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.AnonymousComment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateCreatedUTC")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AnonymousComments");
-                });
-
-            modelBuilder.Entity("RaspberryPi.Domain.Models.AspNetUser", b =>
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.AspNetUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +37,11 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("Roles")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -64,7 +50,7 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Comment", b =>
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -90,9 +76,27 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Comment", b =>
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Fact", b =>
                 {
-                    b.HasOne("RaspberryPi.Domain.Models.AspNetUser", "AspNetUser")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Facts");
+                });
+
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Comment", b =>
+                {
+                    b.HasOne("RaspberryPi.Domain.Models.Entity.AspNetUser", "AspNetUser")
                         .WithMany("Posts")
                         .HasForeignKey("AspNetUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -101,7 +105,7 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.Navigation("AspNetUser");
                 });
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.AspNetUser", b =>
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.AspNetUser", b =>
                 {
                     b.Navigation("Posts");
                 });

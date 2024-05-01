@@ -58,7 +58,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddDbContext<RaspberryContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContext<RaspberryDbContext>(options => options.UseSqlite(connectionString));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -130,11 +130,10 @@ builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 
-builder.Services.AddScoped<RaspberryContext>();
+builder.Services.AddScoped<RaspberryDbContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
-builder.Services.AddScoped<IAnonymousCommentRepository, AnonymousCommentRepository>();
 builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
@@ -147,7 +146,7 @@ if (app.Environment.IsDevelopment())
 {
     using (var scope = app.Services.CreateScope())
     {
-        var db = scope.ServiceProvider.GetRequiredService<RaspberryContext>();
+        var db = scope.ServiceProvider.GetRequiredService<RaspberryDbContext>();
         db.Database.EnsureCreated();
     }
 }

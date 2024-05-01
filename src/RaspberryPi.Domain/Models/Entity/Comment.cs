@@ -1,6 +1,8 @@
-﻿namespace RaspberryPi.Domain.Models.Entity
+﻿using RaspberryPi.Domain.Core;
+
+namespace RaspberryPi.Domain.Models.Entity
 {
-    public class Comment : BaseEntity
+    public class Comment : Core.EntityBase
     {
         public Guid PageId { get; init; } = Guid.NewGuid();
         public string Text { get; init; }

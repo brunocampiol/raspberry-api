@@ -11,9 +11,9 @@ namespace RaspberryPi.API.Controllers
     [Route("[controller]")]
     public class DbContextController : ControllerBase
     {
-        private readonly RaspberryContext _context;
+        private readonly RaspberryDbContext _context;
 
-        public DbContextController(RaspberryContext context)
+        public DbContextController(RaspberryDbContext context)
         {
             _context = context;
         }

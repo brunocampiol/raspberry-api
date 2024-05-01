@@ -4,12 +4,12 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Infrastructure.Data.EFCore.Context
 {
-    public class RaspberryContext : DbContext, IUnitOfWork
+    public class RaspberryDbContext : DbContext, IUnitOfWork
     {
+        public DbSet<Fact> Facts { get; set; }
         public DbSet<AspNetUser> AspNetUsers { get; set; }
-        public DbSet<AnonymousComment> AnonymousComments { get; set; }
 
-        public RaspberryContext(DbContextOptions<RaspberryContext> options)
+        public RaspberryDbContext(DbContextOptions<RaspberryDbContext> options)
             : base(options)
         {
         }

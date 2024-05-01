@@ -31,9 +31,9 @@ namespace RaspberryPi.Domain.Commands
                 Roles = "user",
                 DateCreateUTC = DateTime.UtcNow,
             };
-            _repository.Add(user);
+            //await _repository.AddAsync(user);
             //_repository.UnitOfWork.Commit();
-            Commit(_repository.UnitOfWork);
+            //Commit(_repository.UnitOfWork);
 
             // Envia email de boas vindas
             var result = new ValidationResult();
