@@ -15,7 +15,14 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaveFactAndComputeHashAsync()
+        public async Task<IActionResult> GetAllDatabaseFacts()
+        {
+            var result = await _service.GetAllDatabaseFactsAsync();
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SaveFactAndComputeHash()
         {
             var result = await _service.SaveFactAndComputeHashAsync();
             return Ok(result);
