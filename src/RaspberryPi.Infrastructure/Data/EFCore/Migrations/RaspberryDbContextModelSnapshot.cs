@@ -7,10 +7,10 @@ using RaspberryPi.Infrastructure.Data.EFCore.Context;
 
 #nullable disable
 
-namespace RaspberryPi.Infrastructure.Data.Migrations
+namespace RaspberryPi.Infrastructure.Data.EFCore.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    partial class RaspberryContextModelSnapshot : ModelSnapshot
+    partial class RaspberryDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

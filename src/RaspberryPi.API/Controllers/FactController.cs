@@ -15,9 +15,9 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRandomFact()
+        public async Task<IActionResult> SaveFactAndComputeHashAsync()
         {
-            var result = await _service.GetRandomFactAsync();
+            var result = await _service.SaveFactAndComputeHashAsync();
             return Ok(result);
         }
     }

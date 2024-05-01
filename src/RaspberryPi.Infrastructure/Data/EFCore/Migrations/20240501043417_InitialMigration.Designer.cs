@@ -11,7 +11,7 @@ using RaspberryPi.Infrastructure.Data.EFCore.Context;
 namespace RaspberryPi.Infrastructure.Data.EFCore.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    [Migration("20240501035213_InitialMigration")]
+    [Migration("20240501043417_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

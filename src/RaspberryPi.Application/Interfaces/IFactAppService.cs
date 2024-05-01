@@ -5,5 +5,6 @@ namespace RaspberryPi.Application.Interfaces
     public interface IFactAppService
     {
         Task<FactResponse> GetRandomFactAsync();
+        Task<FactResponse> SaveFactAndComputeHashAsync();
     }
 }
