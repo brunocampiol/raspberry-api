@@ -6,9 +6,9 @@
 # Settings and local db
 appsettings.Development.json
 appsettings.Production.json
-database.sqlite
-database.sqlite-shm
-database.sqlite-wal
+raspberryDb.sqlite
+raspberryDb.sqlite-shm
+raspberryDb.sqlite-wal
 
 # User-specific files
 *.rsuser
