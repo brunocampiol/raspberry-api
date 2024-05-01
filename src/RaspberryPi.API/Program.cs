@@ -34,6 +34,7 @@ var connectionString = config.GetConnectionString("SqlLite");
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
+builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
 
@@ -134,11 +135,15 @@ builder.Services.AddScoped<RaspberryDbContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
+builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IGeoLocationService, GeoLocationService>();
+builder.Services.AddScoped<IFactService, FactService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
+builder.Services.AddScoped<IFactAppService, FactAppService>();
+
 
 var app = builder.Build();
 
