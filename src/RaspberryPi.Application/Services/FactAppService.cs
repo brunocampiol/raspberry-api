@@ -48,5 +48,10 @@ namespace RaspberryPi.Application.Services
 
             return factResponse;
         }
+
+        public async Task<long> CountAllDatabaseFacts()
+        {
+            return await _repository.CountAllDatabaseFacts();
+        }
     }
 }

@@ -12,6 +12,11 @@ namespace RaspberryPi.Infrastructure.Data.EFCore.Repositories
         {
         }
 
+        public async Task<long> CountAllDatabaseFacts()
+        {
+            return await _dbSet.AsNoTracking().LongCountAsync();
+        }
+
         public async Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync()
         {
             return await _dbSet.AsNoTracking().ToListAsync();

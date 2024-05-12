@@ -7,5 +7,6 @@ namespace RaspberryPi.Domain.Interfaces.Repositories
     {
         Task<bool> HashExistsAsync(string hashValue);
         Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync();
+        Task<long> CountAllDatabaseFacts();
     }
 }

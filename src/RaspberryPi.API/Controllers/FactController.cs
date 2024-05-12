@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Models.Entity;
+using RaspberryPi.Infrastructure.Models.Facts;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -15,17 +17,24 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllDatabaseFacts()
+        public async Task<IEnumerable<Fact>> GetAllDatabaseFacts()
         {
             var result = await _service.GetAllDatabaseFactsAsync();
-            return Ok(result);
+            return result;
         }
 
         [HttpGet]
-        public async Task<IActionResult> SaveFactAndComputeHash()
+        public async Task<long> CountAllDatabaseFacts()
+        {
+            var result = await _service.CountAllDatabaseFacts();
+            return result;
+        }
+
+        [HttpGet]
+        public async Task<FactResponse> SaveFactAndComputeHash()
         {
             var result = await _service.SaveFactAndComputeHashAsync();
-            return Ok(result);
+            return result;
         }
     }
 }
