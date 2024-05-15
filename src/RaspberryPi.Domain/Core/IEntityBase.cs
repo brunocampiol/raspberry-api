@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Domain.Core
 {
-    public interface IAggregateRoot
+    public interface IEntityBase
     {
         Guid Id { get; init; }
     }

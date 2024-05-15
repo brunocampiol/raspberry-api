@@ -1,6 +1,8 @@
-﻿namespace RaspberryPi.Domain.Models.Entity
+﻿using RaspberryPi.Domain.Core;
+
+namespace RaspberryPi.Domain.Models.Entity
 {
-    public class AspNetUser : BaseEntity
+    public class AspNetUser : Core.EntityBase
     {
         public required string UserName { get; init; }
         public required string Email { get; init; }
