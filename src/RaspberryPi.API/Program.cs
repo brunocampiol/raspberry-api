@@ -1,4 +1,3 @@
-using Dapper;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -16,9 +15,6 @@ using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models.Options;
 using RaspberryPi.Domain.Services;
-using RaspberryPi.Infrastructure.Data.Dapper.Connection;
-using RaspberryPi.Infrastructure.Data.Dapper.Handlers;
-using RaspberryPi.Infrastructure.Data.Dapper.Repositories;
 using RaspberryPi.Infrastructure.Data.EFCore.Context;
 using RaspberryPi.Infrastructure.Data.EFCore.Repositories;
 using RaspberryPi.Infrastructure.Interfaces;
@@ -121,12 +117,8 @@ builder.Services.AddMediatR(cfg => {
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
-    new SqliteConnectionFactory(connectionString));
-
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
-builder.Services.AddSingleton<IDapperRepository, DapperRepository>();
 builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
@@ -190,10 +182,5 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
-
-// Adds Dapper proper conversion from Text -> Guid conversion in SQL Lite
-SqlMapper.AddTypeHandler(new GuidTypeHandler());
-//SqlMapper.RemoveTypeMap(typeof(Guid));
-//SqlMapper.RemoveTypeMap(typeof(Guid?));
 
 app.Run();
