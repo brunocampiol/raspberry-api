@@ -2,6 +2,10 @@
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.Facts;
+using System.Text.Json;
+using System.Text;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -35,6 +39,47 @@ namespace RaspberryPi.API.Controllers
         {
             var result = await _service.SaveFactAndComputeHashAsync();
             return result;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportFactsBackup()
+        {
+            var result = await _service.GetAllDatabaseFactsAsync();
+
+            // Serialize the data to JSON
+            // TODO: use json serialization extension instead
+            var json = JsonSerializer.Serialize(result);
+
+            // Set response headers for file download
+            var contentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "database-facts.json"
+            };
+            Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+            Response.Headers.Add("Content-Type", "application/json");
+
+            var bytes = Encoding.UTF8.GetBytes(json);
+            return File(bytes, "application/json");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "root")]
+        public async Task<IActionResult> ImportFactsBackup(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("File not selected or empty.");
+            }
+
+            using (var streamReader = new StreamReader(file.OpenReadStream()))
+            {
+                var json = await streamReader.ReadToEndAsync();
+                // TODO: use json serialization extension instead
+                var facts = JsonSerializer.Deserialize<IEnumerable<Fact>>(json);
+
+                var importedCount = await _service.ImportBackupAsync(facts);
+                return Ok($"Imported {facts.Count()} rows");
+            }
         }
     }
 }

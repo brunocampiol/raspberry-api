@@ -9,5 +9,6 @@ namespace RaspberryPi.Application.Interfaces
         Task<FactResponse> SaveFactAndComputeHashAsync();
         Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync();
         Task<long> CountAllDatabaseFacts();
+        Task<int> ImportBackupAsync(IEnumerable<Fact> facts);
     }
 }

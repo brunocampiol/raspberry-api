@@ -9,7 +9,7 @@ namespace RaspberryPi.API.Controllers
     /// Authentication and identity related methods (Bearer token header)
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityAppService _appService;
@@ -24,8 +24,8 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost("login")]
-        public IActionResult Post([FromBody] TokenGenerationRequest model)
+        [HttpPost]
+        public IActionResult GetToken([FromBody] TokenGenerationRequest model)
         {
             var result = _appService.Authenticate(model.UserName, model.Password);
 
@@ -39,16 +39,14 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("authenticated")]
         [Authorize]
-        public string Authenticated() => $"Authenticated";
+        public string IsAuthenticated() => $"Authenticated";
 
         /// <summary>
         /// Returns HTTP status 200 OK when user has root role
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("isRoot")]
         [Authorize(Roles = "root")]
         public string IsRoot() => "Root";
 
@@ -57,7 +55,6 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("isUser")]
         [Authorize(Roles = "user")]
         public string IsUser() => "User";
     }

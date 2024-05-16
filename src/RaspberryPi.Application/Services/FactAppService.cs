@@ -53,5 +53,26 @@ namespace RaspberryPi.Application.Services
         {
             return await _repository.CountAllDatabaseFacts();
         }
+
+        public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts)
+        {
+            foreach (var fact in facts)
+            {
+                var dbFact = await _repository.GetByIdAsync(fact.Id);
+                if (dbFact is not null)
+                {
+                    throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
+                }
+            }
+
+            // TODO: add range instead
+            foreach (var fact in facts)
+            {
+                await _repository.AddAsync(fact);
+            }
+
+            await _repository.SaveChangesAsync();
+            return facts.Count();
+        }
     }
 }
