@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RaspberryPi.Infrastructure.Data.EFCore.Context;
+using RaspberryPi.Infrastructure.Data.Context;
 
 namespace RaspberryPi.API.Controllers
 {

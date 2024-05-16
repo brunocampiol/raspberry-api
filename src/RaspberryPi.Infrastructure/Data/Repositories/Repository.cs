@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Infrastructure.Data.EFCore.Context;
+using RaspberryPi.Infrastructure.Data.Context;
 
-namespace RaspberryPi.Infrastructure.Data.EFCore.Repositories
+namespace RaspberryPi.Infrastructure.Data.Repositories
 {
     public abstract class Repository<T> : IRepository<T> where T : class
     {
@@ -20,17 +20,17 @@ namespace RaspberryPi.Infrastructure.Data.EFCore.Repositories
 
         public virtual async Task<T?> GetByIdAsync(Guid id)
         {
-            return await  _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync(id);
         }
 
         public virtual async Task AddAsync(T entity)
         {
-           await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity);
         }
 
         public virtual void Remove(Guid id)
         {
-           _dbSet.Remove(_dbSet.Find(id));
+            _dbSet.Remove(_dbSet.Find(id));
         }
 
         public virtual void Update(T entity)

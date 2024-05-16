@@ -2,20 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RaspberryPi.Infrastructure.Data.EFCore.Context;
+using RaspberryPi.Infrastructure.Data.Context;
 
 #nullable disable
 
-namespace RaspberryPi.Infrastructure.Data.EFCore.Migrations
+namespace RaspberryPi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    [Migration("20240501043417_InitialMigration")]
-    partial class InitialMigration
+    partial class RaspberryDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");

@@ -11,7 +11,7 @@ $ dotnet tool install --global dotnet-ef
 $ dotnet tool update --global dotnet-ef
 
 Manual migration
-$ dotnet ef migrations add InitialMigration -s ./src/RaspberryPi.API/RaspberryPi.API.csproj -p ./src/RaspberryPi.Infrastructure/RaspberryPi.Infrastructure.csproj -o ../RaspberryPi.Infrastructure/Data/EFCore/Migrations -c RaspberryDbContext
+$ dotnet ef migrations add InitialMigration -s ./src/RaspberryPi.API/RaspberryPi.API.csproj -p ./src/RaspberryPi.Infrastructure/RaspberryPi.Infrastructure.csproj -o ../RaspberryPi.Infrastructure/Data/Migrations -c RaspberryDbContext
 $ dotnet ef database update -s ./src/RaspberryPi.API/RaspberryPi.API.csproj -p ./src/RaspberryPi.Infrastructure/RaspberryPi.Infrastructure.csproj -c RaspberryDbContext
 
 Create EF SQL migration script

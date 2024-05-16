@@ -2,7 +2,7 @@
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Models.Entity;
 
-namespace RaspberryPi.Infrastructure.Data.EFCore.Context
+namespace RaspberryPi.Infrastructure.Data.Context
 {
     public class RaspberryDbContext : DbContext, IUnitOfWork
     {
