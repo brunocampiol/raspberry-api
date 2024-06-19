@@ -183,4 +183,4 @@ app.MapControllers();
 
 AppJsonSerializerOptions.SetDefaultOptions();
 
-app.Run();
+await app.RunAsync();
