@@ -6,8 +6,8 @@ namespace RaspberryPi.Application.Interfaces
     public interface IFactAppService
     {
         Task<Fact?> GetFirstOrDefaultFactFromDatabaseAsync();
-        Task<FactResponse> GetRawRandomFactAsync();
-        Task<FactResponse> SaveFactAndComputeHashAsync();
+        Task<FactInfraDto> GetRawRandomFactAsync();
+        Task<FactInfraDto> SaveFactAndComputeHashAsync();
         Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync();
         Task<long> CountAllDatabaseFacts();
         Task<int> ImportBackupAsync(IEnumerable<Fact> facts);

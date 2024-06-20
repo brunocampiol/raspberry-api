@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using System.Net;
 
@@ -12,10 +14,12 @@ namespace RaspberryPi.API.Controllers
     public class WeatherController : ControllerBase
     {
         private readonly IWeatherAppService _service;
+        private readonly IMapper _mapper;
 
-        public WeatherController(IWeatherAppService service)
+        public WeatherController(IWeatherAppService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -24,10 +28,11 @@ namespace RaspberryPi.API.Controllers
         /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> FromIpAddress(string ipAddress)
+        public async Task<WeatherViewModel> FromIpAddress(string ipAddress)
         {            
             var result = await _service.GetWeatherFromIpAddress(ipAddress);
-            return Ok(result);
+            var viewModel = _mapper.Map<WeatherViewModel>(result);
+            return viewModel;
         }
 
         /// <summary>
@@ -35,7 +40,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> FromContextIpAddress()
+        public async Task<WeatherViewModel> FromContextIpAddress()
         {
             var clientIp = HttpContext.Connection.RemoteIpAddress.ToString();
             string forwardedHeader = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
@@ -47,7 +52,16 @@ namespace RaspberryPi.API.Controllers
             }
 
             var result = await _service.GetWeatherFromIpAddress(clientIp);
-            return Ok(result);
+            var viewModel = _mapper.Map<WeatherViewModel>(result);
+            return viewModel;
+        }
+
+        [HttpGet]
+        public async Task<WeatherViewModel> FromRandomIpAddress()
+        {
+            var result = await _service.GetWeatherFromRandomIpAddressAsync();
+            var viewModel = _mapper.Map<WeatherViewModel>(result);
+            return viewModel;
         }
     }
 }

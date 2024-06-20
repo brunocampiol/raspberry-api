@@ -4,6 +4,6 @@ namespace RaspberryPi.Infrastructure.Interfaces
 {
     public interface IFactService
     {
-        Task<FactResponse> GetRandomFactAsync();
+        Task<FactInfraDto> GetRandomFactAsync();
     }
 }

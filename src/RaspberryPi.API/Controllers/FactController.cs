@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.Facts;
-using System.Text.Json;
-using System.Text;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using System.Text.Json;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -14,10 +15,12 @@ namespace RaspberryPi.API.Controllers
     public class FactController : ControllerBase
     {
         private readonly IFactAppService _service;
+        private readonly IMapper _mapper;
 
-        public FactController(IFactAppService service)
+        public FactController(IFactAppService service,  IMapper mapper)
         {
             _service = service;   
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -42,10 +45,11 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<FactResponse> SaveFactAndComputeHash()
+        public async Task<FactViewModel> SaveFactAndComputeHash()
         {
             var result = await _service.SaveFactAndComputeHashAsync();
-            return result;
+            var viewModel = _mapper.Map<FactViewModel>(result);
+            return viewModel;
         }
 
         [HttpGet]

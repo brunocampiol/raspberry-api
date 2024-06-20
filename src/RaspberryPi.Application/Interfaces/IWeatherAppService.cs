@@ -1,9 +1,10 @@
-﻿using RaspberryPi.Application.Models.ViewModels;
+﻿using RaspberryPi.Application.Models.Dtos;
 
 namespace RaspberryPi.Application.Interfaces
 {
     public interface IWeatherAppService
     {
-        Task<WeatherViewModel> GetWeatherFromIpAddress(string ipAddress);
+        Task<WeatherDto> GetWeatherFromIpAddress(string ipAddress);
+        Task<WeatherDto> GetWeatherFromRandomIpAddressAsync();
     }
 }
