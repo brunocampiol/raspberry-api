@@ -19,7 +19,7 @@ namespace RaspberryPi.Infrastructure.Services
             _settings = settings.Value;
         }
 
-        public async Task<FactResponse> GetRandomFactAsync()
+        public async Task<FactInfraDto> GetRandomFactAsync()
         {
             var endpoint = $"v1/facts";
             var httpClient = _httpClientFactory.CreateClient();
@@ -38,7 +38,7 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<IEnumerable<FactResponse>>().First();
+            var result = httpContent.FromJsonTo<IEnumerable<FactInfraDto>>().First();
             return result;
         }
     }

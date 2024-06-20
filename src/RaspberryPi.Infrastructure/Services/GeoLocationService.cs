@@ -20,7 +20,7 @@ namespace RaspberryPi.Infrastructure.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<LookUpResponse> LookUpAsync(string ipAddress)
+        public async Task<LookUpInfraDto> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             const string endpoint = "api/check";
@@ -38,7 +38,7 @@ namespace RaspberryPi.Infrastructure.Services
                 throw new AppException(errorMessage);
             }
 
-            var result = httpContent.FromJsonTo<LookUpResponse>();
+            var result = httpContent.FromJsonTo<LookUpInfraDto>();
             return result;
         }
     }

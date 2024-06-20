@@ -4,8 +4,8 @@ namespace RaspberryPi.Infrastructure.Interfaces
 {
     public interface IWeatherService
     {
-        Task<IEnumerable<PostalCodeSearchResponse>> PostalCodeSearch(string country, string postalCode);
-        Task<IEnumerable<WeatherCurrentConditionsResponse>> CurrentConditionsAsync(string key);
-        Task<WeatherLocationResponse> LocationIpAddressSearchAsync(string ipAddress);
+        Task<IEnumerable<PostalCodeSearchInfraDto>> PostalCodeSearch(string country, string postalCode);
+        Task<IEnumerable<WeatherCurrentConditionsInfraDto>> CurrentConditionsAsync(string key);
+        Task<WeatherLocationInfraDto> LocationIpAddressSearchAsync(string ipAddress);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Infrastructure.Models.Weather
 {
-    public class WeatherCurrentConditionsResponse
+    public class WeatherCurrentConditionsInfraDto
     {
         public string LocalObservationDateTime { get; init; }
 

@@ -26,7 +26,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="ipAddress"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<LookUpResponse> LookUp([FromQuery][Required] string ipAddress)
+        public async Task<LookUpInfraDto> LookUp([FromQuery][Required] string ipAddress)
         {
             return await _appService.LookUpAsync(ipAddress);
         }
@@ -36,7 +36,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<LookUpResponse> LookUpFromContextIpAddress()
+        public async Task<LookUpInfraDto> LookUpFromContextIpAddress()
         {
             var clientIp = HttpContext.Connection.RemoteIpAddress.ToString();
             string forwardedHeader = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
@@ -54,7 +54,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<LookUpResponse> LookUpFromRandomIpAddress()
+        public async Task<LookUpInfraDto> LookUpFromRandomIpAddress()
         {
             return await _appService.LookUpFromRandomIpAddressAsync();
         }

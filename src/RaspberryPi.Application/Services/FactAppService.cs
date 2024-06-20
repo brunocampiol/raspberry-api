@@ -21,7 +21,7 @@ namespace RaspberryPi.Application.Services
             _mapper = mapper;
         }
 
-        public async Task<FactResponse> GetRawRandomFactAsync()
+        public async Task<FactInfraDto> GetRawRandomFactAsync()
         {
             var fact = await _factsService.GetRandomFactAsync();
             return fact;
@@ -32,7 +32,7 @@ namespace RaspberryPi.Application.Services
             return await _repository.GetAllDatabaseFactsAsync();
         }
 
-        public async Task<FactResponse> SaveFactAndComputeHashAsync()
+        public async Task<FactInfraDto> SaveFactAndComputeHashAsync()
         {
             var factResponse = await _factsService.GetRandomFactAsync();
             var fact = new Fact

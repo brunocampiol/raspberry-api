@@ -30,6 +30,7 @@ namespace RaspberryPi.API.Controllers
             return Ok(result);
         }
 
+        // TODO: use the return type so that model is seen on swagger
         /// <summary>
         /// Returns weather data from user IP address
         /// </summary>

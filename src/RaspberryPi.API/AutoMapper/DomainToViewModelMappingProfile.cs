@@ -8,7 +8,7 @@ namespace RaspberryPi.API.AutoMapper
     {
         public DomainToViewModelMappingProfile()
         {
-            CreateMap<FactResponse, FactViewModel>();
+            CreateMap<FactInfraDto, FactViewModel>();
         }
     }
 }
