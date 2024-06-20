@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.Facts;
-using System.Text.Json;
-using System.Text;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
-using RaspberryPi.API.Models;
-using AutoMapper;
+using System.Text;
+using System.Text.Json;
 
 namespace RaspberryPi.API.Controllers
 {

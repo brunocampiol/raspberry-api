@@ -1,7 +1,7 @@
 ﻿using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Common;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
-using System.Net;
 
 namespace RaspberryPi.Application.Services
 {
@@ -22,11 +22,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync()
         {
-            var random = new Random();
-            byte[] ipAddressBytes = new byte[4];
-            random.NextBytes(ipAddressBytes);
-            ipAddressBytes[0] = (byte)random.Next(1, 256); // Valid range for first octet is 1-255
-            var ipAddress = new IPAddress(ipAddressBytes);
+            var ipAddress = IPAddressHelper.GenerateRandomIPAddress();
             return await _geoLocationService.LookUpAsync(ipAddress.ToString());
         }
     }

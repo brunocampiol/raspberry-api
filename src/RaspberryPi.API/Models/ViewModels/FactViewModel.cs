@@ -1,4 +1,4 @@
-﻿namespace RaspberryPi.Application.Models.ViewModels
+﻿namespace RaspberryPi.API.Models.ViewModels
 {
     public class FactViewModel
     {
