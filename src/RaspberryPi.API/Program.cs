@@ -4,9 +4,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
-using RaspberryPi.API.Mapping;
-using RaspberryPi.Application.AutoMapper;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
@@ -122,7 +121,6 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
-builder.Services.AddSingleton<IRequestToDomainMapper,  RequestToDomainMapper>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Application.Models.ViewModels;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;

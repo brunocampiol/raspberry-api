@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
+using RaspberryPi.API.Models;
+using AutoMapper;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -14,10 +16,12 @@ namespace RaspberryPi.API.Controllers
     public class FactController : ControllerBase
     {
         private readonly IFactAppService _service;
+        private readonly IMapper _mapper;
 
-        public FactController(IFactAppService service)
+        public FactController(IFactAppService service,  IMapper mapper)
         {
             _service = service;   
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -42,10 +46,11 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<FactResponse> SaveFactAndComputeHash()
+        public async Task<FactViewModel> SaveFactAndComputeHash()
         {
             var result = await _service.SaveFactAndComputeHashAsync();
-            return result;
+            var viewModel = _mapper.Map<FactViewModel>(result);
+            return viewModel;
         }
 
         [HttpGet]
