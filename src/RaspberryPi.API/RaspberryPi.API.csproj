@@ -26,7 +26,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     <PackageReference Include="OpenHardwareMonitorLibCore" Version="1.0.2" />
-    <PackageReference Include="Riok.Mapperly" Version="3.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

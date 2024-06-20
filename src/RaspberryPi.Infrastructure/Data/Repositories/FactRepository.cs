@@ -22,6 +22,11 @@ namespace RaspberryPi.Infrastructure.Data.Repositories
             return await _dbSet.AsNoTracking().ToListAsync();
         }
 
+        public async Task<Fact?> GetFirstOrDefaultAsync()
+        {
+            return await _dbSet.FirstOrDefaultAsync();
+        }
+
         public async Task<bool> HashExistsAsync(string hashValue)
         {
             return await _dbSet.AnyAsync(x => x.TextHash == hashValue);

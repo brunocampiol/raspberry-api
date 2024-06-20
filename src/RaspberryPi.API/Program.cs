@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Mapping;
+using RaspberryPi.Application.AutoMapper;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
@@ -33,6 +34,8 @@ builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.Sect
 builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
+
+builder.Services.AddAutoMapper(AutoMapperConfig.RegisterMappings());
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString);

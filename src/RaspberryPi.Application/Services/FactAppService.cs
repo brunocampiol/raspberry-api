@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Models.ViewModels;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
@@ -12,11 +13,13 @@ namespace RaspberryPi.Application.Services
     {
         private readonly IFactService _factsService;
         private readonly IFactRepository _repository;
+        private readonly IMapper _mapper;
 
-        public FactAppService(IFactService factsService, IFactRepository repository)
+        public FactAppService(IFactService factsService, IFactRepository repository, IMapper mapper)
         {
             _factsService = factsService;
             _repository = repository;
+            _mapper = mapper;
         }
 
         public async Task<FactResponse> GetRawRandomFactAsync()
@@ -73,6 +76,11 @@ namespace RaspberryPi.Application.Services
 
             await _repository.SaveChangesAsync();
             return facts.Count();
+        }
+
+        public async Task<Fact?> GetFirstOrDefaultFactFromDatabaseAsync()
+        {
+            return await _repository.GetFirstOrDefaultAsync();
         }
     }
 }

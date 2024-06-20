@@ -28,6 +28,13 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
+        public async Task<Fact?> GetFirstOrDefaultFactFromDatabase()
+        {
+            var result = await _service.GetFirstOrDefaultFactFromDatabaseAsync();
+            return result;
+        }
+
+        [HttpGet]
         public async Task<long> CountAllDatabaseFacts()
         {
             var result = await _service.CountAllDatabaseFacts();
