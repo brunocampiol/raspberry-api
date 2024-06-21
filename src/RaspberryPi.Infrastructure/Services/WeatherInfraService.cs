@@ -9,12 +9,12 @@ namespace RaspberryPi.Infrastructure.Services
 {
     // This class depends on AccuWeather services
     // APIs reference https://developer.accuweather.com/apis
-    public class WeatherService : IWeatherService
+    public class WeatherInfraService : IWeatherInfraService
     {
         private readonly WeatherOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public WeatherService(IOptions<WeatherOptions> settings,
+        public WeatherInfraService(IOptions<WeatherOptions> settings,
                                   IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;

@@ -10,11 +10,11 @@ namespace RaspberryPi.Application.Services
 {
     public sealed class FactAppService : IFactAppService
     {
-        private readonly IFactService _factsService;
+        private readonly IFactInfraService _factsService;
         private readonly IFactRepository _repository;
         private readonly IMapper _mapper;
 
-        public FactAppService(IFactService factsService, IFactRepository repository, IMapper mapper)
+        public FactAppService(IFactInfraService factsService, IFactRepository repository, IMapper mapper)
         {
             _factsService = factsService;
             _repository = repository;

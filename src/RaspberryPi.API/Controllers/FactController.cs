@@ -64,7 +64,7 @@ namespace RaspberryPi.API.Controllers
             // Set response headers for file download
             var contentDisposition = new ContentDispositionHeaderValue("attachment")
             {
-                FileName = "database-facts.json"
+                FileName = $"database-facts-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.json"
             };
             Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
             Response.Headers.Add("Content-Type", "application/json");

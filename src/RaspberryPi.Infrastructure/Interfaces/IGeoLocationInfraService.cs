@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Infrastructure.Interfaces
 {
-    public interface IGeoLocationService
+    public interface IGeoLocationInfraService
     {
         Task<LookUpInfraDto> LookUpAsync(string ipAddress);
     }

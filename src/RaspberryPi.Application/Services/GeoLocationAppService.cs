@@ -7,9 +7,9 @@ namespace RaspberryPi.Application.Services
 {
     public sealed class GeoLocationAppService : IGeoLocationAppService
     {
-        private readonly IGeoLocationService _geoLocationService;
+        private readonly IGeoLocationInfraService _geoLocationService;
 
-        public GeoLocationAppService(IGeoLocationService geoLocationService)
+        public GeoLocationAppService(IGeoLocationInfraService geoLocationService)
         {
             _geoLocationService = geoLocationService;
         }

@@ -8,22 +8,22 @@ namespace RaspberryPi.Application.Services
 {
     public sealed class WeatherAppService : IWeatherAppService
     {
-        private readonly IWeatherService _accuWeatherService;
-        private readonly IGeoLocationService _apiIpService;
+        private readonly IWeatherInfraService _weatherService;
+        private readonly IGeoLocationInfraService _geoLocationService;
         private readonly ILogger _logger;
 
-        public WeatherAppService(IWeatherService accuWeatherService,
-                                    IGeoLocationService apiIpService,
+        public WeatherAppService(IWeatherInfraService accuWeatherService,
+                                    IGeoLocationInfraService apiIpService,
                                     ILogger<WeatherAppService> logger)
         {
-            _accuWeatherService = accuWeatherService;
-            _apiIpService = apiIpService;
+            _weatherService = accuWeatherService;
+            _geoLocationService = apiIpService;
             _logger = logger;
         }
 
         public async Task<WeatherDto> GetWeatherFromIpAddress(string ipAddress)
         {
-            var geoPositioning = await _apiIpService.LookUpAsync(ipAddress);
+            var geoPositioning = await _geoLocationService.LookUpAsync(ipAddress);
 
             if (string.IsNullOrEmpty(geoPositioning.CountryCode))
             {
@@ -41,7 +41,7 @@ namespace RaspberryPi.Application.Services
                 return WeatherDto.NotAvailable();
             }
 
-            var accuWeatherLocations = await _accuWeatherService.PostalCodeSearch(geoPositioning.CountryCode, geoPositioning.PostalCode);
+            var accuWeatherLocations = await _weatherService.PostalCodeSearch(geoPositioning.CountryCode, geoPositioning.PostalCode);
             if (accuWeatherLocations == null || !accuWeatherLocations.Any())
             {
                 _logger.LogWarning("AccuWeather location is null or empty result");
@@ -49,7 +49,7 @@ namespace RaspberryPi.Application.Services
             }
 
             var location = accuWeatherLocations.First();
-            var currentConditions = await _accuWeatherService.CurrentConditionsAsync(location.Key);
+            var currentConditions = await _weatherService.CurrentConditionsAsync(location.Key);
 
             var viewModel = new WeatherDto
             {
@@ -65,8 +65,8 @@ namespace RaspberryPi.Application.Services
         public async Task<WeatherDto> GetWeatherFromRandomIpAddressAsync()
         {
             var ipAddress = IPAddressHelper.GenerateRandomIPAddress();
-            var location = await _accuWeatherService.LocationIpAddressSearchAsync(ipAddress.ToString());
-            var currentConditions = await _accuWeatherService.CurrentConditionsAsync(location.Key);
+            var location = await _weatherService.LocationIpAddressSearchAsync(ipAddress.ToString());
+            var currentConditions = await _weatherService.CurrentConditionsAsync(location.Key);
 
             var weatherDto = new WeatherDto
             {

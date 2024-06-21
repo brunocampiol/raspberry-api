@@ -8,12 +8,12 @@ using RaspberryPi.Infrastructure.Models.Options;
 namespace RaspberryPi.Infrastructure.Services
 {
     // This class uses https://apiip.net/ service
-    public class GeoLocationService : IGeoLocationService
+    public class GeoLocationInfraService : IGeoLocationInfraService
     {
         private readonly GeoLocationOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public GeoLocationService(IOptions<GeoLocationOptions> settings,
+        public GeoLocationInfraService(IOptions<GeoLocationOptions> settings,
                                     IHttpClientFactory httpClientFactory)
         {
             _settings = settings.Value;

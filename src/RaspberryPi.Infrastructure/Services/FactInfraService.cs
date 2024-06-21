@@ -7,12 +7,12 @@ using RaspberryPi.Infrastructure.Models.Options;
 
 namespace RaspberryPi.Infrastructure.Services
 {
-    public sealed class FactService : IFactService
+    public sealed class FactInfraService : IFactInfraService
     {
         private readonly FactOptions _settings;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public FactService(IOptions<FactOptions> settings,
+        public FactInfraService(IOptions<FactOptions> settings,
                             IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
