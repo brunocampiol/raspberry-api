@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OpenHardwareMonitor.Hardware;
 using RaspberryPi.Application.Interfaces;
-using System.Text;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -20,60 +18,6 @@ namespace RaspberryPi.API.Controllers
         public HardwareController(IHardwareAppService hardwareAppService)
         {
             _service = hardwareAppService;
-        }
-
-        /// <summary>
-        /// Lists current hardware components
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult List()
-        {
-            var sb = new StringBuilder();
-            var computer = new Computer()
-            {
-                CPUEnabled = true,
-                HDDEnabled = true,
-                GPUEnabled = true,
-                FanControllerEnabled = true,
-                NICEnabled = true,
-                RAMEnabled = true,
-                MainboardEnabled = true,
-            };
-            computer.Open();
-
-            foreach (var hardwareItem in computer.Hardware)
-            {
-                sb.AppendLine($"{hardwareItem.HardwareType}: {hardwareItem.Name}");
-            }
-
-            computer.Close();
-
-            return Ok(sb.ToString());
-        }
-
-        /// <summary>
-        /// Returns the Open Hardware Monitor report
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult Report()
-        {
-            var computer = new Computer()
-            {
-                CPUEnabled = true,
-                HDDEnabled = true,
-                GPUEnabled = true,
-                FanControllerEnabled = true,
-                NICEnabled = true,
-                RAMEnabled = true,
-                MainboardEnabled = true,
-            };
-            computer.Open();
-
-            var report = computer.GetReport();
-            computer.Close();
-            return Ok(report);
         }
 
         /// <summary>

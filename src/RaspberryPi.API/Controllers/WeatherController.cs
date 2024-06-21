@@ -56,6 +56,10 @@ namespace RaspberryPi.API.Controllers
             return viewModel;
         }
 
+        /// <summary>
+        /// Returns weather data from random IP address
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<WeatherViewModel> FromRandomIpAddress()
         {

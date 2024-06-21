@@ -85,7 +85,7 @@ namespace RaspberryPi.API.Controllers
         public async Task<Result<string>> WwwGetGoogle()
         {
             var httpClient = _httpClientFactory.CreateClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(30);
+            httpClient.Timeout = TimeSpan.FromSeconds(15);
 
             var uri = new Uri("http://www.google.com");
             var httpResponse = await httpClient.GetAsync(uri);
