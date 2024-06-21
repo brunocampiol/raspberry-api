@@ -15,7 +15,7 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.AspNetUser", b =>
                 {
@@ -47,32 +47,6 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("AspNetUserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateCreatedUTC")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("PageId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AspNetUserId");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Fact", b =>
                 {
                     b.Property<Guid>("Id")
@@ -95,20 +69,35 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.ToTable("Facts");
                 });
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Comment", b =>
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.GeoLocation", b =>
                 {
-                    b.HasOne("RaspberryPi.Domain.Models.Entity.AspNetUser", "AspNetUser")
-                        .WithMany("Posts")
-                        .HasForeignKey("AspNetUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
 
-                    b.Navigation("AspNetUser");
-                });
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.AspNetUser", b =>
-                {
-                    b.Navigation("Posts");
+                    b.Property<string>("CountryCode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegionName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WeatherKey")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeoLocations");
                 });
 #pragma warning restore 612, 618
         }

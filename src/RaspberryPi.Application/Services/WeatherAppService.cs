@@ -2,6 +2,8 @@
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Common;
+using RaspberryPi.Domain.Interfaces.Repositories;
+using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
 
 namespace RaspberryPi.Application.Services
@@ -9,15 +11,18 @@ namespace RaspberryPi.Application.Services
     public sealed class WeatherAppService : IWeatherAppService
     {
         private readonly IWeatherInfraService _weatherInfraService;
+        private readonly IGeoLocationRepository _geoLocationRepository;
         private readonly IGeoLocationInfraService _geoLocationInfraService;
         private readonly ILogger _logger;
 
-        public WeatherAppService(IWeatherInfraService accuWeatherService,
-                                    IGeoLocationInfraService apiIpService,
+        public WeatherAppService(IWeatherInfraService watherInfraService,
+                                    IGeoLocationInfraService geoLocationInfraService,
+                                    IGeoLocationRepository geoLocationRepository,
                                     ILogger<WeatherAppService> logger)
         {
-            _weatherInfraService = accuWeatherService;
-            _geoLocationInfraService = apiIpService;
+            _weatherInfraService = watherInfraService;
+            _geoLocationInfraService = geoLocationInfraService;
+            _geoLocationRepository = geoLocationRepository;
             _logger = logger;
         }
 
@@ -41,16 +46,31 @@ namespace RaspberryPi.Application.Services
                 return WeatherDto.NotAvailable();
             }
 
-            var accuWeatherLocations = await _weatherInfraService.PostalCodeSearch(geoPositioning.CountryCode, geoPositioning.PostalCode);
-            if (accuWeatherLocations == null || !accuWeatherLocations.Any())
+            var geoLocation = await _geoLocationRepository.GetByPostalCodeAsync(geoPositioning.CountryCode, geoPositioning.PostalCode);
+            if (geoLocation is null)
             {
-                _logger.LogWarning("AccuWeather location is null or empty result");
-                return WeatherDto.NotAvailable();
+                var accuWeatherLocations = await _weatherInfraService.PostalCodeSearch(geoPositioning.CountryCode, geoPositioning.PostalCode);
+                if (accuWeatherLocations == null || !accuWeatherLocations.Any())
+                {
+                    _logger.LogWarning("AccuWeather location is null or empty result");
+                    return WeatherDto.NotAvailable();
+                }
+
+                var location = accuWeatherLocations.First();
+                geoLocation = new GeoLocation
+                {
+                    City = geoPositioning.City,
+                    CountryCode = geoPositioning.CountryCode,
+                    PostalCode = geoPositioning.PostalCode,
+                    RegionName = geoPositioning.RegionName,
+                    WeatherKey = location.Key
+                };
+
+                await _geoLocationRepository.AddAsync(geoLocation);
+                await _geoLocationRepository.SaveChangesAsync();
             }
 
-            var location = accuWeatherLocations.First();
-            var currentConditions = await _weatherInfraService.CurrentConditionsAsync(location.Key);
-
+            var currentConditions = await _weatherInfraService.CurrentConditionsAsync(geoLocation.WeatherKey);
             var viewModel = new WeatherDto
             {
                 EnglishName = geoPositioning.City,
