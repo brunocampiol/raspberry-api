@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -57,6 +58,16 @@ namespace RaspberryPi.API.Controllers
         public async Task<LookUpInfraDto> LookUpFromRandomIpAddress()
         {
             return await _appService.LookUpFromRandomIpAddressAsync();
+        }
+
+        /// <summary>
+        /// Gets all geo location data from database
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabase()
+        {
+            return await _appService.GetAllGeoLocationsFromDatabaseAsync();
         }
     }
 }

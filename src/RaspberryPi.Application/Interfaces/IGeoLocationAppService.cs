@@ -1,4 +1,5 @@
-﻿using RaspberryPi.Infrastructure.Models.GeoLocation;
+﻿using RaspberryPi.Domain.Models.Entity;
+using RaspberryPi.Infrastructure.Models.GeoLocation;
 
 namespace RaspberryPi.Application.Interfaces
 {
@@ -7,5 +8,6 @@ namespace RaspberryPi.Application.Interfaces
         Task<LookUpInfraDto> LookUpAsync(string ipAddress);
 
         Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync();
+        Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync();
     }
 }
