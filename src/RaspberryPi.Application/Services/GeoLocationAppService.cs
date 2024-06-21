@@ -7,23 +7,23 @@ namespace RaspberryPi.Application.Services
 {
     public sealed class GeoLocationAppService : IGeoLocationAppService
     {
-        private readonly IGeoLocationInfraService _geoLocationService;
+        private readonly IGeoLocationInfraService _geoLocationInfraService;
 
         public GeoLocationAppService(IGeoLocationInfraService geoLocationService)
         {
-            _geoLocationService = geoLocationService;
+            _geoLocationInfraService = geoLocationService;
         }
 
         public async Task<LookUpInfraDto> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-            return await _geoLocationService.LookUpAsync(ipAddress);
+            return await _geoLocationInfraService.LookUpAsync(ipAddress);
         }
 
         public async Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync()
         {
             var ipAddress = IPAddressHelper.GenerateRandomIPAddress();
-            return await _geoLocationService.LookUpAsync(ipAddress.ToString());
+            return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());
         }
     }
 }

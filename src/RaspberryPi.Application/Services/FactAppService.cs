@@ -10,20 +10,20 @@ namespace RaspberryPi.Application.Services
 {
     public sealed class FactAppService : IFactAppService
     {
-        private readonly IFactInfraService _factsService;
+        private readonly IFactInfraService _factsInfraService;
         private readonly IFactRepository _repository;
         private readonly IMapper _mapper;
 
         public FactAppService(IFactInfraService factsService, IFactRepository repository, IMapper mapper)
         {
-            _factsService = factsService;
+            _factsInfraService = factsService;
             _repository = repository;
             _mapper = mapper;
         }
 
         public async Task<FactInfraDto> GetRawRandomFactAsync()
         {
-            var fact = await _factsService.GetRandomFactAsync();
+            var fact = await _factsInfraService.GetRandomFactAsync();
             return fact;
         }
 
@@ -34,7 +34,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<FactInfraDto> SaveFactAndComputeHashAsync()
         {
-            var factResponse = await _factsService.GetRandomFactAsync();
+            var factResponse = await _factsInfraService.GetRandomFactAsync();
             var fact = new Fact
             {
                 CreatedAt = DateTime.UtcNow,
