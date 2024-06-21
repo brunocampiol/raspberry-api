@@ -7,6 +7,7 @@ namespace RaspberryPi.Infrastructure.Data.Context
     public class RaspberryDbContext : DbContext, IUnitOfWork
     {
         public DbSet<Fact> Facts { get; set; }
+        public DbSet<GeoLocation> GeoLocations { get; set; }
         public DbSet<AspNetUser> AspNetUsers { get; set; }
 
         public RaspberryDbContext(DbContextOptions<RaspberryDbContext> options)

@@ -42,43 +42,33 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "GeoLocations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PageId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Text = table.Column<string>(type: "TEXT", nullable: false),
-                    DateCreatedUTC = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    AspNetUserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    CountryCode = table.Column<string>(type: "TEXT", nullable: false),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: false),
+                    City = table.Column<string>(type: "TEXT", nullable: false),
+                    RegionName = table.Column<string>(type: "TEXT", nullable: false),
+                    WeatherKey = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_AspNetUserId",
-                        column: x => x.AspNetUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_GeoLocations", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_AspNetUserId",
-                table: "Comment",
-                column: "AspNetUserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Facts");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "GeoLocations");
         }
     }
 }

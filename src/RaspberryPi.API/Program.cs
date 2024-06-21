@@ -128,6 +128,7 @@ builder.Services.AddScoped<RaspberryDbContext>();
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
 builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
+builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
 builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
 builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
