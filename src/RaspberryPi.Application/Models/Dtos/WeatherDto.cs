@@ -1,6 +1,4 @@
-﻿using RaspberryPi.Application.Models.ViewModels;
-
-namespace RaspberryPi.Application.Models.Dtos
+﻿namespace RaspberryPi.Application.Models.Dtos
 {
     public class WeatherDto
     {
