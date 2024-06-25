@@ -2,21 +2,15 @@
 using Microsoft.IdentityModel.Tokens;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models.Options;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
 namespace RaspberryPi.Domain.Services
 {
-    public sealed class JwtService : IJwtService
+    public sealed class JwtService(IOptions<JwtOptions> options) : IJwtService
     {
-        private readonly JwtOptions _options;
-
-        public JwtService(IOptions<JwtOptions> options)
-        {
-            _options = options.Value;
-        }
+        private readonly JwtOptions _options = options.Value ?? throw new ArgumentNullException(nameof(options));
 
         public string GenerateTokenForEmail(string email, IEnumerable<string> roles)
         {
@@ -46,7 +40,7 @@ namespace RaspberryPi.Domain.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private IEnumerable<Claim> GetClaims(string userName, string email, IEnumerable<string> roles)
+        private static List<Claim> GetClaims(string userName, string email, IEnumerable<string> roles)
         {
             var claims = new List<Claim>();
 
