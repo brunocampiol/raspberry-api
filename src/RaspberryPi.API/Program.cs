@@ -37,7 +37,11 @@ builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOpti
 builder.Services.AddAutoMapper(AutoMapperConfig.RegisterMappings());
 
 builder.Services.AddHealthChecks()
-                .AddSqlite(connectionString);
+                .AddSqlite(connectionString,
+                           name: "SqlLite",
+                           tags: ["database"]);
+
+
 builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -176,6 +180,11 @@ app.UseSwaggerUI(x =>
     x.EnableTryItOutByDefault();
 });
 
+app.MapHealthChecks("/ping", new HealthCheckOptions
+{
+    Predicate = _ => !_.Tags.Any(),
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
