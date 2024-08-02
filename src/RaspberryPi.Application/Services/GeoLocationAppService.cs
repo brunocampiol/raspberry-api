@@ -37,5 +37,26 @@ namespace RaspberryPi.Application.Services
             var dbResults = await _repository.GetAll().AsNoTracking().ToListAsync();
             return dbResults;
         }
+
+        public async Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations)
+        {
+            foreach (var fact in geoLocations)
+            {
+                var dbFact = await _repository.GetByIdAsync(fact.Id);
+                if (dbFact is not null)
+                {
+                    throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
+                }
+            }
+
+            // TODO: add range instead
+            foreach (var fact in geoLocations)
+            {
+                await _repository.AddAsync(fact);
+            }
+
+            await _repository.SaveChangesAsync();
+            return geoLocations.Count();
+        }
     }
 }

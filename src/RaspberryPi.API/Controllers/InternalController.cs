@@ -1,10 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Models.ViewModels;
+using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Core;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using System.Text;
+using System.Text.Json;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -17,11 +22,18 @@ namespace RaspberryPi.API.Controllers
     {
         private readonly IWebHostEnvironment _hostEnv;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IFactAppService _factAppService;
+        private readonly IGeoLocationAppService _geolocationAppService;
 
-        public InternalController(IWebHostEnvironment hostEnv, IHttpClientFactory httpClientFactory)
+        public InternalController(IWebHostEnvironment hostEnv, 
+                                  IHttpClientFactory httpClientFactory,
+                                  IFactAppService factAppService,
+                                  IGeoLocationAppService geolocationAppService)
         {
             _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _factAppService = factAppService ?? throw new ArgumentNullException(nameof(factAppService));
+            _geolocationAppService = geolocationAppService ?? throw new ArgumentNullException(nameof(geolocationAppService));
         }
 
         [HttpGet]
@@ -51,7 +63,7 @@ namespace RaspberryPi.API.Controllers
             return Ok(DateTime.Now);
         }
 
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Exception(string? exceptionMessage)
         {
             throw new NotImplementedException(exceptionMessage);
@@ -123,6 +135,59 @@ namespace RaspberryPi.API.Controllers
             }
 
             return Result<string>.Success(httpContent);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerateDatabaseBackup()
+        {
+            var dbFacts = await _factAppService.GetAllDatabaseFactsAsync();
+            var dbGeolocations = await _geolocationAppService.GetAllGeoLocationsFromDatabaseAsync();
+            var dbBackup = new BackupViewModel
+            {
+                Facts = dbFacts,
+                GeoLocations = dbGeolocations
+            };
+
+            // Serialize the data to JSON
+            // TODO: use json serialization extension instead
+            var json = JsonSerializer.Serialize(dbBackup, new JsonSerializerOptions { WriteIndented = true });
+
+            // Set response headers for file download
+            var contentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = $"database-backup-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.json"
+            };
+            Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
+            Response.Headers.Add("Content-Type", "application/json");
+
+            var bytes = Encoding.UTF8.GetBytes(json);
+            return File(bytes, "application/json");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "root")]
+        public async Task<IActionResult> ImportDatabaseBackup(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("File not selected or empty.");
+            }
+
+            using (var streamReader = new StreamReader(file.OpenReadStream()))
+            {
+                var json = await streamReader.ReadToEndAsync();
+                // TODO: use json serialization extension instead
+                var backup = JsonSerializer.Deserialize<BackupViewModel>(json);
+                if  (backup is null)
+                {
+                    return BadRequest($"Invalid desserialization for '{json}'");
+                }
+
+                var geoLocationImportCount = await _geolocationAppService.ImportBackupAsync(backup.GeoLocations);
+                var factImportCount = await _factAppService.ImportBackupAsync(backup.Facts);
+
+                return Ok($"Imported {geoLocationImportCount + factImportCount} rows");
+            }
         }
     }
 }

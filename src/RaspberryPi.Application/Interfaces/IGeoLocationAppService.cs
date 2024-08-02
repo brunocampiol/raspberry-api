@@ -9,5 +9,6 @@ namespace RaspberryPi.Application.Interfaces
 
         Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync();
         Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync();
+        Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations);
     }
 }
