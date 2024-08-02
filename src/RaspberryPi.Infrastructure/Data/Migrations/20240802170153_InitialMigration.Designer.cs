@@ -11,7 +11,7 @@ using RaspberryPi.Infrastructure.Data.Context;
 namespace RaspberryPi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    [Migration("20240621195602_InitialMigration")]
+    [Migration("20240802170153_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -19,36 +19,6 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
-
-            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.AspNetUser", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("DateCreateUTC")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Roles")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AspNetUsers");
-                });
 
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.Fact", b =>
                 {

@@ -9,8 +9,6 @@ using RaspberryPi.API.Configuration;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
-using RaspberryPi.Domain.Commands;
-using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models.Options;
@@ -115,12 +113,6 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddMediatR(cfg => {
-    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-    cfg.RegisterServicesFromAssemblies(typeof(AspNetUserCommandHandler).Assembly);
-    //cfg.RegisterServicesFromAssemblies(typeof(JwtAppOptions).Assembly);
-});
-
 builder.Services.AddHttpClient();
 
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
@@ -129,9 +121,6 @@ builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 
 builder.Services.AddScoped<RaspberryDbContext>();
-builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
-builder.Services.AddScoped<IAspNetUserRepository, AspNetUserRepository>();
-builder.Services.AddScoped<IAspNetUserAppService, AspNetUserAppService>();
 builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
 builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();

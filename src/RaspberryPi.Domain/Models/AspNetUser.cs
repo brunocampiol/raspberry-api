@@ -1,14 +1,10 @@
-﻿using RaspberryPi.Domain.Core;
-
-namespace RaspberryPi.Domain.Models.Entity
+﻿namespace RaspberryPi.Domain.Models
 {
-    public class AspNetUser : EntityBase
+    public class AspNetUser
     {
         public required string UserName { get; init; }
         public required string Email { get; init; }
         public required string Password { get; init; }
         public required string Roles { get; set; }
-        public DateTime DateCreateUTC { get; set; }
-        //public ICollection<Comment>? Posts { get; }
     }
 }

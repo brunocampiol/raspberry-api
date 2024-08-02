@@ -3,7 +3,7 @@ using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Interfaces.Services;
-using RaspberryPi.Domain.Models.Entity;
+using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Application.Services
 {

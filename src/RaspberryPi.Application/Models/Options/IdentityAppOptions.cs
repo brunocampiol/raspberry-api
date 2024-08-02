@@ -1,4 +1,4 @@
-﻿using RaspberryPi.Domain.Models.Entity;
+﻿using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Application.Models.Options
 {
