@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Infrastructure.Data.Context
 {
-    public class RaspberryDbContext : DbContext, IUnitOfWork
+    public class RaspberryDbContext : DbContext
     {
         public DbSet<Fact> Facts { get; set; }
         public DbSet<GeoLocation> GeoLocations { get; set; }

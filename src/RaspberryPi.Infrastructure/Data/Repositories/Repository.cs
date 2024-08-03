@@ -15,9 +15,6 @@ namespace RaspberryPi.Infrastructure.Data.Repositories
             _dbSet = _context.Set<T>();
         }
 
-        // TODO: remove this in future
-        public IUnitOfWork UnitOfWork => throw new NotImplementedException();
-
         public virtual async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
