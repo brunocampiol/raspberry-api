@@ -9,7 +9,7 @@ namespace RaspberryPi.API.Controllers
     /// EF Core related methods
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class DbContextController : ControllerBase
     {
         private readonly RaspberryDbContext _context;
@@ -24,8 +24,8 @@ namespace RaspberryPi.API.Controllers
         /// Will create the database if it does not already exist.
         /// </summary>
         [Authorize(Roles = "root")]
-        [HttpPost("migrate")]
-        public void Post()
+        [HttpPost]
+        public void Migrate()
         {
             _context.Database.Migrate();
         }

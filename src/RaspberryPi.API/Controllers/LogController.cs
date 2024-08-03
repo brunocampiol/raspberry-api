@@ -6,7 +6,7 @@ namespace RaspberryPi.API.Controllers
     /// Log related methods
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("[controller]/[action]")]
     public class LogController : ControllerBase
     {
         private readonly ILogger _logger;
@@ -21,7 +21,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet("info/{message}")]
+        [HttpGet]
         public IActionResult Info(string message)
         {
             _logger.LogInformation(message);
@@ -34,7 +34,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet("warn/{message}")]
+        [HttpGet]
         public IActionResult Warn(string message)
         {
             _logger.LogWarning(message);
@@ -47,7 +47,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet("error/{message}")]
+        [HttpGet]
         public IActionResult Error(string message)
         {
             _logger.LogError(message);

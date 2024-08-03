@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models.Entity;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
 
 namespace RaspberryPi.API.Controllers
 {
@@ -45,6 +41,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
+        // TODO: update this to a better name
         public async Task<FactViewModel> SaveFactAndComputeHash()
         {
             var result = await _service.SaveFactAndComputeHashAsync();
