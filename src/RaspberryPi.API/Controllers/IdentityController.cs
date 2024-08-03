@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Models.Requests;
+using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 
 namespace RaspberryPi.API.Controllers
@@ -25,7 +25,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult GetToken([FromBody] TokenGenerationRequest model)
+        public IActionResult GetToken([FromBody] AuthenticateViewModel model)
         {
             var result = _appService.Authenticate(model.UserName, model.Password);
 
