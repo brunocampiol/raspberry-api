@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
-using RaspberryPi.Domain.Common;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
+using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Interfaces;
 
 namespace RaspberryPi.Application.Services
@@ -84,7 +84,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<WeatherDto> GetWeatherFromRandomIpAddressAsync()
         {
-            var ipAddress = IPAddressHelper.GenerateRandomIPAddress();
+            var ipAddress = RandomService.GenerateRandomIPAddress();
             var location = await _weatherInfraService.LocationIpAddressSearchAsync(ipAddress.ToString());
             var currentConditions = await _weatherInfraService.CurrentConditionsAsync(location.Key);
 

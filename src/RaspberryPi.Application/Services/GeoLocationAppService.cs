@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Domain.Common;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
+using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 
@@ -28,7 +28,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync()
         {
-            var ipAddress = IPAddressHelper.GenerateRandomIPAddress();
+            var ipAddress = RandomService.GenerateRandomIPAddress();
             return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());
         }
 

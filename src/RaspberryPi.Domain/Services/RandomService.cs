@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace RaspberryPi.Domain.Common
+namespace RaspberryPi.Domain.Services
 {
-    public static class IPAddressHelper
+    public static class RandomService
     {
         public static IPAddress GenerateRandomIPAddress()
         {
