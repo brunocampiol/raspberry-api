@@ -66,7 +66,7 @@ namespace RaspberryPi.API.Controllers
         [HttpPost]
         public IActionResult Exception(string? exceptionMessage)
         {
-            throw new NotImplementedException(exceptionMessage);
+            throw new AppException(exceptionMessage);
         }
 
         [HttpGet]
