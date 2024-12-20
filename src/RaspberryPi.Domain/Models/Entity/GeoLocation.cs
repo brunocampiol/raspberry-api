@@ -9,6 +9,5 @@ namespace RaspberryPi.Domain.Models.Entity
         public required string City { get; init; }
         public required string RegionName { get; init; }
         public required string WeatherKey { get; init; }
-
     }
 }

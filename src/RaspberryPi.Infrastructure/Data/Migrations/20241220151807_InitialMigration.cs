@@ -42,6 +42,24 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FeedbackMessages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Message = table.Column<string>(type: "TEXT", nullable: false),
+                    CountryCode = table.Column<string>(type: "TEXT", nullable: true),
+                    PostalCode = table.Column<string>(type: "TEXT", nullable: true),
+                    City = table.Column<string>(type: "TEXT", nullable: true),
+                    RegionName = table.Column<string>(type: "TEXT", nullable: true),
+                    HttpHeaders = table.Column<string>(type: "TEXT", nullable: true),
+                    CreatedAtUTC = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FeedbackMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GeoLocations",
                 columns: table => new
                 {
@@ -66,6 +84,9 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Facts");
+
+            migrationBuilder.DropTable(
+                name: "FeedbackMessages");
 
             migrationBuilder.DropTable(
                 name: "GeoLocations");

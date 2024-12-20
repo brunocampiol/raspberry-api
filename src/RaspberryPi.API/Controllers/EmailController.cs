@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
@@ -29,6 +30,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="viewModel"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "root")]
         public async Task<EmailOutbox> Send(EmailViewModel viewModel)
         {
             var dto = _mapper.Map<EmailDto>(viewModel);

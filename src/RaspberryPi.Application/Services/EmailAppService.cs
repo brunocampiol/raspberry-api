@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
@@ -17,9 +18,10 @@ namespace RaspberryPi.Application.Services
         private readonly IEmailInfraService _infraService;
         private readonly IEmailOutboxRepository _repository;
         private readonly IMapper _mapper;
-
+        private readonly ILogger _logger;
 
         public EmailAppService(IOptions<EmailOptions> settings,
+                               ILogger<EmailAppService> logger,
                                IEmailInfraService infraService,
                                IEmailOutboxRepository repository,
                                IMapper mapper)
@@ -27,6 +29,7 @@ namespace RaspberryPi.Application.Services
             _settings = settings.Value;
             _infraService = infraService;
             _repository = repository;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -53,6 +56,18 @@ namespace RaspberryPi.Application.Services
             await _repository.AddAsync(sentEmail);
             await _repository.SaveChangesAsync();
             return sentEmail;
+        }
+
+        public async Task TrySendEmailAsync(EmailDto email)
+        {
+            try
+            {
+                await SendEmailAsync(email);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, e.Message);
+            }
         }
     }
 }

@@ -7,5 +7,6 @@ namespace RaspberryPi.Application.Interfaces
     {
         Task<IEnumerable<EmailOutbox>> GetAllAsync();
         Task<EmailOutbox> SendEmailAsync(EmailDto email);
+        Task TrySendEmailAsync(EmailDto email);
     }
 }

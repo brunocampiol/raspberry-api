@@ -69,6 +69,39 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.ToTable("Facts");
                 });
 
+            modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.FeedbackMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("City")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAtUTC")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("HttpHeaders")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RegionName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedbackMessages");
+                });
+
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.GeoLocation", b =>
                 {
                     b.Property<Guid>("Id")

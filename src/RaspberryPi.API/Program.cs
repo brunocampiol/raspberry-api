@@ -118,6 +118,7 @@ builder.Services.AddHttpClient();
 
 // App services
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
+builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
@@ -134,6 +135,7 @@ builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
 builder.Services.AddScoped<IFactInfraService, FactInfraService>();
 // Repositories
 builder.Services.AddScoped<RaspberryDbContext>();
+builder.Services.AddScoped<IFeedbackMessageRepository, FeedbackMessageRepository>();
 builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
 builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
