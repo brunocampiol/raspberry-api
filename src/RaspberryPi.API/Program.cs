@@ -31,6 +31,7 @@ builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.Sect
 builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
+builder.Services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
 
 builder.Services.AddAutoMapper(AutoMapperConfig.RegisterMappings());
 
@@ -115,21 +116,27 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
+// App services
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
-builder.Services.AddSingleton<IJwtService, JwtService>();
-builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
-
-builder.Services.AddScoped<RaspberryDbContext>();
-builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
-builder.Services.AddScoped<IFactRepository, FactRepository>();
-builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
-builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
-builder.Services.AddScoped<IFactInfraService, FactInfraService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();
 builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
 builder.Services.AddScoped<IFactAppService, FactAppService>();
+builder.Services.AddScoped<IEmailAppService, EmailAppService>();
+// Domain services
+builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
+builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
+// Infra services
+builder.Services.AddScoped<IEmailInfraService, EmailInfraService>();
+builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
+builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
+builder.Services.AddScoped<IFactInfraService, FactInfraService>();
+// Repositories
+builder.Services.AddScoped<RaspberryDbContext>();
+builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
+builder.Services.AddScoped<IFactRepository, FactRepository>();
+builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
 
 
 var app = builder.Build();

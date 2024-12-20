@@ -4,11 +4,10 @@
     {
         public static Type[] RegisterMappings()
         {
-            return new Type[]
-            {
-                typeof(ViewModelToDomainMappingProfile),
-                typeof(DomainToViewModelMappingProfile),
-            };
+            return
+            [
+                typeof(MappingProfile)
+            ];
         }
     }
 }

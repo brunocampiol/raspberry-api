@@ -7,6 +7,7 @@ namespace RaspberryPi.Infrastructure.Data.Context
     {
         public DbSet<Fact> Facts { get; set; }
         public DbSet<GeoLocation> GeoLocations { get; set; }
+        public DbSet<EmailOutbox> EmailsOutbox { get; set; }
 
         public RaspberryDbContext(DbContextOptions<RaspberryDbContext> options)
             : base(options)

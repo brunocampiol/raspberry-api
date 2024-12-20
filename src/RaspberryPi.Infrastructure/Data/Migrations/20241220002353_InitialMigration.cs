@@ -12,6 +12,22 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EmailsOutbox",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    From = table.Column<string>(type: "TEXT", nullable: false),
+                    To = table.Column<string>(type: "TEXT", nullable: false),
+                    Subject = table.Column<string>(type: "TEXT", nullable: false),
+                    Body = table.Column<string>(type: "TEXT", nullable: false),
+                    SentAtUTC = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailsOutbox", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Facts",
                 columns: table => new
                 {
@@ -45,6 +61,9 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EmailsOutbox");
+
             migrationBuilder.DropTable(
                 name: "Facts");
 
