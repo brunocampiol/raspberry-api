@@ -29,7 +29,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="message"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task Submit([Required][StringLength(5000)]string message)
+        public async Task Submit([Required][FromBody][StringLength(5000)]string message)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             var headers = Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
@@ -43,7 +43,7 @@ namespace RaspberryPi.API.Controllers
         /// <param name="message"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult SubmitAndForget([Required][StringLength(5000)] string message)
+        public IActionResult SubmitAndForget([Required][FromBody][StringLength(5000)] string message)
         {
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
             var headers = Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
