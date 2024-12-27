@@ -91,5 +91,11 @@ namespace RaspberryPi.Application.Services
             _repository.Remove(id);
             await _repository.SaveChangesAsync();
         }
+
+        public async Task DeleteAllAsync()
+        {
+            await _repository.RemoveAllAsync();
+            await _repository.SaveChangesAsync();
+        }
     }
 }

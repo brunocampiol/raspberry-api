@@ -30,6 +30,16 @@ namespace RaspberryPi.Infrastructure.Data.Repositories
             _dbSet.Remove(_dbSet.Find(id));
         }
 
+        public virtual async Task RemoveAllAsync()
+        {
+            // TODO: use truncate/delete
+            // https://www.codeproject.com/Articles/5339402/Delete-All-Rows-in-Entity-Framework-Core-6
+            // https://juldhais.net/how-to-update-and-delete-multiple-rows-in-entity-framework-core-c4068304295d
+
+            // Currently not performatic. It does delete one at a time
+            _dbSet.RemoveRange(await _dbSet.ToListAsync());
+        }
+
         public virtual void Update(T entity)
         {
             _dbSet.Update(entity);

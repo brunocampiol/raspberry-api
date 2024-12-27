@@ -46,5 +46,16 @@ namespace RaspberryPi.API.Controllers
         {
             return await _service.GetAllAsync();
         }
+        
+        /// <summary>
+        /// Deletes all emails from database
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize(Roles = "root")]
+        public async Task DeleteAll()
+        {
+            await _service.DeleteAllAsync();
+        }
     }
 }

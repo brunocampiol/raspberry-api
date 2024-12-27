@@ -69,5 +69,11 @@ namespace RaspberryPi.Application.Services
                 _logger.LogError(e, e.Message);
             }
         }
+
+        public async Task DeleteAllAsync()
+        {
+            await _repository.RemoveAllAsync();
+            await _repository.SaveChangesAsync();
+        }
     }
 }

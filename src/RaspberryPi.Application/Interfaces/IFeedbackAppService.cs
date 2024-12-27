@@ -7,5 +7,6 @@ namespace RaspberryPi.Application.Interfaces
         Task SubmitFeedbackAsync(string message, string? ipAddress, string? httpHeaders);
         Task<IEnumerable<FeedbackMessage>> GetAllAsync();
         Task DeleteAsync(Guid id);
+        Task DeleteAllAsync();
     }
 }

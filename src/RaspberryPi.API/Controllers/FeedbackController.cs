@@ -82,5 +82,16 @@ namespace RaspberryPi.API.Controllers
         {
             await _feedbackAppService.DeleteAsync(id);
         }
+
+        /// <summary>
+        /// Deletes all feedbacks
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize(Roles = "root")]
+        public async Task DeleteAll()
+        {
+            await _feedbackAppService.DeleteAllAsync();
+        }
     }
 }
