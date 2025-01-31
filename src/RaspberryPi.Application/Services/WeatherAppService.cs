@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Fetchgoods.Text.Json.Extensions;
+using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Interfaces.Repositories;
@@ -13,16 +14,19 @@ namespace RaspberryPi.Application.Services
         private readonly IWeatherInfraService _weatherInfraService;
         private readonly IGeoLocationRepository _geoLocationRepository;
         private readonly IGeoLocationInfraService _geoLocationInfraService;
+        private readonly IEmailAppService _emailAppService;
         private readonly ILogger _logger;
 
         public WeatherAppService(IWeatherInfraService watherInfraService,
                                     IGeoLocationInfraService geoLocationInfraService,
                                     IGeoLocationRepository geoLocationRepository,
+                                    IEmailAppService emailAppService,
                                     ILogger<WeatherAppService> logger)
         {
             _weatherInfraService = watherInfraService;
             _geoLocationInfraService = geoLocationInfraService;
             _geoLocationRepository = geoLocationRepository;
+            _emailAppService = emailAppService;
             _logger = logger;
         }
 
@@ -68,6 +72,15 @@ namespace RaspberryPi.Application.Services
 
                 await _geoLocationRepository.AddAsync(geoLocation);
                 await _geoLocationRepository.SaveChangesAsync();
+
+                var email = new EmailDto
+                {
+                    To = "bruno.campiol@gmail.com",
+                    Subject = $"New Geolocation {geoLocation.CountryCode}",
+                    Body = geoLocation.ToJson()
+                };
+
+                await _emailAppService.TrySendEmailAsync(email);
             }
 
             var currentConditions = await _weatherInfraService.CurrentConditionsAsync(geoLocation.WeatherKey);
