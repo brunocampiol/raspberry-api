@@ -38,6 +38,11 @@ public class EmailAppService : IEmailAppService
         return await _repository.GetAll().AsNoTracking().ToListAsync();
     }
 
+    public async Task<EmailOutbox?> GetLastSentEmailAsync()
+    {
+        return await _repository.GetLastSentEmailAsync();
+    }
+
     public async Task<EmailOutbox> SendEmailAsync(EmailDto emailDto)
     {
         var email = _mapper.Map<Email>(emailDto);

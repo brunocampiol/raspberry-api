@@ -42,11 +42,22 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Roles = "root")]
         public async Task<IEnumerable<EmailOutbox>> GetAll()
         {
             return await _service.GetAllAsync();
         }
-        
+
+        /// <summary>
+        /// Gets the last sent email from database
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<EmailOutbox?> GetLastSentEmail()
+        {
+            return await _service.GetLastSentEmailAsync();
+        }
+
         /// <summary>
         /// Deletes all emails from database
         /// </summary>
