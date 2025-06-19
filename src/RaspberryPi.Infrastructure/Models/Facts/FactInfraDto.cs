@@ -1,7 +1,6 @@
-﻿namespace RaspberryPi.Infrastructure.Models.Facts
+﻿namespace RaspberryPi.Infrastructure.Models.Facts;
+
+public record FactInfraDto
 {
-    public class FactInfraDto
-    {
-        public required string Fact { get; init; }
-    }
+    public required string Fact { get; init; }
 }

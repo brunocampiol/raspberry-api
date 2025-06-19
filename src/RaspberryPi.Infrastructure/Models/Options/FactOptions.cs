@@ -1,9 +1,8 @@
-﻿namespace RaspberryPi.Infrastructure.Models.Options
+﻿namespace RaspberryPi.Infrastructure.Models.Options;
+
+public record FactOptions
 {
-    public class FactOptions
-    {
-        public const string SectionName = "FactOptions";
-        public required string APIKey { get; init; }
-        public required Uri BaseUrl { get; init; }
-    }
+    public const string SectionName = "FactOptions";
+    public required string APIKey { get; init; }
+    public required Uri BaseUrl { get; init; }
 }

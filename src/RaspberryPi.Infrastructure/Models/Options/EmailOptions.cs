@@ -1,11 +1,10 @@
-﻿namespace RaspberryPi.Infrastructure.Models.Options
+﻿namespace RaspberryPi.Infrastructure.Models.Options;
+
+public record EmailOptions
 {
-    public class EmailOptions
-    {
-        public const string SectionName = "EmailOptions";
-        public required string FromEmail { get; init; }
-        public required string APIKey { get; init; }
-        public required string APISecret { get; init; }
-        public required Uri BaseUrl { get; init; }
-    }
+    public const string SectionName = "EmailOptions";
+    public required string FromEmail { get; init; }
+    public required string SmtpAddress { get; init; }
+    public required string SmtpPassword { get; init; }
+    public required int SmtpPort { get; init; }
 }

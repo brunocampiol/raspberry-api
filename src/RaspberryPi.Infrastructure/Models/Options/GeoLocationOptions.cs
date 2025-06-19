@@ -1,9 +1,8 @@
-﻿namespace RaspberryPi.Infrastructure.Models.Options
+﻿namespace RaspberryPi.Infrastructure.Models.Options;
+
+public record GeoLocationOptions
 {
-    public class GeoLocationOptions
-    {
-        public const string SectionName = "GeoLocationOptions";
-        public string APIKey { get; init; } = default!;
-        public Uri BaseUrl { get; set; } = default!;
-    }
+    public const string SectionName = "GeoLocationOptions";
+    public  required string APIKey { get; init; }
+    public required Uri BaseUrl { get; set; }
 }

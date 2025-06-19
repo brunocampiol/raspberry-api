@@ -1,9 +1,8 @@
 ﻿using RaspberryPi.Infrastructure.Models.Emails;
 
-namespace RaspberryPi.Infrastructure.Interfaces
+namespace RaspberryPi.Infrastructure.Interfaces;
+
+public interface IEmailInfraService
 {
-    public interface IEmailInfraService
-    {
-        Task<Guid> SendEmailAsync(Email email);
-    }
+    Task SendEmailAsync(Email email);
 }

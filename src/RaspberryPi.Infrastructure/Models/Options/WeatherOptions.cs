@@ -1,9 +1,8 @@
-﻿namespace RaspberryPi.Infrastructure.Models.Options
+﻿namespace RaspberryPi.Infrastructure.Models.Options;
+
+public record WeatherOptions
 {
-    public class WeatherOptions
-    {
-        public const string SectionName = "WeatherOptions";
-        public string ApiKey { get; init; } = default!;
-        public Uri BaseUrl { get; set; } = default!;
-    }
+    public const string SectionName = "WeatherOptions";
+    public required string ApiKey { get; init; }
+    public required Uri BaseUrl { get; set; }
 }
