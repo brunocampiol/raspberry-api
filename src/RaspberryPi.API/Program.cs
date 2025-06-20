@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
+using RaspberryPi.API.Filters;
+using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
@@ -41,7 +43,10 @@ builder.Services.AddHealthChecks()
                            tags: ["database"]);
 
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+                {
+                    options.Filters.Add<RequestCounterFilter>();
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = jsonOptions.PropertyNameCaseInsensitive;
@@ -117,6 +122,7 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddHttpClient();
 
 // App services
+builder.Services.AddSingleton<RequestCounterService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
 builder.Services.AddScoped<IFeedbackAppService, FeedbackAppService>();
 builder.Services.AddScoped<IWeatherAppService, WeatherAppService>();

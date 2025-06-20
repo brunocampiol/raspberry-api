@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models.ViewModels;
+using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Core;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Metrics;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -24,16 +26,25 @@ namespace RaspberryPi.API.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IFactAppService _factAppService;
         private readonly IGeoLocationAppService _geolocationAppService;
+        private readonly RequestCounterService _requestCounterService;
 
         public InternalController(IWebHostEnvironment hostEnv, 
                                   IHttpClientFactory httpClientFactory,
                                   IFactAppService factAppService,
-                                  IGeoLocationAppService geolocationAppService)
+                                  IGeoLocationAppService geolocationAppService,
+                                  RequestCounterService requestCounterService)
         {
             _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             _factAppService = factAppService ?? throw new ArgumentNullException(nameof(factAppService));
             _geolocationAppService = geolocationAppService ?? throw new ArgumentNullException(nameof(geolocationAppService));
+            _requestCounterService = requestCounterService ?? throw new ArgumentNullException(nameof(requestCounterService));
+        }
+
+        [HttpGet]
+        public IReadOnlyDictionary<string, long> RequestCounts()
+        {
+            return _requestCounterService.GetAll();
         }
 
         [HttpGet]
