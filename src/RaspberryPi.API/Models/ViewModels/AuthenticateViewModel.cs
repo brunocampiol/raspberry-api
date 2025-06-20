@@ -1,8 +1,7 @@
-﻿namespace RaspberryPi.API.Models.ViewModels
+﻿namespace RaspberryPi.API.Models.ViewModels;
+
+public record AuthenticateViewModel
 {
-    public class AuthenticateViewModel
-    {
-        public required string UserName { get; init; }
-        public required string Password { get; init; }
-    }
+    public required string UserName { get; init; }
+    public required string Password { get; init; }
 }

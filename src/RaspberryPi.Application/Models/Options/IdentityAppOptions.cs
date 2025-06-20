@@ -1,10 +1,9 @@
 ﻿using RaspberryPi.Domain.Models;
 
-namespace RaspberryPi.Application.Models.Options
+namespace RaspberryPi.Application.Models.Options;
+
+public record IdentityAppOptions
 {
-    public sealed class IdentityAppOptions
-    {
-        public const string SectionName = "IdentityAppOptions";
-        public ICollection<AspNetUser>? AspNetUsers { get; init; }
-    }
+    public const string SectionName = nameof(IdentityAppOptions);
+    public ICollection<AspNetUser>? AspNetUsers { get; init; }
 }

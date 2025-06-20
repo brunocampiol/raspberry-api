@@ -1,10 +1,9 @@
-﻿namespace RaspberryPi.API.Models.ViewModels
+﻿namespace RaspberryPi.API.Models.ViewModels;
+
+public record WeatherViewModel
 {
-    public class WeatherViewModel
-    {
-        public string EnglishName { get; init; } = default!;
-        public string CountryCode { get; init; } = default!;
-        public string WeatherText { get; init; } = default!;
-        public string Temperature { get; init; } = default!;
-    }
+    public required string EnglishName { get; init; }
+    public required string CountryCode { get; init; }
+    public required string WeatherText { get; init; }
+    public required string Temperature { get; init; }
 }

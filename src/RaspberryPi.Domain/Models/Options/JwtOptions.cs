@@ -1,11 +1,10 @@
-﻿namespace RaspberryPi.Domain.Models.Options
+﻿namespace RaspberryPi.Domain.Models.Options;
+
+public record JwtOptions
 {
-    public sealed class JwtOptions
-    {
-        public const string SectionName = "Jwt";
-        public string Issuer { get; init; } = default!;
-        public string Audience { get; init; } = default!;
-        public string Key { get; init; } = default!;
-        public int ExpirationInSeconds { get; init; }
-    }
+    public const string SectionName = "Jwt";
+    public required string Issuer { get; init; }
+    public required string Audience { get; init; }
+    public required string Key { get; init; }
+    public int ExpirationInSeconds { get; init; }
 }

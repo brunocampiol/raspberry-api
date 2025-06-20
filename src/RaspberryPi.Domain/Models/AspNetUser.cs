@@ -1,10 +1,9 @@
-﻿namespace RaspberryPi.Domain.Models
+﻿namespace RaspberryPi.Domain.Models;
+
+public record AspNetUser
 {
-    public class AspNetUser
-    {
-        public required string UserName { get; init; }
-        public required string Email { get; init; }
-        public required string Password { get; init; }
-        public required string Roles { get; set; }
-    }
+    public required string UserName { get; init; }
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+    public required string Roles { get; set; }
 }

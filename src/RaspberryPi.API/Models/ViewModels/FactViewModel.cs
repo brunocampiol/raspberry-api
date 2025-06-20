@@ -1,7 +1,6 @@
-﻿namespace RaspberryPi.API.Models.ViewModels
+﻿namespace RaspberryPi.API.Models.ViewModels;
+
+public record FactViewModel
 {
-    public class FactViewModel
-    {
-        public required string Fact { get; init; }
-    }
+    public required string Fact { get; init; }
 }
