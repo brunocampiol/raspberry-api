@@ -1,16 +1,29 @@
-﻿using System.Collections.Concurrent;
+﻿using RaspberryPi.API.Models;
+using System.Collections.Concurrent;
 
 namespace RaspberryPi.API.Services;
 
 public class RequestCounterService
 {
-    private readonly ConcurrentDictionary<string, long> _counts = new();
+    private readonly ConcurrentDictionary<string, EndpointDetail> _stats = new();
 
-    public void Increment(string controller, string action)
+    public void Increment(string controller, string action, string ipAddress)
     {
         var key = $"{controller}.{action}";
-        _counts.AddOrUpdate(key, 1, (_, count) => count + 1);
+        _stats.AddOrUpdate(
+            key,
+            _ =>
+            {
+                var stats = new EndpointDetail();
+                stats.AddRequest(ipAddress);
+                return stats;
+            },
+            (_, stats) =>
+            {
+                stats.AddRequest(ipAddress);
+                return stats;
+            });
     }
 
-    public IReadOnlyDictionary<string, long> GetAll() => _counts;
+    public IReadOnlyDictionary<string, EndpointDetail> GetAll() => _stats;
 }

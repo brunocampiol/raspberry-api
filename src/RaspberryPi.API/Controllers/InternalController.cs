@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Models;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
@@ -42,7 +43,7 @@ namespace RaspberryPi.API.Controllers
         }
 
         [HttpGet]
-        public IReadOnlyDictionary<string, long> RequestCounts()
+        public IReadOnlyDictionary<string, EndpointDetail> RequestCounts()
         {
             return _requestCounterService.GetAll();
         }

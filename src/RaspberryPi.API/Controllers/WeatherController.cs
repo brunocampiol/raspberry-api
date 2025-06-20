@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Extensions;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using System.Net;
@@ -42,15 +43,7 @@ namespace RaspberryPi.API.Controllers
         [HttpGet]
         public async Task<WeatherViewModel> FromContextIpAddress()
         {
-            var clientIp = HttpContext.Connection.RemoteIpAddress.ToString();
-            string forwardedHeader = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
-            if (!string.IsNullOrEmpty(forwardedHeader))
-            {
-                clientIp = forwardedHeader.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(ip => ip.Trim())
-                                          .FirstOrDefault(ip => !IPAddress.IsLoopback(IPAddress.Parse(ip)));
-            }
-
+            var clientIp = HttpContext.GetClientIpAddress();
             var result = await _service.GetWeatherFromIpAddress(clientIp);
             var viewModel = _mapper.Map<WeatherViewModel>(result);
             return viewModel;

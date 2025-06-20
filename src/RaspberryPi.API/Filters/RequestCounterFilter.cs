@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using RaspberryPi.API.Extensions;
 using RaspberryPi.API.Services;
 
 namespace RaspberryPi.API.Filters;
@@ -16,7 +17,8 @@ public class RequestCounterFilter : IActionFilter
     {
         var controller = context.ActionDescriptor.RouteValues["controller"] ?? "Unknown";
         var action = context.ActionDescriptor.RouteValues["action"] ?? "Unknown";
-        _counter.Increment(controller, action);
+        var ipAddress = context.HttpContext.GetClientIpAddress();
+        _counter.Increment(controller, action, ipAddress);
     }
 
     public void OnActionExecuted(ActionExecutedContext context) { }
