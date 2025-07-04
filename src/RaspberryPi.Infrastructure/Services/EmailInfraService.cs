@@ -24,6 +24,7 @@ public sealed class EmailInfraService : IEmailInfraService
             From = new MailAddress(_settings.FromEmail),
             Subject = email.Subject,
             Body = email.Body,
+            IsBodyHtml = email.IsBodyHtml
         };
 
         mail.To.Add(email.To);
