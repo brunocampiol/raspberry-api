@@ -21,7 +21,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public IActionResult Info(string message)
         {
             _logger.LogInformation(message);
@@ -34,7 +34,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public IActionResult Warn(string message)
         {
             _logger.LogWarning(message);
@@ -47,7 +47,7 @@ namespace RaspberryPi.API.Controllers
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         public IActionResult Error(string message)
         {
             _logger.LogError(message);
