@@ -32,8 +32,9 @@ namespace RaspberryPi.Application.Services
 
         public async Task<WeatherDto> GetWeatherFromIpAddress(string ipAddress)
         {
-            var geoPositioning = await _geoLocationInfraService.LookUpAsync(ipAddress);
+            ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
 
+            var geoPositioning = await _geoLocationInfraService.LookUpAsync(ipAddress);
             if (string.IsNullOrEmpty(geoPositioning.CountryCode))
             {
                 _logger.LogWarning("GeoPositioning CountryCode is null, empty or white-space characters");
