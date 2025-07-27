@@ -3,7 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Settings and local db
+# Application specific files
+FodyWeavers.xsd
 appsettings.Development.json
 appsettings.Production.json
 raspberryDb.sqlite

@@ -1,58 +1,61 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MethodTimer;
+using Microsoft.AspNetCore.Mvc;
 
-namespace RaspberryPi.API.Controllers
+namespace RaspberryPi.API.Controllers;
+
+/// <summary>
+/// Log related methods
+/// </summary>
+[ApiController]
+[Route("[controller]/[action]")]
+public class LogController : ControllerBase
 {
-    /// <summary>
-    /// Log related methods
-    /// </summary>
-    [ApiController]
-    [Route("[controller]/[action]")]
-    public class LogController : ControllerBase
+    private readonly ILogger _logger;
+
+    public LogController(ILogger<LogController> logger)
     {
-        private readonly ILogger _logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public LogController(ILogger<LogController> logger)
-        {
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+    /// <summary>
+    /// Logs message at information level
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    public IActionResult Info(string message)
+    {
+        _logger.LogInformation(message);
 
-        /// <summary>
-        /// Logs message at information level
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Info(string message)
-        {
-            _logger.LogInformation(message);
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    /// <summary>
+    /// Logs message at warning level
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    public IActionResult Warn(string message)
+    {
+        _logger.LogWarning(message);
 
-        /// <summary>
-        /// Logs message at warning level
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Warn(string message)
-        {
-            _logger.LogWarning(message);
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    /// <summary>
+    /// Logs message at error level
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    public IActionResult Error(string message)
+    {
+        _logger.LogError(message);
 
-        /// <summary>
-        /// Logs message at error level
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Error(string message)
-        {
-            _logger.LogError(message);
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }

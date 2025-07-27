@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Filters;
+using RaspberryPi.API.Helpers;
 using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
@@ -151,6 +152,8 @@ builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
 
 
 var app = builder.Build();
+
+MethodTimeLogger.Logger = app.Logger;
 
 if (app.Environment.IsDevelopment())
 {
