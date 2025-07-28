@@ -42,17 +42,4 @@ public class CacheController : ControllerBase
 
         return NotFound();
     }
-    
-    /// <summary>
-    /// Sets a value in the memory cache.
-    /// </summary>
-    /// <param name="key">The key to set the value for.</param>
-    /// <param name="value">The value to store in the cache.</param>
-    /// <returns>No content result.</returns>
-    [HttpPost]
-    public IActionResult Set(string key, object value)
-    {
-        _memoryCache.Set(key, value);
-        return NoContent();
-    }
 }
