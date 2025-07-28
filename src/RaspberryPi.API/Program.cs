@@ -1,7 +1,9 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.AutoMapper;
@@ -125,6 +127,19 @@ builder.Services.AddAuthentication(x =>
 
 builder.Services.AddHttpClient();
 
+//if (builder.Environment.IsProduction())
+//{
+//    // If adding, need to include in readme instructions to create the directory and set permissions
+//    builder.Services.AddDataProtection()
+//                    .PersistKeysToFileSystem(new DirectoryInfo("/app/keys")) // Use a persistent, secure path in production
+//                    .ProtectKeysWithAes(); // Optional: encrypt keys at rest
+//}
+
+builder.Services.AddMemoryCache(options =>
+{
+    options.TrackStatistics = true;
+});
+
 // App services
 builder.Services.AddSingleton<RequestCounterService>();
 builder.Services.AddSingleton<IMusicAppService, MusicAppService>();
@@ -149,7 +164,6 @@ builder.Services.AddScoped<IFeedbackMessageRepository, FeedbackMessageRepository
 builder.Services.AddScoped<IGeoLocationRepository, GeoLocationRepository>();
 builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
-
 
 var app = builder.Build();
 

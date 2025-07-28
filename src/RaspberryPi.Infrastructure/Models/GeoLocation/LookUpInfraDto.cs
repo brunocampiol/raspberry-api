@@ -5,7 +5,7 @@ namespace RaspberryPi.Infrastructure.Models.GeoLocation;
 public record LookUpInfraDto
 {
     [JsonPropertyName("ip")]
-    public string Ip { get; set; }
+    public required string Ip { get; init; }
 
     [JsonPropertyName("continentCode")]
     public string ContinentCode { get; set; }
