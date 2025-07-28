@@ -149,6 +149,7 @@ builder.Services.AddScoped<IHardwareAppService, HardwareAppService>();
 builder.Services.AddScoped<IGeoLocationAppService, GeoLocationAppService>();
 builder.Services.AddScoped<IFactAppService, FactAppService>();
 builder.Services.AddScoped<IEmailAppService, EmailAppService>();
+builder.Services.AddScoped<IInternalAppService, InternalAppService>();
 // Domain services
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();

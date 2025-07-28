@@ -63,6 +63,27 @@ public class EmailAppService : IEmailAppService
         return sentEmail;
     }
 
+    public async Task<int> ImportBackupAsync(IEnumerable<EmailOutbox> emails)
+    {
+        foreach (var email in emails)
+        {
+            var dbFact = await _repository.GetByIdAsync(email.Id);
+            if (dbFact is not null)
+            {
+                throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
+            }
+        }
+
+        // TODO: add range instead
+        foreach (var fact in emails)
+        {
+            await _repository.AddAsync(fact);
+        }
+
+        await _repository.SaveChangesAsync();
+        return emails.Count();
+    }
+
     public async Task TrySendEmailAsync(EmailDto email)
     {
         try

@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models;
-using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Core;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
@@ -25,20 +25,17 @@ public class InternalController : ControllerBase
 {
     private readonly IWebHostEnvironment _hostEnv;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IFactAppService _factAppService;
-    private readonly IGeoLocationAppService _geolocationAppService;
+    private readonly IInternalAppService _internalAppService;
     private readonly RequestCounterService _requestCounterService;
 
     public InternalController(IWebHostEnvironment hostEnv, 
                               IHttpClientFactory httpClientFactory,
-                              IFactAppService factAppService,
-                              IGeoLocationAppService geolocationAppService,
+                              IInternalAppService internalAppService,
                               RequestCounterService requestCounterService)
     {
         _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _factAppService = factAppService ?? throw new ArgumentNullException(nameof(factAppService));
-        _geolocationAppService = geolocationAppService ?? throw new ArgumentNullException(nameof(geolocationAppService));
+        _internalAppService = internalAppService ?? throw new ArgumentNullException(nameof(internalAppService));
         _requestCounterService = requestCounterService ?? throw new ArgumentNullException(nameof(requestCounterService));
     }
 
@@ -162,17 +159,7 @@ public class InternalController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GenerateDatabaseBackup()
     {
-        var dbFacts = await _factAppService.GetAllDatabaseFactsAsync();
-        var dbGeolocations = await _geolocationAppService.GetAllGeoLocationsFromDatabaseAsync();
-        var dbBackup = new BackupViewModel
-        {
-            Facts = dbFacts,
-            GeoLocations = dbGeolocations
-        };
-
-        // Serialize the data to JSON
-        // TODO: use json serialization extension instead
-        var json = JsonSerializer.Serialize(dbBackup, new JsonSerializerOptions { WriteIndented = true });
+        var json = await _internalAppService.GenerateDatabaseBackupAsJsonStringAsync();
 
         // Set response headers for file download
         var contentDisposition = new ContentDispositionHeaderValue("attachment")
@@ -199,17 +186,16 @@ public class InternalController : ControllerBase
         using (var streamReader = new StreamReader(file.OpenReadStream()))
         {
             var json = await streamReader.ReadToEndAsync();
+            
             // TODO: use json serialization extension instead
-            var backup = JsonSerializer.Deserialize<BackupViewModel>(json);
+            var backup = JsonSerializer.Deserialize<DbBackupDto>(json);
             if  (backup is null)
             {
                 return BadRequest($"Invalid desserialization for '{json}'");
             }
 
-            var geoLocationImportCount = await _geolocationAppService.ImportBackupAsync(backup.GeoLocations);
-            var factImportCount = await _factAppService.ImportBackupAsync(backup.Facts);
-
-            return Ok($"Imported {geoLocationImportCount + factImportCount} rows");
+            var importResult = await _internalAppService.ImportDatabaseBackupAsync(backup);
+            return Ok($"Imported '{importResult}' rows");
         }
     }
 }
