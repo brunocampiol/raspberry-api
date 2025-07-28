@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Infrastructure.Models.GeoLocation;
 
-public record LookUpInfraDto
+public record IpGeoLocationInfraDetails
 {
     [JsonPropertyName("ip")]
     public required string Ip { get; init; }

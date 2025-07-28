@@ -110,20 +110,20 @@ namespace RaspberryPi.Application.Services
             return weatherDto;
         }
 
-        private async Task<LookUpInfraDto> GetCachedLookUpAsync(string ipAddress)
+        private async Task<IpGeoLocationInfraDetails> GetCachedLookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
             var cacheKey = $"Geolocation-{ipAddress}";
 
-            if (!_memoryCache.TryGetValue(cacheKey, out LookUpInfraDto? lookupResult))
+            if (!_memoryCache.TryGetValue(cacheKey, out IpGeoLocationInfraDetails? geoLocationDetails))
             {
-                lookupResult = await _geoLocationInfraService.LookUpAsync(ipAddress);
+                geoLocationDetails = await _geoLocationInfraService.LookUpAsync(ipAddress);
 
                 // TODO use a configurable cache duration
-                _memoryCache.Set(cacheKey, lookupResult, TimeSpan.FromHours(12));
+                _memoryCache.Set(cacheKey, geoLocationDetails, TimeSpan.FromHours(12));
             }
 
-            return lookupResult ?? new LookUpInfraDto { Ip = ipAddress };
+            return geoLocationDetails ?? new IpGeoLocationInfraDetails { Ip = ipAddress };
         }
 
         private async Task<WeatherDto> GetCachedWeatherConditionsAsync(GeoLocation geoLocation)

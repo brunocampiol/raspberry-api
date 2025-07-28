@@ -5,9 +5,9 @@ namespace RaspberryPi.Application.Interfaces
 {
     public interface IGeoLocationAppService
     {
-        Task<LookUpInfraDto> LookUpAsync(string ipAddress);
+        Task<IpGeoLocationInfraDetails> LookUpAsync(string ipAddress);
 
-        Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync();
+        Task<IpGeoLocationInfraDetails> LookUpFromRandomIpAddressAsync();
         Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync();
         Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations);
     }

@@ -20,13 +20,13 @@ namespace RaspberryPi.Application.Services
             _geoLocationInfraService = geoLocationService;
         }
 
-        public async Task<LookUpInfraDto> LookUpAsync(string ipAddress)
+        public async Task<IpGeoLocationInfraDetails> LookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrEmpty(ipAddress);
             return await _geoLocationInfraService.LookUpAsync(ipAddress);
         }
 
-        public async Task<LookUpInfraDto> LookUpFromRandomIpAddressAsync()
+        public async Task<IpGeoLocationInfraDetails> LookUpFromRandomIpAddressAsync()
         {
             var ipAddress = RandomService.GenerateRandomIPAddress();
             return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());

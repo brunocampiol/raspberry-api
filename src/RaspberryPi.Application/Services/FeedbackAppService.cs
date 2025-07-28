@@ -30,9 +30,9 @@ namespace RaspberryPi.Application.Services
 
         public async Task SubmitFeedbackAsync(string message, string? ipAddress, string? httpHeaders)
         {
-            ArgumentNullException.ThrowIfNullOrWhiteSpace(message, nameof(message));
+            ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
             FeedbackMessage feedback = null;
-            LookUpInfraDto lookup = null;
+            IpGeoLocationInfraDetails lookup = null;
 
             if (ipAddress is not null)
             {
