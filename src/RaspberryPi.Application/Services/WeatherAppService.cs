@@ -73,7 +73,8 @@ namespace RaspberryPi.Application.Services
                     CountryCode = lookupResult.CountryCode,
                     PostalCode = lookupResult.PostalCode,
                     RegionName = lookupResult.RegionName,
-                    WeatherKey = location.Key
+                    WeatherKey = location.Key,
+                    CreatedAtUTC = DateTime.UtcNow
                 };
 
                 await _geoLocationRepository.AddAsync(geoLocation);

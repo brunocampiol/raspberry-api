@@ -9,4 +9,5 @@ public class GeoLocation : EntityBase
     public required string City { get; init; }
     public required string RegionName { get; init; }
     public required string WeatherKey { get; init; }
+    public required DateTime CreatedAtUTC { get; init; }
 }

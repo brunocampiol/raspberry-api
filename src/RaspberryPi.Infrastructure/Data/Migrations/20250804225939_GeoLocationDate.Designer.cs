@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaspberryPi.Infrastructure.Data.Context;
 
@@ -10,9 +11,11 @@ using RaspberryPi.Infrastructure.Data.Context;
 namespace RaspberryPi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    partial class RaspberryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250804225939_GeoLocationDate")]
+    partial class GeoLocationDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.17");
