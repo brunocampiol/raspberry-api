@@ -63,6 +63,12 @@ public class EmailAppService : IEmailAppService
         return sentEmail;
     }
 
+    public async Task SendEmailInfraAsync(EmailDto emailDto)
+    {
+        var email = _mapper.Map<Email>(emailDto);
+        await _infraService.SendEmailAsync(email);
+    }
+
     public async Task<int> ImportBackupAsync(IEnumerable<EmailOutbox> emails)
     {
         foreach (var email in emails)
@@ -84,11 +90,11 @@ public class EmailAppService : IEmailAppService
         return emails.Count();
     }
 
-    public async Task TrySendEmailAsync(EmailDto email)
+    public async Task TrySendEmailAsync(EmailDto emailDto)
     {
         try
         {
-            await SendEmailAsync(email);
+            await SendEmailAsync(emailDto);
         }
         catch (Exception e)
         {

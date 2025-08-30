@@ -1,9 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
+using MimeKit;
+using MimeKit.Text;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Emails;
 using RaspberryPi.Infrastructure.Models.Options;
-using System.Net;
-using System.Net.Mail;
 
 namespace RaspberryPi.Infrastructure.Services;
 
@@ -19,21 +20,50 @@ public sealed class EmailInfraService : IEmailInfraService
 
     public async Task SendEmailAsync(Email email)
     {
-        var mail = new MailMessage()
+        ArgumentNullException.ThrowIfNull(email);
+        if (string.IsNullOrWhiteSpace(email.To))
         {
-            From = new MailAddress(_settings.FromEmail),
-            Subject = email.Subject,
-            Body = email.Body,
-            IsBodyHtml = email.IsBodyHtml
-        };
+            var errorMessage = "To email address is required and " +
+                               "cannot be null, empty or consists " +
+                               "only of white-space characters.";
+            throw new ArgumentException(errorMessage);
+        }
 
-        mail.To.Add(email.To);
+        using var smtp = new SmtpClient();
+        try
+        {
+            await smtp.ConnectAsync(_settings.SmtpAddress, _settings.SmtpPort)
+                      .ConfigureAwait(false);
+            await smtp.AuthenticateAsync(_settings.FromEmail, _settings.SmtpPassword)
+                      .ConfigureAwait(false);
 
-        // TODO: use mailkit instead of System.Net.Mail
-        using var smtp = new SmtpClient(_settings.SmtpAddress, _settings.SmtpPort);
-        smtp.Credentials = new NetworkCredential(_settings.FromEmail, _settings.SmtpPassword);
-        smtp.EnableSsl = true;
+            var message = CreateMimeMessage(email);
+            await smtp.SendAsync(message);
+            await smtp.DisconnectAsync(true);
+        }
+        finally
+        {
+            await smtp.DisconnectAsync(true)
+                      .ConfigureAwait(false);
+        }
+    }
 
-        await smtp.SendMailAsync(mail);
+    private MimeMessage CreateMimeMessage(Email email)
+    {
+        var message = new MimeMessage();
+        message.From.Add(new MailboxAddress(_settings.FromName, _settings.FromEmail));
+        message.To.Add(new MailboxAddress(email.To, email.To));
+        message.Subject = email.Subject;
+
+        if (email.IsBodyHtml)
+        {
+            message.Body = new TextPart(TextFormat.Html) { Text = email.Body };
+        }
+        else
+        {
+            message.Body = new TextPart(TextFormat.Plain) { Text = email.Body };
+        }
+
+        return message;
     }
 }
