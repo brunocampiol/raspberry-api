@@ -40,6 +40,22 @@ public class EmailController : ControllerBase
     }
 
     /// <summary>
+    /// Sends an email using infra service
+    /// </summary>
+    /// <param name="viewModel"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    [Authorize(Roles = "root")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> SendInfra(EmailViewModel viewModel)
+    {
+        var dto = _mapper.Map<EmailDto>(viewModel);
+        await _service.SendEmailInfraAsync(dto);
+        return NoContent();
+    }
+
+    /// <summary>
     /// Gets all sent emails from database
     /// </summary>
     /// <returns></returns>
