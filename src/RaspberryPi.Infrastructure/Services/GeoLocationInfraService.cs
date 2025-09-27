@@ -21,7 +21,7 @@ public class GeoLocationInfraService : IGeoLocationInfraService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<IpGeoLocationInfraDetails> LookUpAsync(string ipAddress)
+    public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrEmpty(ipAddress);
         const string endpoint = "api/check";
@@ -39,7 +39,7 @@ public class GeoLocationInfraService : IGeoLocationInfraService
             throw new AppException(errorMessage);
         }
 
-        var result = httpContent.FromJsonTo<IpGeoLocationInfraDetails>();
+        var result = httpContent.FromJsonTo<GeoLocationInfraResponse>();
         return result;
     }
 }

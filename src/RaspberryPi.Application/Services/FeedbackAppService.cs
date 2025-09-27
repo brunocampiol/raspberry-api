@@ -32,7 +32,7 @@ public class FeedbackAppService : IFeedbackAppService
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
         FeedbackMessage feedback = null;
-        IpGeoLocationInfraDetails lookup = null;
+        GeoLocationInfraResponse lookup = null;
 
         if (ipAddress is not null)
         {

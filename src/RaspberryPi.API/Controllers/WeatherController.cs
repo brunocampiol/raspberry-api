@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Extensions;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
-using System.Net;
 
 namespace RaspberryPi.API.Controllers;
 
@@ -33,7 +32,7 @@ public class WeatherController : ControllerBase
     [HttpGet]
     public async Task<WeatherViewModel> FromIpAddress(string ipAddress)
     {            
-        var result = await _service.GetWeatherFromIpAddress(ipAddress);
+        var result = await _service.CurrentWeatherFromIpAddress(ipAddress);
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }
@@ -47,20 +46,35 @@ public class WeatherController : ControllerBase
     public async Task<WeatherViewModel> FromContextIpAddress()
     {
         var clientIp = HttpContext.GetClientIpAddress();
-        var result = await _service.GetWeatherFromIpAddress(clientIp);
+        var result = await _service.CurrentWeatherFromIpAddress(clientIp);
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }
 
     /// <summary>
-    /// Returns weather data from random IP address
+    /// Returns a random place weather data
     /// </summary>
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<WeatherViewModel> FromRandomIpAddress()
+    public async Task<WeatherViewModel> CurrentRandomWeatherFromInfra()
     {
-        var result = await _service.GetWeatherFromRandomIpAddressAsync();
+        var result = await _service.CurrentRandomWeatherFromInfraAsync();
+        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        return viewModel;
+    }
+
+    /// <summary>
+    /// Returns weather data from longitude and latitude coordinates
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpGet]
+    public async Task<WeatherViewModel> CurrentWeatherFromInfra(float latitude, float longitude)
+    {
+        var result = await _service.CurrentWeatherFromInfraAsync(latitude, longitude);
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }

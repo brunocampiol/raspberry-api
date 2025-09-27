@@ -1,10 +1,11 @@
 ﻿using RaspberryPi.Application.Models.Dtos;
 
-namespace RaspberryPi.Application.Interfaces
+namespace RaspberryPi.Application.Interfaces;
+
+public interface IWeatherAppService
 {
-    public interface IWeatherAppService
-    {
-        Task<WeatherDto> GetWeatherFromIpAddress(string ipAddress);
-        Task<WeatherDto> GetWeatherFromRandomIpAddressAsync();
-    }
+    Task<WeatherDto> CurrentWeatherFromIpAddress(string ipAddress);
+    Task<WeatherDto> CurrentWeatherFromRandomIpAddressAsync();
+    Task<WeatherDto> CurrentRandomWeatherFromInfraAsync();
+    Task<WeatherDto> CurrentWeatherFromInfraAsync(double latitude, double longitude);
 }

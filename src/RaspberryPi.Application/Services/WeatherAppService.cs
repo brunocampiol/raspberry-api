@@ -3,11 +3,12 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Domain.Services;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
+using RaspberryPi.Infrastructure.Models.Weather;
 
 namespace RaspberryPi.Application.Services
 {
@@ -35,7 +36,13 @@ namespace RaspberryPi.Application.Services
             _logger = logger;
         }
 
-        public async Task<WeatherDto> GetWeatherFromIpAddress(string ipAddress)
+        public async Task<WeatherDto> CurrentWeatherFromRandomIpAddressAsync()
+        {
+            var ipAddress = RandomHelper.GenerateRandomIPAddress();
+            return await CurrentWeatherFromIpAddress(ipAddress.ToString());
+        }
+
+        public async Task<WeatherDto> CurrentWeatherFromIpAddress(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
 
@@ -55,25 +62,18 @@ namespace RaspberryPi.Application.Services
                 _logger.LogWarning("GeoPositioning City is null, empty or white-space characters");
                 return WeatherDto.NotAvailable();
             }
-
+            
             var geoLocation = await _geoLocationRepository.GetByPostalCodeAsync(lookupResult.CountryCode, lookupResult.PostalCode);
             if (geoLocation is null)
             {
-                var accuWeatherLocations = await _weatherInfraService.PostalCodeSearch(lookupResult.CountryCode, lookupResult.PostalCode);
-                if (accuWeatherLocations == null || !accuWeatherLocations.Any())
-                {
-                    _logger.LogWarning("AccuWeather location is null or empty result");
-                    return WeatherDto.NotAvailable();
-                }
-
-                var location = accuWeatherLocations.First();
                 geoLocation = new GeoLocation
                 {
                     City = lookupResult.City,
                     CountryCode = lookupResult.CountryCode,
                     PostalCode = lookupResult.PostalCode,
                     RegionName = lookupResult.RegionName,
-                    WeatherKey = location.Key,
+                    Latitude = lookupResult.Latitude,
+                    Longitude = lookupResult.Longitude,
                     CreatedAtUTC = DateTime.UtcNow
                 };
 
@@ -90,33 +90,46 @@ namespace RaspberryPi.Application.Services
                 await _emailAppService.TrySendEmailAsync(email);
             }
 
-            var viewModel = await GetCachedWeatherConditionsAsync(geoLocation);
+            var viewModel = await GetCachedWeatherDtoConditionsAsync(geoLocation);
             return viewModel;
         }
 
-        public async Task<WeatherDto> GetWeatherFromRandomIpAddressAsync()
+        public async Task<WeatherDto> CurrentRandomWeatherFromInfraAsync()
         {
-            var ipAddress = RandomService.GenerateRandomIPAddress();
-            var location = await _weatherInfraService.LocationIpAddressSearchAsync(ipAddress.ToString());
-            var currentConditions = await _weatherInfraService.CurrentConditionsAsync(location.Key);
+            var random = new Random();
+            var latitude = (float)(random.NextDouble() * 180 - 90);   // -90 to 90
+            var longitude = (float)(random.NextDouble() * 360 - 180); // -180 to 180
 
-            var weatherDto = new WeatherDto
-            {
-                EnglishName = location.EnglishName,
-                CountryCode = location.Country.ID,
-                WeatherText = currentConditions.First().WeatherText,
-                Temperature = currentConditions.First().Temperature.Metric.Value + "°C"
-            };
-
-            return weatherDto;
+            return await CurrentWeatherFromInfraAsync(latitude, longitude);
         }
 
-        private async Task<IpGeoLocationInfraDetails> GetCachedLookUpAsync(string ipAddress)
+        public async Task<WeatherDto> CurrentWeatherFromInfraAsync(double latitude, double longitude)
+        {
+            if (latitude < -90 || latitude > 90)
+            {
+                throw new ArgumentOutOfRangeException(nameof(latitude), "Latitude must be between -90 and 90 degrees.");
+            }
+            if (longitude < -180 || longitude > 180)
+            {
+                throw new ArgumentOutOfRangeException(nameof(longitude), "Longitude must be between -180 and 180 degrees.");
+            }
+
+            var infraWeather = await _weatherInfraService.CurrentAsync(latitude, longitude);
+            return new WeatherDto
+            {
+                EnglishName = infraWeather.CityName,
+                CountryCode = infraWeather.System.CountryCode,
+                WeatherText = GetWeatherDescription(infraWeather),
+                Temperature = infraWeather.Main.Temperature + "°C"
+            };
+        }
+
+        private async Task<GeoLocationInfraResponse> GetCachedLookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
             var cacheKey = $"Geolocation-{ipAddress}";
 
-            if (!_memoryCache.TryGetValue(cacheKey, out IpGeoLocationInfraDetails? geoLocationDetails))
+            if (!_memoryCache.TryGetValue(cacheKey, out GeoLocationInfraResponse? geoLocationDetails))
             {
                 geoLocationDetails = await _geoLocationInfraService.LookUpAsync(ipAddress);
 
@@ -124,30 +137,40 @@ namespace RaspberryPi.Application.Services
                 _memoryCache.Set(cacheKey, geoLocationDetails, TimeSpan.FromHours(12));
             }
 
-            return geoLocationDetails ?? new IpGeoLocationInfraDetails { Ip = ipAddress };
+            return geoLocationDetails ?? new GeoLocationInfraResponse { Ip = ipAddress };
         }
 
-        private async Task<WeatherDto> GetCachedWeatherConditionsAsync(GeoLocation geoLocation)
+        private async Task<WeatherDto> GetCachedWeatherDtoConditionsAsync(GeoLocation geoLocation)
         {
             ArgumentNullException.ThrowIfNull(geoLocation);
-            var cacheKey = $"Weather-{geoLocation.CountryCode}-{geoLocation.WeatherKey}";
+            var cacheKey = $"Weather-{geoLocation.CountryCode}-{geoLocation.PostalCode}";
 
             if (!_memoryCache.TryGetValue(cacheKey, out WeatherDto? weatherDto))
             {
-                var currentConditions = await _weatherInfraService.CurrentConditionsAsync(geoLocation.WeatherKey);
-                weatherDto = new WeatherDto
-                {
-                    EnglishName = geoLocation.City,
-                    CountryCode = geoLocation.CountryCode,
-                    WeatherText = currentConditions.First().WeatherText,
-                    Temperature = currentConditions.First().Temperature.Metric.Value + "°C"
-                };
+                weatherDto = await CurrentWeatherFromInfraAsync(geoLocation.Latitude, geoLocation.Longitude);
 
                 // TODO use a configurable cache duration
                 _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromMinutes(30));
             }
 
             return weatherDto ?? WeatherDto.NotAvailable();
+        }
+
+        private static string GetWeatherDescription(WeatherInfraResponse weatherResponse)
+        {
+            if (weatherResponse?.Weather == null || weatherResponse.Weather.Length == 0)
+            {
+                return "No weather data available";
+            }
+
+            if (weatherResponse.Weather.Length == 1)
+            {
+                return weatherResponse.Weather[0].Description;
+            }
+
+            // For multiple descriptions, combine them naturally
+            var descriptions = weatherResponse.Weather.Select(w => w.Description).ToArray();
+            return string.Join(" and ", descriptions);
         }
     }
 }

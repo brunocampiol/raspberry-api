@@ -2,10 +2,10 @@
 
 public record WeatherDto
 {
-    public required string EnglishName { get; init; }
+    public required string EnglishName { get; init; } // City NName
     public required string CountryCode { get; init; }
     public required string WeatherText { get; init; }
-    public required string Temperature { get; init; }
+    public required string Temperature { get; init; } // In °C
 
     public static WeatherDto NotAvailable()
     {
