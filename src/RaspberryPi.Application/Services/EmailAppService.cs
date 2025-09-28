@@ -71,21 +71,17 @@ public class EmailAppService : IEmailAppService
 
     public async Task<int> ImportBackupAsync(IEnumerable<EmailOutbox> emails)
     {
-        foreach (var email in emails)
+        var existingIds = await _repository.GetAll()
+                                    .Where(g => emails.Select(gl => gl.Id).Contains(g.Id))
+                                    .Select(g => g.Id)
+                                    .ToListAsync();
+
+        if (existingIds.Count > 0)
         {
-            var dbFact = await _repository.GetByIdAsync(email.Id);
-            if (dbFact is not null)
-            {
-                throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
-            }
+            throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
         }
 
-        // TODO: add range instead
-        foreach (var fact in emails)
-        {
-            await _repository.AddAsync(fact);
-        }
-
+        await _repository.AddRangeAsync(emails);
         await _repository.SaveChangesAsync();
         return emails.Count();
     }

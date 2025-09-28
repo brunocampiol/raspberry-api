@@ -15,7 +15,7 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.17");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
 
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.EmailOutbox", b =>
                 {
@@ -119,15 +119,17 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAtUTC")
                         .HasColumnType("TEXT");
 
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RegionName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("WeatherKey")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

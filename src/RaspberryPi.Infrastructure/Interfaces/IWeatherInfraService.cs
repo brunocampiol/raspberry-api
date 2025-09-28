@@ -1,11 +1,8 @@
 ﻿using RaspberryPi.Infrastructure.Models.Weather;
 
-namespace RaspberryPi.Infrastructure.Interfaces
+namespace RaspberryPi.Infrastructure.Interfaces;
+
+public interface IWeatherInfraService
 {
-    public interface IWeatherInfraService
-    {
-        Task<IEnumerable<PostalCodeSearchInfraDto>> PostalCodeSearch(string country, string postalCode);
-        Task<IEnumerable<WeatherCurrentConditionsInfraDto>> CurrentConditionsAsync(string key);
-        Task<WeatherLocationInfraDto> LocationIpAddressSearchAsync(string ipAddress);
-    }
+    Task<WeatherInfraResponse> CurrentAsync(double latitude, double longitude);
 }

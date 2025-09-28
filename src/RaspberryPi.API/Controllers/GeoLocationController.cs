@@ -29,7 +29,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IpGeoLocationInfraDetails> LookUp([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocationInfraResponse> LookUp([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpAsync(ipAddress);
     }
@@ -40,7 +40,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IpGeoLocationInfraDetails> LookUpFromContextIpAddress()
+    public async Task<GeoLocationInfraResponse> LookUpFromContextIpAddress()
     {
         var clientIp = HttpContext.GetClientIpAddress();
         return await _appService.LookUpAsync(clientIp);
@@ -52,7 +52,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IpGeoLocationInfraDetails> LookUpFromRandomIpAddress()
+    public async Task<GeoLocationInfraResponse> LookUpFromRandomIpAddress()
     {
         return await _appService.LookUpFromRandomIpAddressAsync();
     }

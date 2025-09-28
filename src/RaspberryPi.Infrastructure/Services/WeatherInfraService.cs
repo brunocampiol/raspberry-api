@@ -2,94 +2,44 @@
 using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.Weather;
 using RaspberryPi.Infrastructure.Models.Options;
+using RaspberryPi.Infrastructure.Models.Weather;
 
-namespace RaspberryPi.Infrastructure.Services
+namespace RaspberryPi.Infrastructure.Services;
+
+// This class depends on https://openweathermap.org/ services
+// APIs reference https://openweathermap.org/current
+public class WeatherInfraService : IWeatherInfraService
 {
-    // This class depends on AccuWeather services
-    // APIs reference https://developer.accuweather.com/apis
-    public class WeatherInfraService : IWeatherInfraService
+    private readonly WeatherOptions _settings;
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public WeatherInfraService(IOptions<WeatherOptions> settings,
+                               IHttpClientFactory httpClientFactory)
     {
-        private readonly WeatherOptions _settings;
-        private readonly IHttpClientFactory _httpClientFactory;
+        _httpClientFactory = httpClientFactory;
+        _settings = settings.Value;
+    }
 
-        public WeatherInfraService(IOptions<WeatherOptions> settings,
-                                  IHttpClientFactory httpClientFactory)
+    public async Task<WeatherInfraResponse> CurrentAsync(double latitude, double longitude)
+    {
+        var endpoint = $"data/2.5/weather?lat={latitude}&lon={longitude}&units=metric&appid={_settings.ApiKey}";
+        var httpClient = _httpClientFactory.CreateClient();
+        var uri = new Uri($"{_settings.BaseUrl}{endpoint}");
+
+        var httpResponse = await httpClient.GetAsync(uri);
+        var httpContent = await httpResponse.Content.ReadAsStringAsync();
+
+        if (!httpResponse.IsSuccessStatusCode)
         {
-            _httpClientFactory = httpClientFactory;
-            _settings = settings.Value;
+            var errorMessage = $"Failed to get PostalCodeSearch. " +
+                               $"The HTTP response '{httpResponse.StatusCode}' " +
+                               $"is not in 2XX range for '{uri}'. Received " +
+                               $"content is '{httpContent}'";
+            throw new AppException(errorMessage);
         }
 
-        public async Task<IEnumerable<PostalCodeSearchInfraDto>> PostalCodeSearch(string country, string postalCode)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(country);
-            ArgumentException.ThrowIfNullOrEmpty(postalCode);
-
-            var endpoint = $"locations/v1/postalcodes/{country}/search";
-            var httpClient = _httpClientFactory.CreateClient();
-            var uri = new Uri($"{_settings.BaseUrl}{endpoint}?apikey={_settings.ApiKey}&q={postalCode}");
-
-            var httpResponse = await httpClient.GetAsync(uri);
-            var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var errorMessage = $"Failed to get PostalCodeSearch. " +
-                                   $"The HTTP response '{httpResponse.StatusCode}' " +
-                                   $"is not in 2XX range for '{uri}'. Received " +
-                                   $"content is '{httpContent}'";
-                throw new AppException(errorMessage);
-            }
-
-            var result = httpContent.FromJsonTo<IEnumerable<PostalCodeSearchInfraDto>>();
-            return result;
-        }
-
-        public async Task<WeatherLocationInfraDto> LocationIpAddressSearchAsync(string ipAddress)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-            const string endpoint = "locations/v1/cities/ipaddress";
-            var httpClient = _httpClientFactory.CreateClient();
-            var uri = new Uri($"{_settings.BaseUrl}{endpoint}?apikey={_settings.ApiKey}&q={ipAddress}");
-
-            var httpResponse = await httpClient.GetAsync(uri);
-            var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var errorMessage = $"Failed to get LocationIpAddressSearchAsync. " +
-                                   $"The HTTP response '{httpResponse.StatusCode}' " +
-                                   $"is not in 2XX range for '{uri}'. Received " +
-                                   $"content is '{httpContent}'";
-                throw new AppException(errorMessage);
-            }
-
-            var result = httpContent.FromJsonTo<WeatherLocationInfraDto>();
-            return result;
-        }
-
-        public async Task<IEnumerable<WeatherCurrentConditionsInfraDto>> CurrentConditionsAsync(string key)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(key);
-            const string endpoint = "currentconditions/v1/";
-            var httpClient = _httpClientFactory.CreateClient();
-            var uri = new Uri($"{_settings.BaseUrl}{endpoint}{key}?apikey={_settings.ApiKey}");
-
-            var httpResponse = await httpClient.GetAsync(uri);
-            var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-            if (!httpResponse.IsSuccessStatusCode)
-            {
-                var errorMessage = $"Failed to get CurrentConditionsAsync. " +
-                                   $"The HTTP response '{httpResponse.StatusCode}' " +
-                                   $"is not in 2XX range for '{uri}'. Received " +
-                                   $"content is '{httpContent}'";
-                throw new AppException(errorMessage);
-            }
-
-            var result = httpContent.FromJsonTo<IEnumerable<WeatherCurrentConditionsInfraDto>>();
-            return result;
-        }
+        var result = httpContent.FromJsonTo<WeatherInfraResponse>();
+        return result;
     }
 }
