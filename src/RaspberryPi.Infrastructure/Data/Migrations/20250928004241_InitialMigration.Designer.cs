@@ -11,14 +11,14 @@ using RaspberryPi.Infrastructure.Data.Context;
 namespace RaspberryPi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(RaspberryDbContext))]
-    [Migration("20241220151807_InitialMigration")]
+    [Migration("20250928004241_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
 
             modelBuilder.Entity("RaspberryPi.Domain.Models.Entity.EmailOutbox", b =>
                 {
@@ -119,15 +119,20 @@ namespace RaspberryPi.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("CreatedAtUTC")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("PostalCode")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RegionName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("WeatherKey")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

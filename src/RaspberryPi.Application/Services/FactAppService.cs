@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
@@ -58,21 +59,18 @@ namespace RaspberryPi.Application.Services
 
         public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts)
         {
-            foreach (var fact in facts)
+
+            var existingIds = await _repository.GetAll()
+                                        .Where(g => facts.Select(gl => gl.Id).Contains(g.Id))
+                                        .Select(g => g.Id)
+                                        .ToListAsync();
+
+            if (existingIds.Count > 0)
             {
-                var dbFact = await _repository.GetByIdAsync(fact.Id);
-                if (dbFact is not null)
-                {
-                    throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
-                }
+                throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
             }
 
-            // TODO: add range instead
-            foreach (var fact in facts)
-            {
-                await _repository.AddAsync(fact);
-            }
-
+            await _repository.AddRangeAsync(facts);
             await _repository.SaveChangesAsync();
             return facts.Count();
         }

@@ -6,57 +6,52 @@ using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 
-namespace RaspberryPi.Application.Services
+namespace RaspberryPi.Application.Services;
+
+public sealed class GeoLocationAppService : IGeoLocationAppService
 {
-    public sealed class GeoLocationAppService : IGeoLocationAppService
+    private readonly IGeoLocationInfraService _geoLocationInfraService;
+    private readonly IGeoLocationRepository _repository;
+
+    public GeoLocationAppService(IGeoLocationInfraService geoLocationService,
+                                IGeoLocationRepository repository)
     {
-        private readonly IGeoLocationInfraService _geoLocationInfraService;
-        private readonly IGeoLocationRepository _repository;
+        _repository = repository;
+        _geoLocationInfraService = geoLocationService;
+    }
 
-        public GeoLocationAppService(IGeoLocationInfraService geoLocationService,
-                                    IGeoLocationRepository repository)
+    public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(ipAddress);
+        return await _geoLocationInfraService.LookUpAsync(ipAddress);
+    }
+
+    public async Task<GeoLocationInfraResponse> LookUpFromRandomIpAddressAsync()
+    {
+        var ipAddress = RandomHelper.GenerateRandomIPAddress();
+        return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());
+    }
+
+    public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()
+    {
+        var dbResults = await _repository.GetAll().AsNoTracking().ToListAsync();
+        return dbResults;
+    }
+
+    public async Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations)
+    {
+        var existingIds = await _repository.GetAll()
+                                    .Where(g => geoLocations.Select(gl => gl.Id).Contains(g.Id))
+                                    .Select(g => g.Id)
+                                    .ToListAsync();
+
+        if (existingIds.Count > 0)
         {
-            _repository = repository;
-            _geoLocationInfraService = geoLocationService;
+            throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
         }
 
-        public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
-        {
-            ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-            return await _geoLocationInfraService.LookUpAsync(ipAddress);
-        }
-
-        public async Task<GeoLocationInfraResponse> LookUpFromRandomIpAddressAsync()
-        {
-            var ipAddress = RandomHelper.GenerateRandomIPAddress();
-            return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());
-        }
-
-        public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()
-        {
-            var dbResults = await _repository.GetAll().AsNoTracking().ToListAsync();
-            return dbResults;
-        }
-
-        public async Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations)
-        {
-            foreach (var fact in geoLocations)
-            {
-                var dbFact = await _repository.GetByIdAsync(fact.Id);
-                if (dbFact is not null)
-                {
-                    throw new InvalidOperationException($"There is already a fact ID '{dbFact.Id}' in database");
-                }
-            }
-
-            // TODO: add range instead
-            foreach (var fact in geoLocations)
-            {
-                await _repository.AddAsync(fact);
-            }
-
-            await _repository.SaveChangesAsync();
-            return geoLocations.Count();
-        }
+        await _repository.AddRangeAsync(geoLocations);
+        await _repository.SaveChangesAsync();
+        return geoLocations.Count();
     }
 }

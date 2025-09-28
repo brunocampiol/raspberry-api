@@ -1,13 +1,13 @@
-﻿namespace RaspberryPi.Domain.Core
+﻿namespace RaspberryPi.Domain.Core;
+
+public interface IRepository<T> : IDisposable where T : class
 {
-    public interface IRepository<T> : IDisposable where T : class
-    {
-        Task<T?> GetByIdAsync(Guid id);
-        Task AddAsync(T entity);
-        void Update(T entity);
-        void Remove(Guid id);
-        Task RemoveAllAsync();
-        IQueryable<T> GetAll();
-        Task<int> SaveChangesAsync();
-    }
+    Task<T?> GetByIdAsync(Guid id);
+    Task AddAsync(T entity);
+    Task AddRangeAsync(IEnumerable<T> entities);
+    void Update(T entity);
+    void Remove(Guid id);
+    Task RemoveAllAsync();
+    IQueryable<T> GetAll();
+    Task<int> SaveChangesAsync();
 }
