@@ -94,36 +94,6 @@ namespace RaspberryPi.Application.Services
             return viewModel;
         }
 
-        public async Task<WeatherDto> CurrentRandomWeatherFromInfraAsync()
-        {
-            var random = new Random();
-            var latitude = (float)(random.NextDouble() * 180 - 90);   // -90 to 90
-            var longitude = (float)(random.NextDouble() * 360 - 180); // -180 to 180
-
-            return await CurrentWeatherFromInfraAsync(latitude, longitude);
-        }
-
-        public async Task<WeatherDto> CurrentWeatherFromInfraAsync(double latitude, double longitude)
-        {
-            if (latitude < -90 || latitude > 90)
-            {
-                throw new ArgumentOutOfRangeException(nameof(latitude), "Latitude must be between -90 and 90 degrees.");
-            }
-            if (longitude < -180 || longitude > 180)
-            {
-                throw new ArgumentOutOfRangeException(nameof(longitude), "Longitude must be between -180 and 180 degrees.");
-            }
-
-            var infraWeather = await _weatherInfraService.CurrentAsync(latitude, longitude);
-            return new WeatherDto
-            {
-                EnglishName = infraWeather.CityName,
-                CountryCode = infraWeather.System.CountryCode,
-                WeatherText = GetWeatherDescription(infraWeather),
-                Temperature = infraWeather.Main.Temperature + "°C"
-            };
-        }
-
         private async Task<GeoLocationInfraResponse> GetCachedLookUpAsync(string ipAddress)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
@@ -147,7 +117,14 @@ namespace RaspberryPi.Application.Services
 
             if (!_memoryCache.TryGetValue(cacheKey, out WeatherDto? weatherDto))
             {
-                weatherDto = await CurrentWeatherFromInfraAsync(geoLocation.Latitude, geoLocation.Longitude);
+                var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
+                weatherDto = new WeatherDto()
+                {
+                    EnglishName = infraWeather.CityName,
+                    CountryCode = infraWeather.System.CountryCode,
+                    WeatherText = GetWeatherDescription(infraWeather),
+                    Temperature = infraWeather.Main.Temperature + "°C"
+                };
 
                 // TODO use a configurable cache duration
                 _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromMinutes(30));

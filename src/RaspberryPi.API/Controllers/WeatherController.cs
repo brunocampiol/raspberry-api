@@ -50,32 +50,4 @@ public class WeatherController : ControllerBase
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }
-
-    /// <summary>
-    /// Returns a random place weather data
-    /// </summary>
-    /// <returns></returns>
-    [Time]
-    [HttpGet]
-    public async Task<WeatherViewModel> CurrentRandomWeatherFromInfra()
-    {
-        var result = await _service.CurrentRandomWeatherFromInfraAsync();
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
-        return viewModel;
-    }
-
-    /// <summary>
-    /// Returns weather data from longitude and latitude coordinates
-    /// </summary>
-    /// <param name="latitude"></param>
-    /// <param name="longitude"></param>
-    /// <returns></returns>
-    [Time]
-    [HttpGet]
-    public async Task<WeatherViewModel> CurrentWeatherFromInfra(float latitude, float longitude)
-    {
-        var result = await _service.CurrentWeatherFromInfraAsync(latitude, longitude);
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
-        return viewModel;
-    }
 }
