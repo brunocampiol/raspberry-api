@@ -9,7 +9,7 @@ public abstract class Repository<T> : IRepository<T> where T : class
     protected readonly RaspberryDbContext _context;
     protected readonly DbSet<T> _dbSet;
 
-    public Repository(RaspberryDbContext context)
+    protected Repository(RaspberryDbContext context)
     {
         _context = context;
         _dbSet = _context.Set<T>();
@@ -32,17 +32,12 @@ public abstract class Repository<T> : IRepository<T> where T : class
 
     public virtual void Remove(Guid id)
     {
-        _dbSet.Remove(_dbSet.Find(id) ?? throw new Exception("Could not find ID '{id}'"));
+        _dbSet.Remove(_dbSet.Find(id) ?? throw new KeyNotFoundException($"Could not find ID '{id}'"));
     }
 
     public virtual async Task RemoveAllAsync()
     {
-        // TODO: use truncate/delete
-        // https://www.codeproject.com/Articles/5339402/Delete-All-Rows-in-Entity-Framework-Core-6
-        // https://juldhais.net/how-to-update-and-delete-multiple-rows-in-entity-framework-core-c4068304295d
-
-        // Currently not performatic. It does delete one at a time
-        _dbSet.RemoveRange(await _dbSet.ToListAsync());
+        await _dbSet.ExecuteDeleteAsync();
     }
 
     public virtual void Update(T entity)
@@ -62,7 +57,12 @@ public abstract class Repository<T> : IRepository<T> where T : class
 
     public void Dispose()
     {
-        _context.Dispose();
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        _context.Dispose();
     }
 }
