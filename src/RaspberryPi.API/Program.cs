@@ -9,6 +9,7 @@ using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Filters;
 using RaspberryPi.API.Helpers;
+using RaspberryPi.API.Middlewares;
 using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
@@ -154,7 +155,7 @@ builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
 // Infra services
-builder.Services.AddScoped<IEmailInfraService, EmailInfraService>();
+builder.Services.AddSingleton<IEmailInfraService, EmailInfraService>();
 builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
 builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
 builder.Services.AddScoped<IFactInfraService, FactInfraService>();
@@ -166,6 +167,8 @@ builder.Services.AddScoped<IFactRepository, FactRepository>();
 builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 MethodTimeLogger.Logger = app.Logger;
 
