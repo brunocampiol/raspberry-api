@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Filters;
+using RaspberryPi.API.HealthChecks;
 using RaspberryPi.API.Helpers;
 using RaspberryPi.API.Middlewares;
 using RaspberryPi.API.Services;
@@ -29,7 +30,8 @@ const string _corsPolicyName = "AllowAll";
 var builder = WebApplication.CreateBuilder(args);
 var jsonOptions = AppJsonSerializerOptions.Default;
 var config = builder.Configuration;
-var connectionString = config.GetConnectionString("SqlLite");
+var connectionString = config.GetConnectionString("SqlLite")
+    ?? throw new InvalidOperationException("Connection string 'SqlLite' is missing.");
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
@@ -42,8 +44,14 @@ builder.Services.AddAutoMapper(AutoMapperConfig.RegisterMappings());
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString,
-                           name: "SqlLite",
-                           tags: ["database"]);
+                           name: "sqlLite",
+                           tags: ["database"])
+                .AddCheck<WeatherHealthCheck>(
+                            name: "weather",
+                            tags: ["api"])
+                .AddCheck<GeoLocationHealthCheck>(
+                            name: "geolocation",
+                            tags: ["api"]);
 
 
 builder.Services.AddControllers(options =>
@@ -174,11 +182,9 @@ MethodTimeLogger.Logger = app.Logger;
 
 if (app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<RaspberryDbContext>();
-        await db.Database.EnsureCreatedAsync();
-    }
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<RaspberryDbContext>();
+    await db.Database.EnsureCreatedAsync();
 }
 
 //app.UseHttpsRedirection();

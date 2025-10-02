@@ -24,9 +24,8 @@ public class GeoLocationInfraService : IGeoLocationInfraService
     public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-        const string endpoint = "api/check";
         var httpClient = _httpClientFactory.CreateClient();
-        var uri = new Uri($"{_settings.BaseUrl}{endpoint}?accessKey={_settings.APIKey}&ip={ipAddress}");
+        var uri = new Uri($"{_settings.BaseUrl}api/check?accessKey={_settings.APIKey}&ip={ipAddress}");
 
         var httpResponse = await httpClient.GetAsync(uri);
         var httpContent = await httpResponse.Content.ReadAsStringAsync();
