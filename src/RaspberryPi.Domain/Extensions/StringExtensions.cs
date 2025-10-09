@@ -19,4 +19,26 @@ public static class StringExtensions
             return builder.ToString();
         }
     }
+
+    public static string CapitalizeFirstLetter(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+        {
+            return input;
+        }
+
+        char firstChar = input[0];
+        if (char.IsUpper(firstChar) || !char.IsLetter(firstChar))
+        {
+            return input;
+        }
+
+        return string.Create(input.Length, (input, char.ToUpperInvariant(firstChar)),
+            static (chars, state) =>
+            {
+                var (inputValue, newFirstChar) = state;
+                inputValue.AsSpan().CopyTo(chars);
+                chars[0] = newFirstChar;
+            });
+    }
 }

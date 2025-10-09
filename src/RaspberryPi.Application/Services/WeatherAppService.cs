@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
+using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
@@ -123,12 +124,12 @@ namespace RaspberryPi.Application.Services
                 var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
                 weatherDto = new WeatherDto()
                 {
-                    EnglishName = infraWeather.CityName,
-                    CountryCode = infraWeather.System.CountryCode,
+                    EnglishName = geoLocation.LocationName,
+                    CountryCode = geoLocation.CountryCode,
                     WeatherText = GetWeatherDescription(infraWeather),
-                    Temperature = infraWeather.Main.Temperature + "°C"
+                    Temperature = $"{infraWeather.Main.Temperature:0.0} °C",
                 };
-
+                 
                 // TODO use a configurable cache duration
                 _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromMinutes(30));
             }
@@ -145,12 +146,16 @@ namespace RaspberryPi.Application.Services
 
             if (weatherResponse.Weather.Length == 1)
             {
-                return weatherResponse.Weather[0].Description;
+                return weatherResponse.Weather[0]
+                                      .Description
+                                      .Trim()
+                                      .CapitalizeFirstLetter();
             }
 
             // For multiple descriptions, combine them naturally
             var descriptions = weatherResponse.Weather.Select(w => w.Description).ToArray();
-            return string.Join(" and ", descriptions);
+            var allDescriptions = string.Join(" and ", descriptions);
+            return allDescriptions.Trim().CapitalizeFirstLetter();
         }
     }
 }
