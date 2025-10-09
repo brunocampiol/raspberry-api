@@ -13,18 +13,18 @@ namespace RaspberryPi.Infrastructure.Data.Repositories
 
         }
 
-        public async Task<GeoLocation?> GetByPostalCodeAsync(string countryCode, string postalCode)
+        public async Task<GeoLocation?> GetAsync(string countryCode, double latitude, double longitude)
         {
-            // TODO: find better string ordnial ignroe case comparison for sqlite
-            // countryCode.ToUpperInvariant() == x.CountryCode.ToUpperInvariant()
+            // Round values to 3 decimal places
+            var roundedLatitude = Math.Round(latitude, 3);
+            var roundedLongitude = Math.Round(longitude, 3);
+
             var geoLocation = await _dbSet.AsNoTracking()
                               .FirstOrDefaultAsync(x => string.Equals(countryCode, x.CountryCode) &&
-                                                        string.Equals(postalCode, x.PostalCode));
-
-
-            //var geoLocation = await _dbSet.AsNoTracking()
-            //                              .FirstOrDefaultAsync(x => countryCode.ToUpperInvariant() == x.CountryCode.ToUpperInvariant() &&
-            //                                                        postalCode.ToUpperInvariant() == x.PostalCode.ToUpperInvariant());
+                                                      x.Latitude >= roundedLatitude - 0.001 &&
+                                                      x.Latitude <= roundedLatitude + 0.001 &&
+                                                      x.Longitude >= roundedLongitude - 0.001 &&
+                                                      x.Longitude <= roundedLongitude + 0.001);
 
             return geoLocation;
         }

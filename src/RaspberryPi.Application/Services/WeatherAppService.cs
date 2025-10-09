@@ -49,29 +49,32 @@ namespace RaspberryPi.Application.Services
             var lookupResult = await GetCachedLookUpAsync(ipAddress);
             if (string.IsNullOrEmpty(lookupResult.CountryCode))
             {
-                _logger.LogWarning("GeoPositioning CountryCode is null, empty or white-space characters");
+                var message = "GeoPositioning CountryCode is null, empty or white-space characters " +
+                              $"for ip address '{ipAddress}'. Response: '{lookupResult.ToJson()}'";
+                _logger.LogWarning(message);
                 return WeatherDto.NotAvailable();
             }
-            if (string.IsNullOrWhiteSpace(lookupResult.PostalCode))
+
+            // Fallback naming to avoid null values
+            var parsedLocationName = lookupResult.City ?? lookupResult.RegionName ?? lookupResult.CountryName;
+            if (string.IsNullOrWhiteSpace(parsedLocationName))
             {
-                _logger.LogWarning("GeoPositioning PostalCode is null, empty or white-space characters");
-                return WeatherDto.NotAvailable();
-            }
-            if (string.IsNullOrWhiteSpace(lookupResult.City))
-            {
-                _logger.LogWarning("GeoPositioning City is null, empty or white-space characters");
+                var message = "Unable to determine a city for ip address " +
+                              $"'{ipAddress}'. Response: '{lookupResult.ToJson()}'";
+                _logger.LogWarning(message);
                 return WeatherDto.NotAvailable();
             }
             
-            var geoLocation = await _geoLocationRepository.GetByPostalCodeAsync(lookupResult.CountryCode, lookupResult.PostalCode);
+            var geoLocation = await _geoLocationRepository.GetAsync(lookupResult.CountryCode, 
+                                                                    lookupResult.Latitude, 
+                                                                    lookupResult.Longitude);
+
             if (geoLocation is null)
             {
                 geoLocation = new GeoLocation
                 {
-                    City = lookupResult.City,
                     CountryCode = lookupResult.CountryCode,
-                    PostalCode = lookupResult.PostalCode,
-                    RegionName = lookupResult.RegionName,
+                    LocationName = parsedLocationName,
                     Latitude = lookupResult.Latitude,
                     Longitude = lookupResult.Longitude,
                     CreatedAtUTC = DateTime.UtcNow
@@ -113,7 +116,7 @@ namespace RaspberryPi.Application.Services
         private async Task<WeatherDto> GetCachedWeatherDtoConditionsAsync(GeoLocation geoLocation)
         {
             ArgumentNullException.ThrowIfNull(geoLocation);
-            var cacheKey = $"Weather-{geoLocation.CountryCode}-{geoLocation.PostalCode}";
+            var cacheKey = $"Weather-{geoLocation.CountryCode}-{geoLocation.LocationName}";
 
             if (!_memoryCache.TryGetValue(cacheKey, out WeatherDto? weatherDto))
             {

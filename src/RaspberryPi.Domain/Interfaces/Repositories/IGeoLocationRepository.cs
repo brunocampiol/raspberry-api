@@ -5,6 +5,6 @@ namespace RaspberryPi.Domain.Interfaces.Repositories
 {
     public interface IGeoLocationRepository : IRepository<GeoLocation>
     {
-        Task<GeoLocation?> GetByPostalCodeAsync(string countryCode, string postalCode);
+        Task<GeoLocation?> GetAsync(string countryCode, double latitude, double longitude);
     }
 }
