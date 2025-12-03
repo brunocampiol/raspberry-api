@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Infrastructure.Data.Context;
+using System.Linq.Expressions;
 
 namespace RaspberryPi.Infrastructure.Data.Repositories;
 
@@ -45,9 +46,13 @@ public abstract class Repository<T> : IRepository<T> where T : class
         _dbSet.Update(entity);
     }
 
-    public virtual IQueryable<T> GetAll()
+    public virtual async Task<IReadOnlyCollection<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null)
     {
-        return _dbSet;
+        var query = _dbSet.AsNoTracking();
+
+        if (predicate is not null) query = query.Where(predicate);
+
+        return await query.ToListAsync();
     }
 
     public virtual async Task<int> SaveChangesAsync()

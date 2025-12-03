@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
@@ -13,13 +12,11 @@ namespace RaspberryPi.Application.Services
     {
         private readonly IFactInfraService _factsInfraService;
         private readonly IFactRepository _repository;
-        private readonly IMapper _mapper;
 
         public FactAppService(IFactInfraService factsService, IFactRepository repository, IMapper mapper)
         {
             _factsInfraService = factsService;
             _repository = repository;
-            _mapper = mapper;
         }
 
         public async Task<FactInfraDto> GetRawRandomFactAsync()
@@ -59,15 +56,15 @@ namespace RaspberryPi.Application.Services
 
         public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts)
         {
-
-            var existingIds = await _repository.GetAll()
-                                        .Where(g => facts.Select(gl => gl.Id).Contains(g.Id))
-                                        .Select(g => g.Id)
-                                        .ToListAsync();
+            var factIds = facts.Select(e => e.Id).ToList();
+            var factsInDb = await _repository.GetAllAsync(g => factIds.Contains(g.Id));
+            var existingIds = factsInDb.Select(e => e.Id).ToList();
 
             if (existingIds.Count > 0)
             {
-                throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
+                throw new InvalidOperationException(
+                    $"The following '{existingIds.Count}' IDs already " +
+                    $"exist in the database: {string.Join(", ", existingIds)}.");
             }
 
             await _repository.AddRangeAsync(facts);

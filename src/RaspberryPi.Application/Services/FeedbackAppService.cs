@@ -83,14 +83,15 @@ public class FeedbackAppService : IFeedbackAppService
 
     public async Task<int> ImportBackupAsync(IEnumerable<FeedbackMessage> messages)
     {
-        var existingIds = await _repository.GetAll()
-                                    .Where(g => messages.Select(gl => gl.Id).Contains(g.Id))
-                                    .Select(g => g.Id)
-                                    .ToListAsync();
+        var messageIds = messages.Select(e => e.Id).ToList();
+        var messagesInDb = await _repository.GetAllAsync(g => messageIds.Contains(g.Id));
+        var existingIds = messagesInDb.Select(e => e.Id).ToList();
 
         if (existingIds.Count > 0)
         {
-            throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
+            throw new InvalidOperationException(
+                $"The following '{existingIds.Count}' IDs already " +
+                $"exist in the database: {string.Join(", ", existingIds)}.");
         }
 
         await _repository.AddRangeAsync(messages);
@@ -100,7 +101,7 @@ public class FeedbackAppService : IFeedbackAppService
 
     public async Task<IEnumerable<FeedbackMessage>> GetAllAsync()
     {
-        return await _repository.GetAll().AsNoTracking().ToListAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task DeleteAsync(Guid id)

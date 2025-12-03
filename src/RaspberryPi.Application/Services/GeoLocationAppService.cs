@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RaspberryPi.Application.Interfaces;
+﻿using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
@@ -34,20 +33,21 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
 
     public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()
     {
-        var dbResults = await _repository.GetAll().AsNoTracking().ToListAsync();
+        var dbResults = await _repository.GetAllAsync();
         return dbResults;
     }
 
     public async Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations)
     {
-        var existingIds = await _repository.GetAll()
-                                    .Where(g => geoLocations.Select(gl => gl.Id).Contains(g.Id))
-                                    .Select(g => g.Id)
-                                    .ToListAsync();
+        var geoLocationIds = geoLocations.Select(e => e.Id).ToList();
+        var geoLocationsInDb = await _repository.GetAllAsync(g => geoLocationIds.Contains(g.Id));
+        var existingIds = geoLocationsInDb.Select(e => e.Id).ToList();
 
         if (existingIds.Count > 0)
         {
-            throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
+            throw new InvalidOperationException(
+                $"The following '{existingIds.Count}' IDs already " +
+                $"exist in the database: {string.Join(", ", existingIds)}.");
         }
 
         await _repository.AddRangeAsync(geoLocations);

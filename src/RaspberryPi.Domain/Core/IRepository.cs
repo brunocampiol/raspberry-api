@@ -1,4 +1,6 @@
-﻿namespace RaspberryPi.Domain.Core;
+﻿using System.Linq.Expressions;
+
+namespace RaspberryPi.Domain.Core;
 
 public interface IRepository<T> : IDisposable where T : class
 {
@@ -8,6 +10,6 @@ public interface IRepository<T> : IDisposable where T : class
     void Update(T entity);
     void Remove(Guid id);
     Task RemoveAllAsync();
-    IQueryable<T> GetAll();
+    Task<IReadOnlyCollection<T>> GetAllAsync(Expression<Func<T, bool>>? predicate = null);
     Task<int> SaveChangesAsync();
 }

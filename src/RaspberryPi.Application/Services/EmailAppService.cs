@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RaspberryPi.Application.Interfaces;
@@ -35,7 +34,7 @@ public class EmailAppService : IEmailAppService
 
     public async Task<IEnumerable<EmailOutbox>> GetAllAsync()
     {
-        return await _repository.GetAll().AsNoTracking().ToListAsync();
+        return await _repository.GetAllAsync();
     }
 
     public async Task<EmailOutbox?> GetLastSentEmailAsync()
@@ -71,14 +70,15 @@ public class EmailAppService : IEmailAppService
 
     public async Task<int> ImportBackupAsync(IEnumerable<EmailOutbox> emails)
     {
-        var existingIds = await _repository.GetAll()
-                                    .Where(g => emails.Select(gl => gl.Id).Contains(g.Id))
-                                    .Select(g => g.Id)
-                                    .ToListAsync();
+        var emailIds = emails.Select(e => e.Id).ToList();
+        var emailsInDb = await _repository.GetAllAsync(g => emailIds.Contains(g.Id));
+        var existingIds = emailsInDb.Select(e => e.Id).ToList();
 
         if (existingIds.Count > 0)
         {
-            throw new InvalidOperationException($"There are already IDs: '{string.Join(", ", existingIds)}' in database");
+            throw new InvalidOperationException(
+                $"The following '{existingIds.Count}' IDs already " +
+                $"exist in the database: {string.Join(", ", existingIds)}.");
         }
 
         await _repository.AddRangeAsync(emails);
