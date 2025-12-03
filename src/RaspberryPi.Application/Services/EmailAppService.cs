@@ -58,7 +58,6 @@ public class EmailAppService : IEmailAppService
         };
 
         await _repository.AddAsync(sentEmail);
-        await _repository.SaveChangesAsync();
         return sentEmail;
     }
 
@@ -82,7 +81,6 @@ public class EmailAppService : IEmailAppService
         }
 
         await _repository.AddRangeAsync(emails);
-        await _repository.SaveChangesAsync();
         return emails.Count();
     }
 
@@ -101,6 +99,5 @@ public class EmailAppService : IEmailAppService
     public async Task DeleteAllAsync()
     {
         await _repository.RemoveAllAsync();
-        await _repository.SaveChangesAsync();
     }
 }

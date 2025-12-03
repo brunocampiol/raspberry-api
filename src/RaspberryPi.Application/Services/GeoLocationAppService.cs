@@ -51,7 +51,6 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         }
 
         await _repository.AddRangeAsync(geoLocations);
-        await _repository.SaveChangesAsync();
         return geoLocations.Count();
     }
 }

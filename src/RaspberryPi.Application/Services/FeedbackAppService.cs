@@ -70,7 +70,6 @@ public class FeedbackAppService : IFeedbackAppService
         }
 
         await _repository.AddAsync(feedback);
-        await _repository.SaveChangesAsync();
 
         var email = new EmailDto()
         {
@@ -95,7 +94,6 @@ public class FeedbackAppService : IFeedbackAppService
         }
 
         await _repository.AddRangeAsync(messages);
-        await _repository.SaveChangesAsync();
         return messages.Count();
     }
 
@@ -106,13 +104,11 @@ public class FeedbackAppService : IFeedbackAppService
 
     public async Task DeleteAsync(Guid id)
     {
-        _repository.Remove(id);
-        await _repository.SaveChangesAsync();
+        await _repository.RemoveAsync(id);
     }
 
     public async Task DeleteAllAsync()
     {
         await _repository.RemoveAllAsync();
-        await _repository.SaveChangesAsync();
     }
 }

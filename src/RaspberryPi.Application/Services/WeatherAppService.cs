@@ -82,7 +82,6 @@ namespace RaspberryPi.Application.Services
                 };
 
                 await _geoLocationRepository.AddAsync(geoLocation);
-                await _geoLocationRepository.SaveChangesAsync();
 
                 var email = new EmailDto
                 {

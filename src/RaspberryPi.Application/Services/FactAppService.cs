@@ -43,7 +43,6 @@ namespace RaspberryPi.Application.Services
             if (!await _repository.HashExistsAsync(fact.TextHash))
             {
                 await _repository.AddAsync(fact);
-                await _repository.SaveChangesAsync();
             }
 
             return factResponse;
@@ -68,7 +67,6 @@ namespace RaspberryPi.Application.Services
             }
 
             await _repository.AddRangeAsync(facts);
-            await _repository.SaveChangesAsync();
             return facts.Count();
         }
 
