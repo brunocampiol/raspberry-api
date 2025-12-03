@@ -27,7 +27,7 @@ namespace RaspberryPi.Application.Services
 
         public async Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync()
         {
-            return await _repository.GetAllDatabaseFactsAsync();
+            return await _repository.GetAllAsync();
         }
 
         public async Task<FactInfraDto> SaveFactAndComputeHashAsync()
