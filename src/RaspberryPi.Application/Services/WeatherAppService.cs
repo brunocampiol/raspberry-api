@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
+using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
@@ -10,6 +11,7 @@ using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Weather;
+using System.Net.Http;
 
 namespace RaspberryPi.Application.Services
 {
@@ -121,6 +123,13 @@ namespace RaspberryPi.Application.Services
             if (!_memoryCache.TryGetValue(cacheKey, out WeatherDto? weatherDto))
             {
                 var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
+                if (infraWeather.Main is null)
+                {
+                    var errorMessage = "Weather main data is null for coordinates: " +
+                                       $"({geoLocation.Latitude}, {geoLocation.Longitude})";
+                    throw new AppException(errorMessage);
+                }
+
                 weatherDto = new WeatherDto()
                 {
                     EnglishName = geoLocation.LocationName,

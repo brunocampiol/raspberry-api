@@ -5,31 +5,31 @@ namespace RaspberryPi.Infrastructure.Models.Weather;
 public class WeatherInfraResponse
 {
     [JsonPropertyName("coord")]
-    public Coordinates Coordinates { get; set; }
+    public Coordinates? Coordinates { get; set; }
 
     [JsonPropertyName("weather")]
-    public WeatherCondition[] Weather { get; set; }
+    public WeatherCondition[]? Weather { get; set; }
 
     [JsonPropertyName("base")]
-    public string Base { get; set; }
+    public string? Base { get; set; }
 
     [JsonPropertyName("main")]
-    public MainWeatherData Main { get; set; }
+    public MainWeatherData? Main { get; set; }
 
     [JsonPropertyName("visibility")]
     public int Visibility { get; set; }
 
     [JsonPropertyName("wind")]
-    public WindData Wind { get; set; }
+    public WindData? Wind { get; set; }
 
     [JsonPropertyName("clouds")]
-    public CloudData Clouds { get; set; }
+    public CloudData? Clouds { get; set; }
 
     [JsonPropertyName("dt")]
     public long DateTimeUnix { get; set; }
 
     [JsonPropertyName("sys")]
-    public SystemData System { get; set; }
+    public SystemData? System { get; set; }
 
     [JsonPropertyName("timezone")]
     public int TimezoneOffset { get; set; }
@@ -38,7 +38,7 @@ public class WeatherInfraResponse
     public int CityId { get; set; }
 
     [JsonPropertyName("name")]
-    public string CityName { get; set; }
+    public string? CityName { get; set; }
 
     [JsonPropertyName("cod")]
     public int ResponseCode { get; set; }
@@ -59,13 +59,13 @@ public class WeatherCondition
     public int Id { get; set; }
 
     [JsonPropertyName("main")]
-    public string Main { get; set; }
+    public string? Main { get; set; }
 
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     [JsonPropertyName("icon")]
-    public string Icon { get; set; }
+    public string? Icon { get; set; }
 }
 
 public class MainWeatherData
@@ -116,7 +116,7 @@ public class CloudData
 public class SystemData
 {
     [JsonPropertyName("country")]
-    public string CountryCode { get; set; }
+    public string? CountryCode { get; set; }
 
     [JsonPropertyName("sunrise")]
     public long SunriseUnix { get; set; }

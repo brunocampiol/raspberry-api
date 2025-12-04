@@ -39,7 +39,11 @@ public class WeatherInfraService : IWeatherInfraService
             throw new AppException(errorMessage);
         }
 
-        var result = httpContent.FromJsonTo<WeatherInfraResponse>();
+        var result = httpContent.FromJsonTo<WeatherInfraResponse>()
+              ?? throw new AppException($"Weather data deserialization failed. " +
+                                        $"Coordinates: ({latitude}, {longitude}), " +
+                                        $"HTTP content: {httpContent}");
+
         return result;
     }
 }
