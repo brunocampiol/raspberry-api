@@ -24,17 +24,14 @@ namespace RaspberryPi.API.Controllers;
 public class InternalController : ControllerBase
 {
     private readonly IWebHostEnvironment _hostEnv;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IInternalAppService _internalAppService;
     private readonly RequestCounterService _requestCounterService;
 
-    public InternalController(IWebHostEnvironment hostEnv, 
-                              IHttpClientFactory httpClientFactory,
+    public InternalController(IWebHostEnvironment hostEnv,
                               IInternalAppService internalAppService,
                               RequestCounterService requestCounterService)
     {
         _hostEnv = hostEnv ?? throw new ArgumentNullException(nameof(hostEnv));
-        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _internalAppService = internalAppService ?? throw new ArgumentNullException(nameof(internalAppService));
         _requestCounterService = requestCounterService ?? throw new ArgumentNullException(nameof(requestCounterService));
     }
@@ -70,6 +67,7 @@ public class InternalController : ControllerBase
 
     [Time]
     [HttpGet]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
     public IActionResult Timestamp()
     {
         return Ok(DateTime.Now);
@@ -84,16 +82,18 @@ public class InternalController : ControllerBase
 
     [Time]
     [HttpGet]
-    public IActionResult EchoHeaders()
+    public IDictionary<string, string> EchoHeaders()
     {
-        var headers = Request.Headers.ToDictionary(x => x.Key, x => x.Value.ToString())
-                                     .OrderBy(x => x.Key);
-
-        return Ok(headers);
+        return Request.Headers.OrderBy(x => x.Key)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.ToString() ?? string.Empty
+                );
     }
 
     [Time]
     [HttpGet]
+    [ProducesResponseType<string>(StatusCodes.Status200OK)]
     public IActionResult EchoIpAddress()
     {
         return Ok(HttpContext.Connection.RemoteIpAddress?.ToString());
@@ -101,58 +101,13 @@ public class InternalController : ControllerBase
 
     [Time]
     [HttpGet]
-    public IActionResult EchoCookies()
+    public IDictionary<string, string> EchoCookies()
     {
-        var cookies = Request.Cookies.ToDictionary(x => x.Key, x => x.Value.ToString())
-                                     .OrderBy(x => x.Key);
-
-        return Ok(cookies);
-    }
-
-    [Time]
-    [HttpGet]
-    public async Task<Result<string>> WwwGetGoogle()
-    {
-        var httpClient = _httpClientFactory.CreateClient();
-        httpClient.Timeout = TimeSpan.FromSeconds(15);
-
-        var uri = new Uri("http://www.google.com");
-        var httpResponse = await httpClient.GetAsync(uri);
-        var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-        if (!httpResponse.IsSuccessStatusCode)
-        {
-            var errorMessage = $"Response '{httpResponse.StatusCode}' " +
-                               $"is not in 2XX range: '{httpContent}'";
-
-            return Result<string>.Failure(errorMessage);
-        }
-
-        return Result<string>.Success(httpContent);
-    }
-
-    [Time]
-    [HttpGet]
-    [Authorize(Roles = "root")]
-    public async Task<Result<string>> WwwGetAsString([FromHeader][Required] string url,
-                                                     [FromHeader][Required] int timeoutInSeconds = 15)
-    {
-        var httpClient = _httpClientFactory.CreateClient();
-        httpClient.Timeout = TimeSpan.FromSeconds(timeoutInSeconds);
-
-        var uri = new Uri(url);
-        var httpResponse = await httpClient.GetAsync(uri);
-        var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
-        if (!httpResponse.IsSuccessStatusCode)
-        {
-            var errorMessage = $"Response '{httpResponse.StatusCode}' " +
-                               $"is not in 2XX range: '{httpContent}'";
-
-            return Result<string>.Failure(errorMessage);
-        }
-
-        return Result<string>.Success(httpContent);
+        return Request.Cookies.OrderBy(x => x.Key)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value.ToString() ?? string.Empty
+                );
     }
 
     [Time]
@@ -186,10 +141,10 @@ public class InternalController : ControllerBase
         using (var streamReader = new StreamReader(file.OpenReadStream()))
         {
             var json = await streamReader.ReadToEndAsync();
-            
+
             // TODO: use json serialization extension instead
             var backup = JsonSerializer.Deserialize<DbBackupDto>(json);
-            if  (backup is null)
+            if (backup is null)
             {
                 return BadRequest($"Invalid desserialization for '{json}'");
             }
