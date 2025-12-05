@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Models;
+using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
@@ -44,13 +45,13 @@ public class InternalController : ControllerBase
 
     [Time]
     [HttpGet]
-    public IActionResult Settings()
+    public SettingsResponseViewModel Settings()
     {
         string? frameworkName = Assembly.GetEntryAssembly()?.GetCustomAttribute<TargetFrameworkAttribute>()?.FrameworkName;
         string? aspNetCoreEnv = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         string osDescription = $"{RuntimeInformation.OSDescription} [ {RuntimeInformation.OSArchitecture} ]";
 
-        var settings = new
+        var settings = new SettingsResponseViewModel
         {
             EnvironmentName = _hostEnv.EnvironmentName,
             UserName = Environment.UserName,
@@ -61,7 +62,7 @@ public class InternalController : ControllerBase
             IsProduction = _hostEnv.IsProduction(),
         };
 
-        return Ok(settings);
+        return settings;
     }
 
     [Time]

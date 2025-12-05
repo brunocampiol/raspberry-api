@@ -11,7 +11,7 @@ namespace RaspberryPi.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("[controller]/[action]")]
-public class DbContextController : ControllerBase
+public class DbContextController : ControllerBase // TODO: rename this to database and move import and bkp here
 {
     private readonly RaspberryDbContext _context;
 
