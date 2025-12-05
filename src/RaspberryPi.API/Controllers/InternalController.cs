@@ -6,7 +6,6 @@ using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Core;
-using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
