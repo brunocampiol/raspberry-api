@@ -11,7 +11,6 @@ using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Weather;
-using System.Net.Http;
 
 namespace RaspberryPi.Application.Services
 {
@@ -147,20 +146,25 @@ namespace RaspberryPi.Application.Services
 
         private static string GetWeatherDescription(WeatherInfraResponse weatherResponse)
         {
+            const string noWeather = "No weather data available";
+
             if (weatherResponse?.Weather == null || weatherResponse.Weather.Length == 0)
             {
-                return "No weather data available";
+                return noWeather;
             }
 
             if (weatherResponse.Weather.Length == 1)
             {
-                return weatherResponse.Weather[0]
-                                      .Description
-                                      .Trim()
-                                      .CapitalizeFirstLetter();
+                var firstWeather = weatherResponse.Weather[0].Description;
+                if (string.IsNullOrWhiteSpace(firstWeather))
+                {
+                    return noWeather;
+                }
+
+                return firstWeather.Trim().CapitalizeFirstLetter();
             }
 
-            // For multiple descriptions, combine them naturally
+            // For multiple descriptions, combine them
             var descriptions = weatherResponse.Weather.Select(w => w.Description).ToArray();
             var allDescriptions = string.Join(" and ", descriptions);
             return allDescriptions.Trim().CapitalizeFirstLetter();
