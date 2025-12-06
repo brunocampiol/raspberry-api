@@ -6,61 +6,76 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace RaspberryPi.Domain.Services
+namespace RaspberryPi.Domain.Services;
+
+public sealed class JwtService(IOptions<JwtOptions> options) : IJwtService
 {
-    public sealed class JwtService(IOptions<JwtOptions> options) : IJwtService
+    private readonly JwtOptions _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+
+    public string GenerateTokenForEmail(string email, IEnumerable<string> roles)
     {
-        private readonly JwtOptions _options = options.Value ?? throw new ArgumentNullException(nameof(options));
+        ArgumentNullException.ThrowIfNull(roles);
+        ArgumentException.ThrowIfNullOrWhiteSpace(email);
 
-        public string GenerateTokenForEmail(string email, IEnumerable<string> roles)
+        return GenerateToken(null, email, roles);
+    }
+
+    public string GenerateTokenForUserName(string userName, IEnumerable<string> roles)
+    {
+        ArgumentNullException.ThrowIfNull(roles);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+
+        return GenerateToken(userName, null, roles);
+    }
+
+    private string GenerateToken(string? userName, string? email, IEnumerable<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(userName) && string.IsNullOrWhiteSpace(email))
         {
-            return GenerateToken(null, email, roles);
+            throw new ArgumentException("Either userName or email must be provided.");
         }
 
-        public string GenerateTokenForUserName(string userName, IEnumerable<string> roles)
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_options.Key);
+        var claims = GetClaims(userName, email, roles);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            return GenerateToken(userName, null, roles);
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
+            Issuer = _options.Issuer,
+            Audience = _options.Audience,
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+
+    private static List<Claim> GetClaims(string? userName, string? email, IEnumerable<string> roles)
+    {
+        if (string.IsNullOrWhiteSpace(userName) && string.IsNullOrWhiteSpace(email))
+        {
+            throw new ArgumentException("Either userName or email must be provided.");
         }
 
-        private string GenerateToken(string userName, string email, IEnumerable<string> roles)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_options.Key);
-            var claims = GetClaims(userName, email, roles);
+        var claims = new List<Claim>();
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(_options.ExpirationInSeconds),
-                Issuer = _options.Issuer,
-                Audience = _options.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            claims.Add(new Claim(ClaimTypes.Name, userName));
         }
 
-        private static List<Claim> GetClaims(string userName, string email, IEnumerable<string> roles)
+        if (!string.IsNullOrWhiteSpace(email))
         {
-            var claims = new List<Claim>();
-
-            if (!string.IsNullOrWhiteSpace(userName))
-            {
-                claims.Add(new Claim(ClaimTypes.Name, userName));
-            }
-
-            if (!string.IsNullOrWhiteSpace(email))
-            {
-                claims.Add(new Claim(ClaimTypes.Email, email));
-            }
-     
-            // Adds roles
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            return claims;
+            claims.Add(new Claim(ClaimTypes.Email, email));
         }
+ 
+        // Adds roles
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        return claims;
     }
 }
