@@ -119,10 +119,10 @@ public class InternalController : ControllerBase
         // Set response headers for file download
         var contentDisposition = new ContentDispositionHeaderValue("attachment")
         {
-            FileName = $"database-backup-{DateTime.UtcNow.ToString("yyyy-MM-dd")}.json"
+            FileName = $"database-backup-{DateTime.UtcNow:yyyy-MM-dd}.json"
         };
-        Response.Headers.Add("Content-Disposition", contentDisposition.ToString());
-        Response.Headers.Add("Content-Type", "application/json");
+        Response.Headers.Append("Content-Disposition", contentDisposition.ToString());
+        Response.Headers.Append("Content-Type", "application/json");
 
         var bytes = Encoding.UTF8.GetBytes(json);
         return File(bytes, "application/json");
