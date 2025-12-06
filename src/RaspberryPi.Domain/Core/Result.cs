@@ -4,7 +4,7 @@
     {
         public bool IsSuccess { get; }
         public T? Value { get; }
-        public ICollection<string> Errors { get; } = new List<string>();
+        public ICollection<string> Errors { get; } = [];
 
         /// <summary>
         /// Creates a success result with a value
