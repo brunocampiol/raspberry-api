@@ -14,7 +14,7 @@ public class FeedbackAppService : IFeedbackAppService
     private readonly IEmailAppService _emailAppService;
     private readonly IGeoLocationAppService _locationAppService;
     private readonly IFeedbackMessageRepository _repository;
-    private readonly ILogger _logger; 
+    private readonly ILogger _logger;
 
     public FeedbackAppService(IGeoLocationAppService appService,
                               IFeedbackMessageRepository repository,
@@ -31,10 +31,9 @@ public class FeedbackAppService : IFeedbackAppService
     public async Task SubmitFeedbackAsync(string message, string? ipAddress, string? httpHeaders)
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
-        FeedbackMessage feedback = null;
-        GeoLocationInfraResponse lookup = null;
 
-        if (ipAddress is not null)
+        GeoLocationInfraResponse? lookup = null;
+        if (!string.IsNullOrWhiteSpace(ipAddress))
         {
             try
             {
@@ -46,28 +45,23 @@ public class FeedbackAppService : IFeedbackAppService
             }
         }
 
-        if (lookup is not null)
-        {
-            feedback = new FeedbackMessage()
-            {
-                Message = message,
-                City = lookup.City,
-                CountryCode = lookup.CountryCode,
-                PostalCode = lookup.PostalCode,
-                RegionName = lookup.RegionName,
-                HttpHeaders = httpHeaders,
-                CreatedAtUTC = DateTime.UtcNow,
-            };
-        }
-        else
-        {
-            feedback = new FeedbackMessage()
-            {
-                Message = message,
-                HttpHeaders = httpHeaders,
-                CreatedAtUTC = DateTime.UtcNow,
-            };
-        }
+        FeedbackMessage feedback = lookup is not null
+                ? new FeedbackMessage
+                {
+                    Message = message,
+                    City = lookup.City,
+                    CountryCode = lookup.CountryCode,
+                    PostalCode = lookup.PostalCode,
+                    RegionName = lookup.RegionName,
+                    HttpHeaders = httpHeaders,
+                    CreatedAtUTC = DateTime.UtcNow,
+                }
+                : new FeedbackMessage
+                {
+                    Message = message,
+                    HttpHeaders = httpHeaders,
+                    CreatedAtUTC = DateTime.UtcNow,
+                };
 
         await _repository.AddAsync(feedback);
 
