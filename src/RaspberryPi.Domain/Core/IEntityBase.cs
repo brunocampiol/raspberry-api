@@ -1,7 +1,6 @@
-﻿namespace RaspberryPi.Domain.Core
+﻿namespace RaspberryPi.Domain.Core;
+
+public interface IEntityBase
 {
-    public interface IEntityBase
-    {
-        Guid Id { get; init; }
-    }
+    Guid Id { get; init; }
 }

@@ -1,7 +1,6 @@
-﻿namespace RaspberryPi.Domain.Core
+﻿namespace RaspberryPi.Domain.Core;
+
+public abstract class EntityBase : IEntityBase
 {
-    public abstract class EntityBase : IEntityBase
-    {
-        public Guid Id { get; init; } = Guid.NewGuid();
-    }
+    public Guid Id { get; init; } = Guid.NewGuid();
 }
