@@ -12,21 +12,16 @@ public static class ExceptionExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
     public static string AllMessages(this Exception ex)
     {
-        if (ex is null)
-        {
-            throw new ArgumentNullException(nameof(ex));
-        }
+        ArgumentNullException.ThrowIfNull(ex);
 
         var sb = new StringBuilder();
         sb.Append(ex.Message);
 
         switch (ex)
         {
-            case AggregateException aggEx:
-                foreach (var inner in aggEx.InnerExceptions.Where(i => i != null))
-                {
-                    sb.Append(" --> ").Append(inner.AllMessages()); // recursion here
-                }
+            case AggregateException:
+                // Aggregate exceptions Message property produces a computed
+                // string that describes the number of inner exceptions
                 break;
             default:
                 if (ex.InnerException != null)
