@@ -19,52 +19,54 @@ public abstract class Repository<T> : IRepository<T>
         _dbSet = _context.Set<T>();
     }
 
-    public virtual async Task<T?> GetByIdAsync(Guid id)
+    public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _dbSet.AsNoTracking()
-                           .FirstOrDefaultAsync(e => e.Id == id);
+                           .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
     }
 
-    public virtual async Task AddAsync(T entity)
+    public virtual async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(entity);
-        await _context.SaveChangesAsync();
+        await _dbSet.AddAsync(entity, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task AddRangeAsync(IEnumerable<T> entities)
+    public virtual async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddRangeAsync(entities);
-        await _context.SaveChangesAsync();
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task RemoveAsync(Guid id)
+    public virtual async Task RemoveAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var entity = await _dbSet.FindAsync(id)
+        var entity = await _dbSet.FindAsync(new object[] { id }, cancellationToken)
           ?? throw new KeyNotFoundException($"Could not find '{typeof(T).Name}' with ID: '{id}'");
 
         _dbSet.Remove(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task RemoveAllAsync()
+    public virtual async Task RemoveAllAsync(CancellationToken cancellationToken = default)
     {
-        // No need to call SaveChangesAsync
-        await _dbSet.ExecuteDeleteAsync();
+        // ExecuteDeleteAsync supports cancellation token in EF Core 7+
+        await _dbSet.ExecuteDeleteAsync(cancellationToken);
     }
 
-    public virtual async Task UpdateAsync(T entity)
+    public virtual async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         _dbSet.Update(entity);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public virtual async Task<IReadOnlyCollection<T>> GetAllAsync(
-        Expression<Func<T, bool>>? predicate = null)
+        Expression<Func<T, bool>>? predicate = null,
+        CancellationToken cancellationToken = default)
     {
         var query = _dbSet.AsNoTracking();
 
-        if (predicate is not null) query = query.Where(predicate);
+        if (predicate is not null)
+            query = query.Where(predicate);
 
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 }
