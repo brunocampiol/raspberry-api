@@ -12,6 +12,7 @@ public static class ExceptionExtensions
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="ex"/> is null.</exception>
     public static string AllMessages(this Exception ex)
     {
+        // TODO: refactor this code as it can omit messages in some specific scenarios.
         ArgumentNullException.ThrowIfNull(ex);
 
         var sb = new StringBuilder();
