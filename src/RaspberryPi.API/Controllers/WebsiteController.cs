@@ -8,7 +8,7 @@ using RaspberryPi.Application.Interfaces;
 namespace RaspberryPi.API.Controllers;
 
 /// <summary>
-/// Controller responsable for iteractions with https://brunocampiol.github.io/
+/// Mainpoint for https://brunocampiol.github.io/
 /// </summary>
 [ApiController]
 [Route("[controller]/[action]")]
