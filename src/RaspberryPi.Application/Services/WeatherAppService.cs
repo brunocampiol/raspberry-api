@@ -40,34 +40,92 @@ public sealed class WeatherAppService : IWeatherAppService
 
 
     /// <summary>
-    /// Gets the current weather from infra service based on latitude and longitude. No caching.
+    /// Gets the raw current weather from infra service based on latitude and longitude. No caching.
     /// </summary>
     /// <param name="latitude"></param>
     /// <param name="longitude"></param>
     /// <returns></returns>
     /// <exception cref="AppException"></exception>
-    public async Task<WeatherInfraResponse> GetWeatherFromInfraAsync(double latitude, double longitude)
+    public async Task<WeatherInfraResponse> GetInfraWeatherAsync(double latitude, double longitude)
     {
         if (latitude < -90 || latitude > 90)
         {
-            throw new AppException("Latitude must be between -90 and 90 degrees");
+            var errorMessage = $"Latitude must be between -90 and 90 degrees and not '{latitude}'";
+            throw new ArgumentOutOfRangeException(nameof(latitude), errorMessage);
         }
 
         if (longitude < -180 || longitude > 180)
         {
-            throw new AppException("Longitude must be between -180 and 180 degrees");
+            var errorMessage = $"Longitude must be between -180 and 180 degrees and not '{longitude}'";
+            throw new ArgumentOutOfRangeException(nameof(longitude), errorMessage);
         }
 
         return await _weatherInfraService.CurrentAsync(latitude, longitude);
     }
 
-    public async Task<WeatherDto> CurrentWeatherFromRandomIpAddressAsync()
+    public async Task<WeatherDto> GetCurrentWeatherFromRandomIpAddressAsync()
     {
         var ipAddress = RandomHelper.GenerateRandomIPAddress();
-        return await CurrentWeatherFromIpAddressAsync(ipAddress.ToString());
+        return await GetCurrentWeatherAsync(ipAddress.ToString());
     }
 
-    public async Task<WeatherDto> CurrentWeatherFromIpAddressAsync(string ipAddress)
+    public async Task<WeatherDto> GetCurrentWeatherAsync(string ipAddress)
+    {
+        var lookupResult = await GetCachedLookUpAsync(ipAddress.ToString());
+        if (string.IsNullOrEmpty(lookupResult.CountryCode))
+        {
+            var message = "GeoPositioning CountryCode is null, empty or white-space characters " +
+                          $"for ip address '{ipAddress}'. Response: '{lookupResult.ToJson()}'";
+            _logger.LogWarning(message);
+            return WeatherDto.NotAvailable();
+        }
+
+        // Fallback naming to avoid null values
+        var parsedLocationName = lookupResult.City ?? lookupResult.RegionName ?? lookupResult.CountryName;
+        if (string.IsNullOrWhiteSpace(parsedLocationName))
+        {
+            var message = "Unable to determine a city for ip address " +
+                          $"'{ipAddress}'. Response: '{lookupResult.ToJson()}'";
+            _logger.LogWarning(message);
+            return WeatherDto.NotAvailable();
+        }
+
+        var geoLocation = new GeoLocation
+        {
+            CountryCode = lookupResult.CountryCode,
+            LocationName = parsedLocationName,
+            Latitude = lookupResult.Latitude,
+            Longitude = lookupResult.Longitude,
+            CreatedAtUTC = DateTime.UtcNow
+        };
+
+        var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
+        if (infraWeather.Main is null)
+        {
+            var errorMessage = "Weather main data is null for coordinates: " +
+                               $"({geoLocation.Latitude}, {geoLocation.Longitude})";
+            throw new AppException(errorMessage);
+        }
+
+        var weatherDto = new WeatherDto()
+        {
+            EnglishName = geoLocation.LocationName,
+            CountryCode = geoLocation.CountryCode,
+            WeatherText = GetWeatherDescription(infraWeather),
+            Temperature = $"{infraWeather.Main.Temperature:0.0} °C",
+        };
+
+        return weatherDto;
+    }
+
+    /// <summary>
+    /// Retrieves weather information (may be cached) for a given IP address. Includes geolocation 
+    /// lookup, database persistence, and email notifications for new locations. Called from the 
+    /// brunocampiol.github.io main page.
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
+    public async Task<WeatherDto> GetWeatherWorkflowAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
 

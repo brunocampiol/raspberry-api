@@ -25,7 +25,7 @@ public class WeatherController : ControllerBase
     }
 
     /// <summary>
-    /// Returns weather data from given IP address
+    /// Returns weather data from given IP address.
     /// </summary>
     /// <param name="ipAddress"></param>
     /// <returns></returns>
@@ -33,44 +33,68 @@ public class WeatherController : ControllerBase
     [HttpGet]
     public async Task<WeatherViewModel> FromIpAddress(string ipAddress)
     {  
-        // TODO review and remove this old methods
-        var result = await _service.CurrentWeatherFromIpAddressAsync(ipAddress);
+        var result = await _service.GetCurrentWeatherAsync(ipAddress);
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }
 
     /// <summary>
-    /// Returns weather data from user IP address
+    /// Returns weather data from user IP address.
     /// </summary>
     /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<WeatherViewModel> FromContextIpAddress()
     {
-        // TODO review and remove this old methods
         var clientIp = HttpContext.GetClientIpAddress();
-        var result = await _service.CurrentWeatherFromIpAddressAsync(clientIp);
+        var result = await _service.GetCurrentWeatherAsync(clientIp);
         var viewModel = _mapper.Map<WeatherViewModel>(result);
         return viewModel;
     }
 
+    /// <summary>
+    /// Returns weather data from random IP address.
+    /// </summary>
+    /// <returns></returns>
+    [Time]
+    [HttpGet]
+    public async Task<WeatherViewModel> FromRandomIpAddress()
+    {
+        var result = await _service.GetCurrentWeatherFromRandomIpAddressAsync();
+        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        return viewModel;
+    }
+
+    /// <summary>
+    /// Gets weather infra model by latitude and longitude.
+    /// </summary>
+    /// <param name="latitude"></param>
+    /// <param name="longitude"></param>
+    /// <returns></returns>
+    /// <exception cref="BadHttpRequestException"></exception>
     [Time]
     [HttpGet]
     public async Task<WeatherInfraResponse> Current(double latitude, double longitude)
     {
         if (latitude < -90 || latitude > 90)
         {
-            throw new BadHttpRequestException("Latitude must be between -90 and 90 degrees");
+            var errorMessage = $"Latitude must be between -90 and 90 degrees and not '{latitude}'";
+            throw new BadHttpRequestException(errorMessage);
         }
 
         if (longitude < -180 || longitude > 180)
         {
-            throw new BadHttpRequestException("Longitude must be between -180 and 180 degrees");
+            var errorMessage = $"Longitude must be between -180 and 180 degrees and not '{longitude}'";
+            throw new BadHttpRequestException(errorMessage);
         }
 
-        return await _service.GetWeatherFromInfraAsync(latitude, longitude);
+        return await _service.GetInfraWeatherAsync(latitude, longitude);
     }
 
+    /// <summary>
+    /// Gets weather infra model from a random location.
+    /// </summary>
+    /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<WeatherInfraResponse> CurrentRandom()
@@ -78,6 +102,6 @@ public class WeatherController : ControllerBase
         var random = new Random();
         var latitude = (random.NextDouble() * 180 - 90);   // -90 to 90
         var longitude = (random.NextDouble() * 360 - 180); // -180 to 180
-        return await _service.GetWeatherFromInfraAsync(latitude, longitude);
+        return await _service.GetInfraWeatherAsync(latitude, longitude);
     }
 }

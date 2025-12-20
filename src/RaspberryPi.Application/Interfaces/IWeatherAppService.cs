@@ -5,7 +5,8 @@ namespace RaspberryPi.Application.Interfaces;
 
 public interface IWeatherAppService
 {
-    Task<WeatherInfraResponse> GetWeatherFromInfraAsync(double latitude, double longitude);
-    Task<WeatherDto> CurrentWeatherFromIpAddressAsync(string ipAddress);
-    Task<WeatherDto> CurrentWeatherFromRandomIpAddressAsync();
+    Task<WeatherInfraResponse> GetInfraWeatherAsync(double latitude, double longitude);
+    Task<WeatherDto> GetWeatherWorkflowAsync(string ipAddress);
+    Task<WeatherDto> GetCurrentWeatherFromRandomIpAddressAsync();
+    Task<WeatherDto> GetCurrentWeatherAsync(string ipAddress);
 }
