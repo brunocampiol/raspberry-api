@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using MethodTimer;
+﻿using MethodTimer;
 using Microsoft.AspNetCore.Mvc;
-using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models.Entity;
 
@@ -12,12 +10,10 @@ namespace RaspberryPi.API.Controllers;
 public class FactController : ControllerBase
 {
     private readonly IFactAppService _service;
-    private readonly IMapper _mapper;
 
-    public FactController(IFactAppService service,  IMapper mapper)
+    public FactController(IFactAppService service)
     {
-        _service = service;   
-        _mapper = mapper;
+        _service = service;
     }
 
     [Time]
@@ -42,15 +38,5 @@ public class FactController : ControllerBase
     {
         var result = await _service.CountAllDatabaseFacts();
         return result;
-    }
-
-    [Time]
-    [HttpGet]
-    // TODO: update this to a better name
-    public async Task<FactViewModel> SaveFactAndComputeHash()
-    {
-        var result = await _service.SaveFactAndComputeHashAsync();
-        var viewModel = _mapper.Map<FactViewModel>(result);
-        return viewModel;
     }
 }

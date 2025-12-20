@@ -5,69 +5,63 @@ using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Extensions;
-using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
+using RaspberryPi.Infrastructure.Models.Facts;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Weather;
 
 namespace RaspberryPi.Application.Services;
 
-public sealed class WeatherAppService : IWeatherAppService
+public sealed class WebsiteAppService : IWebsiteAppService
 {
-    private readonly IWeatherInfraService _weatherInfraService;
+    private readonly IWeatherInfraService _weatherInfraService; // TODO instead use the weather app service caching
     private readonly IGeoLocationRepository _geoLocationRepository;
     private readonly IGeoLocationInfraService _geoLocationInfraService;
     private readonly IEmailAppService _emailAppService;
+    private readonly IFactAppService _factAppService;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger _logger;
 
-    public WeatherAppService(IWeatherInfraService watherInfraService,
-                                IGeoLocationInfraService geoLocationInfraService,
-                                IGeoLocationRepository geoLocationRepository,
-                                IEmailAppService emailAppService,
-                                IMemoryCache memoryCache,
-                                ILogger<WeatherAppService> logger)
+    public WebsiteAppService(IWeatherInfraService watherInfraService,
+                                    IGeoLocationInfraService geoLocationInfraService,
+                                    IGeoLocationRepository geoLocationRepository,
+                                    IEmailAppService emailAppService,
+                                    IFactAppService factAppService,
+                                    IMemoryCache memoryCache,
+                                    ILogger<WebsiteAppService> logger)
     {
         _weatherInfraService = watherInfraService;
         _geoLocationInfraService = geoLocationInfraService;
         _geoLocationRepository = geoLocationRepository;
         _emailAppService = emailAppService;
+        _factAppService = factAppService;
         _memoryCache = memoryCache;
         _logger = logger;
     }
 
+    public async Task<FactInfraDto> FetchAndStoreUniqueFactAsync()
+    {
+        return await _factAppService.FetchAndStoreUniqueFactAsync();
+    }
 
     /// <summary>
-    /// Gets the current weather from infra service based on latitude and longitude. No caching.
+    /// Retrieves weather information for a specified IP address.
     /// </summary>
-    /// <param name="latitude"></param>
-    /// <param name="longitude"></param>
+    /// <param name="ipAddress"></param>
     /// <returns></returns>
-    /// <exception cref="AppException"></exception>
-    public async Task<WeatherInfraResponse> GetWeatherFromInfraAsync(double latitude, double longitude)
-    {
-        if (latitude < -90 || latitude > 90)
-        {
-            throw new AppException("Latitude must be between -90 and 90 degrees");
-        }
-
-        if (longitude < -180 || longitude > 180)
-        {
-            throw new AppException("Longitude must be between -180 and 180 degrees");
-        }
-
-        return await _weatherInfraService.CurrentAsync(latitude, longitude);
-    }
-
-    public async Task<WeatherDto> CurrentWeatherFromRandomIpAddressAsync()
-    {
-        var ipAddress = RandomHelper.GenerateRandomIPAddress();
-        return await CurrentWeatherFromIpAddressAsync(ipAddress.ToString());
-    }
-
-    public async Task<WeatherDto> CurrentWeatherFromIpAddressAsync(string ipAddress)
+    /// /// <para>
+    /// This method performs the following steps:
+    /// 1. Validates the IP address input
+    /// 2. Looks up geolocation information for the IP address (with caching)
+    /// 3. Validates that a country code and location name can be determined
+    /// 4. Retrieves or creates a <see cref="GeoLocation"/> entity from the repository
+    /// 5. Sends a notification email for newly discovered locations
+    /// 6. Retrieves weather conditions for the location (with caching)
+    /// 7. Returns formatted weather information
+    /// </para>
+    public async Task<WeatherDto> GetWeatherAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
 
@@ -89,9 +83,9 @@ public sealed class WeatherAppService : IWeatherAppService
             _logger.LogWarning(message);
             return WeatherDto.NotAvailable();
         }
-        
-        var geoLocation = await _geoLocationRepository.GetAsync(lookupResult.CountryCode, 
-                                                                lookupResult.Latitude, 
+
+        var geoLocation = await _geoLocationRepository.GetAsync(lookupResult.CountryCode,
+                                                                lookupResult.Latitude,
                                                                 lookupResult.Longitude);
 
         if (geoLocation is null)
@@ -111,7 +105,7 @@ public sealed class WeatherAppService : IWeatherAppService
             {
                 To = "bruno.campiol@gmail.com",
                 Subject = $"New Geolocation {geoLocation.CountryCode}",
-                Body = geoLocation.ToJson()
+                Body = geoLocation.ToJson() // TODO remove dependency of Fetchgoods.Text.Json.Extensions
             };
 
             await _emailAppService.TrySendEmailAsync(email);
@@ -159,7 +153,7 @@ public sealed class WeatherAppService : IWeatherAppService
                 WeatherText = GetWeatherDescription(infraWeather),
                 Temperature = $"{infraWeather.Main.Temperature:0.0} °C",
             };
-             
+
             // TODO use a configurable cache duration
             _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromMinutes(30));
         }
