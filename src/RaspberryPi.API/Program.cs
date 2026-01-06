@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Filters;
@@ -78,33 +79,21 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<RaspberryDbContext>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
     var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Description = "Please provide a valid token",
-        Name = "Authorization",
-        Scheme = "Bearer",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
         BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
+        [new OpenApiSecuritySchemeReference("bearer", document)] = []
     });
 });
 
