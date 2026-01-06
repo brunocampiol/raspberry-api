@@ -18,25 +18,25 @@ public class FactController : ControllerBase
 
     [Time]
     [HttpGet]
-    public async Task<IEnumerable<Fact>> GetAllDatabaseFacts()
+    public async Task<IEnumerable<Fact>> All()
     {
-        var result = await _service.GetAllDatabaseFactsAsync();
+        var result = await _service.GetAllFactsAsync();
         return result;
     }
 
     [Time]
     [HttpGet]
-    public async Task<Fact?> GetFirstOrDefaultFactFromDatabase()
+    public async Task<Fact?> FirstOrDefault()
     {
-        var result = await _service.GetFirstOrDefaultFactFromDatabaseAsync();
+        var result = await _service.GetFirstOrDefaultFactAsync();
         return result;
     }
 
     [Time]
     [HttpGet]
-    public async Task<long> CountAllDatabaseFacts()
+    public async Task<long> CountAll()
     {
-        var result = await _service.CountAllDatabaseFacts();
+        var result = await _service.CountAllFactsAsync();
         return result;
     }
 }

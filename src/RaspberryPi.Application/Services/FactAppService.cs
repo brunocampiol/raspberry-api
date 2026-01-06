@@ -25,7 +25,7 @@ public sealed class FactAppService : IFactAppService
         return fact;
     }
 
-    public async Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync()
+    public async Task<IEnumerable<Fact>> GetAllFactsAsync()
     {
         return await _repository.GetAllAsync();
     }
@@ -48,7 +48,7 @@ public sealed class FactAppService : IFactAppService
         return factResponse;
     }
 
-    public async Task<long> CountAllDatabaseFacts()
+    public async Task<long> CountAllFactsAsync()
     {
         return await _repository.CountAllDatabaseFacts();
     }
@@ -70,7 +70,7 @@ public sealed class FactAppService : IFactAppService
         return facts.Count();
     }
 
-    public async Task<Fact?> GetFirstOrDefaultFactFromDatabaseAsync()
+    public async Task<Fact?> GetFirstOrDefaultFactAsync()
     {
         return await _repository.GetFirstOrDefaultAsync();
     }

@@ -5,11 +5,11 @@ namespace RaspberryPi.Application.Interfaces
 {
     public interface IFactAppService
     {
-        Task<Fact?> GetFirstOrDefaultFactFromDatabaseAsync();
+        Task<Fact?> GetFirstOrDefaultFactAsync();
         Task<FactInfraDto> FetchFactAsync();
         Task<FactInfraDto> FetchAndStoreUniqueFactAsync();
-        Task<IEnumerable<Fact>> GetAllDatabaseFactsAsync();
-        Task<long> CountAllDatabaseFacts();
+        Task<IEnumerable<Fact>> GetAllFactsAsync();
+        Task<long> CountAllFactsAsync();
         Task<int> ImportBackupAsync(IEnumerable<Fact> facts);
     }
 }

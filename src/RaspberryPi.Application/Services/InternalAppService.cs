@@ -24,7 +24,7 @@ public sealed class InternalAppService : IInternalAppService
 
     public async Task<string> GenerateDatabaseBackupAsJsonStringAsync()
     {
-        var factsTask = _factAppService.GetAllDatabaseFactsAsync();
+        var factsTask = _factAppService.GetAllFactsAsync();
         var geoLocationTask = _geolocationAppService.GetAllGeoLocationsFromDatabaseAsync();
         var feedbackTask = _feedbackAppService.GetAllAsync();
         var emailsTask = _emailAppService.GetAllAsync();
