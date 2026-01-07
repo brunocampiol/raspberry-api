@@ -21,25 +21,34 @@ public class GeoLocationHealthCheck : IHealthCheck
     {
         try
         {
-
             var url = new Uri($"{_settings.BaseUrl}api/check?accessKey={_settings.APIKey}&ip=8.8.8.8");
-            using var response = await _httpClient.GetAsync(url, cancellationToken);
-            if (!response.IsSuccessStatusCode)
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+            
+            try
             {
-                return HealthCheckResult.Unhealthy(
-                    $"IP API returned {(int)response.StatusCode} " +
-                    $"{response.ReasonPhrase}. Content: " +
-                    $"{await response.Content.ReadAsStringAsync(cancellationToken)}");
-            }
+                using var response = await _httpClient.GetAsync(url, linkedCts.Token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return HealthCheckResult.Unhealthy(
+                        $"{_settings.BaseUrl} returned {(int)response.StatusCode} " +
+                        $"{response.ReasonPhrase}. Content: " +
+                        $"{await response.Content.ReadAsStringAsync(linkedCts.Token)}");
+                }
 
-            var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken: cancellationToken);
-            if (json is null || !json.ContainsKey("ip") || !json.ContainsKey("countryCode"))
+                var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken: linkedCts.Token);
+                if (json is null || !json.ContainsKey("ip") || !json.ContainsKey("countryCode"))
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync(linkedCts.Token);
+                    return HealthCheckResult.Unhealthy($"Invalid payload response: '{responseContent}'");
+                }
+
+                return HealthCheckResult.Healthy();
+            }
+            catch (TaskCanceledException ex) when (timeoutCts.IsCancellationRequested)
             {
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                return HealthCheckResult.Unhealthy($"Invalid payload response: '{responseContent}'");
+                return HealthCheckResult.Unhealthy($"Geolocation health check timed out after 20 seconds.", ex);
             }
-
-            return HealthCheckResult.Healthy();
         }
         catch (Exception ex)
         {

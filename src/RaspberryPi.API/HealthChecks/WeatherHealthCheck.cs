@@ -22,23 +22,33 @@ public class WeatherHealthCheck : IHealthCheck
         try
         {
             var url = new Uri(_settings.BaseUrl, $"data/2.5/weather?q=London&appid={_settings.ApiKey}&units=metric");
-            using var response = await _httpClient.GetAsync(url, cancellationToken);
-            if (!response.IsSuccessStatusCode)
-            {
-                return HealthCheckResult.Unhealthy(
-                    $"OpenWeather API returned {(int)response.StatusCode} " +
-                    $"{response.ReasonPhrase}. Content: " +
-                    $"{await response.Content.ReadAsStringAsync(cancellationToken)}");
-            }
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-            var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken: cancellationToken);
-            if (json is null || !json.ContainsKey("weather"))
+            try
             {
-                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-                return HealthCheckResult.Unhealthy($"Invalid payload response: '{responseContent}'");
-            }
+                using var response = await _httpClient.GetAsync(url, linkedCts.Token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return HealthCheckResult.Unhealthy(
+                        $"{_settings.BaseUrl} returned {(int)response.StatusCode} " +
+                        $"{response.ReasonPhrase}. Content: " +
+                        $"{await response.Content.ReadAsStringAsync(linkedCts.Token)}");
+                }
 
-            return HealthCheckResult.Healthy();
+                var json = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>(cancellationToken: linkedCts.Token);
+                if (json is null || !json.ContainsKey("weather"))
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync(linkedCts.Token);
+                    return HealthCheckResult.Unhealthy($"Invalid payload response: '{responseContent}'");
+                }
+
+                return HealthCheckResult.Healthy();
+            }
+            catch (TaskCanceledException ex) when (timeoutCts.IsCancellationRequested)
+            {
+                return HealthCheckResult.Unhealthy($"Weather health check timed out after 20 seconds.", ex);
+            }
         }
         catch (Exception ex)
         {
