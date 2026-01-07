@@ -51,6 +51,9 @@ builder.Services.AddHealthChecks()
                             tags: ["api"])
                 .AddCheck<GeoLocationHealthCheck>(
                             name: "geolocation",
+                            tags: ["api"])
+                .AddCheck<FactHealthCheck>(
+                            name: "fact",
                             tags: ["api"]);
 
 
