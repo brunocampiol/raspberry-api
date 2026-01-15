@@ -13,20 +13,28 @@ public sealed class FactInfraService : IFactInfraService
     private readonly IHttpClientFactory _httpClientFactory;
 
     public FactInfraService(IOptions<FactOptions> settings,
-                        IHttpClientFactory httpClientFactory)
+                            IHttpClientFactory httpClientFactory)
     {
         _httpClientFactory = httpClientFactory;
         _settings = settings.Value;
     }
 
-    public async Task<FactInfraDto> GetRandomFactAsync()
+    public async Task<FactInfraDto> GetRandomFactAsync(CancellationToken cancellationToken = default)
     {
-        var endpoint = $"v1/facts";
+        var path = $"v1/facts";
+        var uri = new Uri($"{_settings.BaseUrl}{path}");
+
+        using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                                cancellationToken,
+                                timeoutCts.Token);
+
         var httpClient = _httpClientFactory.CreateClient();
-        httpClient.DefaultRequestHeaders.Add("X-Api-Key", _settings.APIKey);
-        var uri = new Uri($"{_settings.BaseUrl}{endpoint}");
-       
-        var httpResponse = await httpClient.GetAsync(uri);
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
+        httpRequest.Headers.Add("X-Api-Key", _settings.APIKey);
+
+        var httpResponse = await httpClient.SendAsync(httpRequest, linkedCts.Token);
         var httpContent = await httpResponse.Content.ReadAsStringAsync();
 
         if (!httpResponse.IsSuccessStatusCode)
@@ -38,7 +46,9 @@ public sealed class FactInfraService : IFactInfraService
             throw new AppException(errorMessage);
         }
 
-        var result = httpContent.FromJsonTo<IEnumerable<FactInfraDto>>().First();
+        var result = httpContent.FromJsonTo<IEnumerable<FactInfraDto>>()
+                                .First();
+
         return result;
     }
 }

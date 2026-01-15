@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using RaspberryPi.Application.Interfaces;
+﻿using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
@@ -19,9 +18,10 @@ public sealed class FactAppService : IFactAppService
         _repository = repository;
     }
 
-    public async Task<FactInfraDto> FetchFactAsync()
+    // TODO add all other methods with cancellation token
+    public async Task<FactInfraDto> FetchFactAsync(CancellationToken cancellationToken = default)
     {
-        var fact = await _infraService.GetRandomFactAsync();
+        var fact = await _infraService.GetRandomFactAsync(cancellationToken);
         return fact;
     }
 

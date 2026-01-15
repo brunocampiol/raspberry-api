@@ -22,16 +22,20 @@ public class FactHealthCheck : IHealthCheck
     {
         try
         {
-            var endpoint = $"v1/facts";
-            var url = new Uri($"{_settings.BaseUrl}{endpoint}");
+            var path = $"v1/facts";
+            var uri = new Uri($"{_settings.BaseUrl}{path}");
+
             using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                                    cancellationToken,
+                                    timeoutCts.Token);
 
             try
             {
-                // TODO: do not use DefaultRequestHeaders
-                _httpClient.DefaultRequestHeaders.Add("X-Api-Key", _settings.APIKey);
-                using var response = await _httpClient.GetAsync(url, linkedCts.Token);
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
+                httpRequest.Headers.Add("X-Api-Key", _settings.APIKey);
+
+                var response = await _httpClient.SendAsync(httpRequest, linkedCts.Token);
                 if (!response.IsSuccessStatusCode)
                 {
                     return HealthCheckResult.Unhealthy(
