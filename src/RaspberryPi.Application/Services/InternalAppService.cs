@@ -41,7 +41,7 @@ public sealed class InternalAppService : IInternalAppService
         };
 
         // Override default to have indented JSON for better readability
-        var options = JsonDefaults.Options;
+        var options = new JsonSerializerOptions(JsonDefaults.Options);
         options.WriteIndented = true;
         return JsonSerializer.Serialize(dbBackup, options);
     }
