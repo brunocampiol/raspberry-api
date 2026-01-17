@@ -163,11 +163,13 @@ public sealed class WeatherAppService : IWeatherAppService
             };
 
             await _geoLocationRepository.AddAsync(geoLocation);
+            var subject = $"New Geolocation {geoLocation.CountryCode} " +
+                          $"{geoLocation.CountryCode.TryGetFlagEmoji()}";
 
             var email = new EmailDto
             {
                 To = "bruno.campiol@gmail.com",
-                Subject = $"New Geolocation {geoLocation.CountryCode}",
+                Subject = subject,
                 Body = geoLocation.ToJson()
             };
 

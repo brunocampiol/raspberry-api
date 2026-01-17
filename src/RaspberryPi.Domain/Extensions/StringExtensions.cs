@@ -41,4 +41,27 @@ public static class StringExtensions
                 chars[0] = newFirstChar;
             });
     }
+
+    public static string TryGetFlagEmoji(this string countryCode)
+    {
+        if (string.IsNullOrWhiteSpace(countryCode) || countryCode.Length != 2)
+        {
+            return string.Empty;
+        }
+
+        countryCode = countryCode.ToUpperInvariant();
+
+        if (countryCode[0] < 'A' || countryCode[0] > 'Z' ||
+            countryCode[1] < 'A' || countryCode[1] > 'Z')
+        {
+            return string.Empty;
+        }
+
+        const int RegionalIndicatorOffset = 0x1F1E6;
+
+        var first = char.ConvertFromUtf32(RegionalIndicatorOffset + countryCode[0] - 'A');
+        var second = char.ConvertFromUtf32(RegionalIndicatorOffset + countryCode[1] - 'A');
+
+        return first + second;
+    }
 }
