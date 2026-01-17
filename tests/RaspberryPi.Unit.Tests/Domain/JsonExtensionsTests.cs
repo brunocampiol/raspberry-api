@@ -68,6 +68,19 @@ public class JsonExtensionsTests
     }
 
     [Fact]
+    public void ToJson_Enum_SerializesAsString()
+    {
+        // Arrange
+        var value = DayOfWeek.Friday;
+
+        // Act
+        var json = value.ToJson();
+
+        // Assert
+        Assert.Equal("\"friday\"", json);
+    }
+
+    [Fact]
     public void FromJson_StringJson_ReturnsString()
     {
         // Arrange
@@ -158,5 +171,50 @@ public class JsonExtensionsTests
 
         // Act & Assert
         Assert.Throws<JsonException>(() => json.FromJson<int>());
+    }
+
+    [Fact]
+    public void FromJson_Enum_String_IsCaseInsensitive_DeserializesSuccessfully()
+    {
+        // Arrange
+        var json = "\"friday\"";
+
+        // Act
+        var value = json.FromJson<DayOfWeek>();
+
+        // Assert
+        Assert.Equal(DayOfWeek.Friday, value);
+    }
+
+    [Fact]
+    public void DateTime_RoundTrip_Utc_PreservesValueAndKind()
+    {
+        // Arrange
+        var input = new DateTime(2026, 1, 16, 12, 34, 56, DateTimeKind.Utc);
+
+        // Act
+        var json = input.ToJson();
+        var output = json.FromJson<DateTime>();
+
+        // Assert
+        Assert.NotNull(output);
+        Assert.Equal(input, output);
+        Assert.Equal(DateTimeKind.Utc, output.Kind);
+    }
+
+    [Fact]
+    public void DateTimeOffset_RoundTrip_PreservesInstantAndOffset()
+    {
+        // Arrange
+        var input = new DateTimeOffset(2026, 1, 16, 12, 34, 56, TimeSpan.FromHours(-3));
+
+        // Act
+        var json = input.ToJson();
+        var output = json.FromJson<DateTimeOffset>();
+
+        // Assert
+        Assert.NotNull(output);
+        Assert.Equal(input, output);
+        Assert.Equal(input.Offset, output.Offset);
     }
 }
