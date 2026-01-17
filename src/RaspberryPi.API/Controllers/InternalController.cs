@@ -7,12 +7,12 @@ using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Extensions;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
-using System.Text.Json;
 
 namespace RaspberryPi.API.Controllers;
 
@@ -140,10 +140,9 @@ public class InternalController : ControllerBase
 
         using (var streamReader = new StreamReader(file.OpenReadStream()))
         {
-            var json = await streamReader.ReadToEndAsync();
+            var json = await streamReader.ReadToEndAsync();            
+            var backup = json.FromJson<DbBackupDto>();
 
-            // TODO: use json serialization extension instead
-            var backup = JsonSerializer.Deserialize<DbBackupDto>(json);
             if (backup is null)
             {
                 return BadRequest($"Invalid desserialization for '{json}'");

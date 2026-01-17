@@ -1,5 +1,6 @@
 ﻿using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
+using RaspberryPi.Domain.Helpers;
 using System.Text.Json;
 
 namespace RaspberryPi.Application.Services;
@@ -39,10 +40,10 @@ public sealed class InternalAppService : IInternalAppService
             EmailsOutbox = emailsTask.Result
         };
 
-        // Serialize the data to JSON
-        // TODO: use json serialization extension instead
-        var json = JsonSerializer.Serialize(dbBackup, new JsonSerializerOptions { WriteIndented = true });
-        return json;
+        // Override default to have indented JSON for better readability
+        var options = JsonDefaults.Options;
+        options.WriteIndented = true;
+        return JsonSerializer.Serialize(dbBackup, options);
     }
 
     public async Task<int> ImportDatabaseBackupAsync(DbBackupDto backup)
