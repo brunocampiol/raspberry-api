@@ -65,7 +65,9 @@ public abstract class Repository<T> : IRepository<T>
         var query = _dbSet.AsNoTracking();
 
         if (predicate is not null)
+        {
             query = query.Where(predicate);
+        }
 
         return await query.ToListAsync(cancellationToken);
     }
