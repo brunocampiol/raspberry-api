@@ -37,9 +37,9 @@ public class FactController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IEnumerable<Fact>> All()
+    public async Task<IEnumerable<Fact>> All(CancellationToken cancellationToken)
     {
-        var result = await _service.GetAllFactsAsync();
+        var result = await _service.GetAllFactsAsync(cancellationToken);
         return result;
     }
 
@@ -49,9 +49,9 @@ public class FactController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<Fact?> FirstOrDefault()
+    public async Task<Fact?> FirstOrDefault(CancellationToken cancellationToken)
     {
-        var result = await _service.GetFirstOrDefaultFactAsync();
+        var result = await _service.GetFirstOrDefaultFactAsync(cancellationToken);
         return result;
     }
 
@@ -61,9 +61,9 @@ public class FactController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<long> TotalCount()
+    public async Task<long> TotalCount(CancellationToken cancellationToken)
     {
-        var result = await _service.CountAllFactsAsync();
+        var result = await _service.CountAllFactsAsync(cancellationToken);
         return result;
     }
 }

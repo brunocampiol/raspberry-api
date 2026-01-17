@@ -18,21 +18,20 @@ public sealed class FactAppService : IFactAppService
         _repository = repository;
     }
 
-    // TODO add all other methods with cancellation token
     public async Task<FactInfraDto> FetchFactAsync(CancellationToken cancellationToken = default)
     {
         var fact = await _infraService.GetRandomFactAsync(cancellationToken);
         return fact;
     }
 
-    public async Task<IEnumerable<Fact>> GetAllFactsAsync()
+    public async Task<IEnumerable<Fact>> GetAllFactsAsync(CancellationToken cancellationToken = default)
     {
-        return await _repository.GetAllAsync();
+        return await _repository.GetAllAsync(null, cancellationToken);
     }
 
-    public async Task<FactInfraDto> FetchAndStoreUniqueFactAsync()
+    public async Task<FactInfraDto> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default)
     {
-        var factResponse = await _infraService.GetRandomFactAsync();
+        var factResponse = await _infraService.GetRandomFactAsync(cancellationToken);
         var fact = new Fact
         {
             CreatedAt = DateTime.UtcNow,
@@ -42,21 +41,21 @@ public sealed class FactAppService : IFactAppService
 
         if (!await _repository.HashExistsAsync(fact.TextHash))
         {
-            await _repository.AddAsync(fact);
+            await _repository.AddAsync(fact, cancellationToken);
         }
 
         return factResponse;
     }
 
-    public async Task<long> CountAllFactsAsync()
+    public async Task<long> CountAllFactsAsync(CancellationToken cancellationToken = default)
     {
-        return await _repository.CountAllDatabaseFacts();
+        return await _repository.CountAllDatabaseFacts(cancellationToken);
     }
 
-    public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts)
+    public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts, CancellationToken cancellationToken = default)
     {
         var factIds = facts.Select(e => e.Id).ToList();
-        var factsInDb = await _repository.GetAllAsync(g => factIds.Contains(g.Id));
+        var factsInDb = await _repository.GetAllAsync(g => factIds.Contains(g.Id), cancellationToken);
         var existingIds = factsInDb.Select(e => e.Id).ToList();
 
         if (existingIds.Count > 0)
@@ -66,12 +65,12 @@ public sealed class FactAppService : IFactAppService
                 $"exist in the database: {string.Join(", ", existingIds)}.");
         }
 
-        await _repository.AddRangeAsync(facts);
+        await _repository.AddRangeAsync(facts, cancellationToken);
         return facts.Count();
     }
 
-    public async Task<Fact?> GetFirstOrDefaultFactAsync()
+    public async Task<Fact?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default)
     {
-        return await _repository.GetFirstOrDefaultAsync();
+        return await _repository.GetFirstOrDefaultAsync(cancellationToken);
     }
 }
