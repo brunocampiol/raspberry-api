@@ -1,9 +1,10 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Options;
+using System.Net.Http.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
@@ -38,7 +39,7 @@ public class GeoLocationInfraService : IGeoLocationInfraService
             throw new AppException(errorMessage);
         }
 
-        var location = httpContent.FromJsonTo<GeoLocationInfraResponse>()
+        var location = await httpResponse.Content.ReadFromJsonAsync<GeoLocationInfraResponse>(JsonDefaults.Options)
             ?? throw new AppException($"Unable to parse to {nameof(GeoLocationInfraResponse)} " +
                                       $"from content '{httpContent}'. Request IP is '{ipAddress}'");
         

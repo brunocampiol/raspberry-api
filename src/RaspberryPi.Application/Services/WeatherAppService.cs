@@ -1,5 +1,4 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;

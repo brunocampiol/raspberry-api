@@ -1,9 +1,10 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Models.Weather;
+using System.Net.Http.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
@@ -39,8 +40,9 @@ public class WeatherInfraService : IWeatherInfraService
             throw new AppException(errorMessage);
         }
 
-        var result = httpContent.FromJsonTo<WeatherInfraResponse>()
-              ?? throw new AppException($"Weather data deserialization failed. " +
+        var result = await httpResponse.Content
+                        .ReadFromJsonAsync<WeatherInfraResponse>(JsonDefaults.Options) ??
+                                    throw new AppException($"Weather data deserialization failed. " +
                                         $"Coordinates: ({latitude}, {longitude}), " +
                                         $"HTTP content: {httpContent}");
 

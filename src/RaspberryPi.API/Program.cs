@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RaspberryPi.API.AutoMapper;
-using RaspberryPi.API.Configuration;
 using RaspberryPi.API.Filters;
 using RaspberryPi.API.HealthChecks;
 using RaspberryPi.API.Helpers;
@@ -15,6 +14,7 @@ using RaspberryPi.API.Services;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Options;
 using RaspberryPi.Application.Services;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models.Options;
@@ -28,7 +28,6 @@ using System.Text;
 
 const string _corsPolicyName = "AllowAll";
 var builder = WebApplication.CreateBuilder(args);
-var jsonOptions = AppJsonSerializerOptions.Default;
 var config = builder.Configuration;
 var connectionString = config.GetConnectionString("SqlLite")
     ?? throw new InvalidOperationException("Connection string 'SqlLite' is missing.");
@@ -61,11 +60,20 @@ builder.Services.AddControllers(options =>
                 {
                     options.Filters.Add<RequestCounterFilter>();
                 })
-                .AddJsonOptions(options =>
+                .AddJsonOptions(opt =>
                 {
-                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = jsonOptions.PropertyNameCaseInsensitive;
-                    options.JsonSerializerOptions.PropertyNamingPolicy = jsonOptions.PropertyNamingPolicy;
-                    options.JsonSerializerOptions.DictionaryKeyPolicy = jsonOptions.DictionaryKeyPolicy;
+                    var o = JsonDefaults.Options;
+
+                    opt.JsonSerializerOptions.DictionaryKeyPolicy = o.DictionaryKeyPolicy;
+                    opt.JsonSerializerOptions.PropertyNamingPolicy = o.PropertyNamingPolicy;
+                    opt.JsonSerializerOptions.PropertyNameCaseInsensitive = o.PropertyNameCaseInsensitive;
+                    opt.JsonSerializerOptions.DefaultIgnoreCondition = o.DefaultIgnoreCondition;
+                    opt.JsonSerializerOptions.WriteIndented = o.WriteIndented;
+
+                    foreach (var c in o.Converters)
+                    {
+                        opt.JsonSerializerOptions.Converters.Add(c);
+                    }
                 });
 
 // TODO use more specific CORS policy
@@ -228,7 +236,5 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 app.MapControllers();
-
-AppJsonSerializerOptions.SetDefaultOptions();
 
 await app.RunAsync();

@@ -1,6 +1,6 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Infrastructure.Models.Facts;
 using RaspberryPi.Infrastructure.Models.Options;
 
@@ -45,9 +45,13 @@ public class FactHealthCheck : IHealthCheck
                 }
 
                 var httpContent = await response.Content.ReadAsStringAsync();
-                var result = httpContent.FromJsonTo<IEnumerable<FactInfraDto>>().First();
 
-                if (result is null)
+                var result = await response.Content
+                                .ReadFromJsonAsync<IEnumerable<FactInfraDto>>(
+                                    JsonDefaults.Options,
+                                    cancellationToken);
+
+                if (result is null || !result.Any())
                 {
                     return HealthCheckResult.Unhealthy($"Invalid response content: '{httpContent}'");
                 }

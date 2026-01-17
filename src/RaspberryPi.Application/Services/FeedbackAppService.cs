@@ -1,8 +1,8 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
+using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.GeoLocation;

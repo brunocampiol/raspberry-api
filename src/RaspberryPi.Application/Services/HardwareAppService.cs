@@ -1,5 +1,5 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using RaspberryPi.Application.Interfaces;
+﻿using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Extensions;
 using System.Device.Gpio;
 
 namespace RaspberryPi.Application.Services

@@ -1,9 +1,10 @@
-﻿using Fetchgoods.Text.Json.Extensions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
+using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Facts;
 using RaspberryPi.Infrastructure.Models.Options;
+using System.Net.Http.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
@@ -36,7 +37,6 @@ public sealed class FactInfraService : IFactInfraService
 
         var httpResponse = await httpClient.SendAsync(httpRequest, linkedCts.Token);
         var httpContent = await httpResponse.Content.ReadAsStringAsync();
-
         if (!httpResponse.IsSuccessStatusCode)
         {
             var errorMessage = $"Failed to get GetRandomFactAsync. " +
@@ -46,9 +46,16 @@ public sealed class FactInfraService : IFactInfraService
             throw new AppException(errorMessage);
         }
 
-        var result = httpContent.FromJsonTo<IEnumerable<FactInfraDto>>()
-                                .First();
+        var result = await httpResponse.Content
+                            .ReadFromJsonAsync<IEnumerable<FactInfraDto>>(
+                                JsonDefaults.Options,
+                                cancellationToken);
 
-        return result;
+        if (result is null || !result.Any())
+        {
+            throw new AppException($"Failed to deserialize the fact response or the response is empty: '{httpContent}'.");
+        }
+
+        return result.First();
     }
 }
