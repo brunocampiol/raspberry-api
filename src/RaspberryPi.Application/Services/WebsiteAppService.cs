@@ -17,7 +17,7 @@ public sealed class WebsiteAppService : IWebsiteAppService
         _factAppService = factAppService ?? throw new ArgumentNullException(nameof(factAppService));
     }
 
-    public async Task<FactInfraDto> FetchAndStoreUniqueFactAsync()
+    public async Task<FactInfraResponse> FetchAndStoreUniqueFactAsync()
     {
         return await _factAppService.FetchAndStoreUniqueFactAsync();
     }

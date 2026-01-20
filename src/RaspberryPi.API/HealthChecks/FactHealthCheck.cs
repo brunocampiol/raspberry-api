@@ -33,8 +33,6 @@ public class FactHealthCheck : IHealthCheck
             try
             {
                 var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
-                httpRequest.Headers.Add("X-Api-Key", _settings.APIKey);
-
                 var response = await _httpClient.SendAsync(httpRequest, linkedCts.Token);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -47,7 +45,7 @@ public class FactHealthCheck : IHealthCheck
                 var httpContent = await response.Content.ReadAsStringAsync();
 
                 var result = await response.Content
-                                .ReadFromJsonAsync<IEnumerable<FactInfraDto>>(
+                                .ReadFromJsonAsync<IEnumerable<FactInfraResponse>>(
                                     JsonDefaults.Options,
                                     cancellationToken);
 

@@ -5,6 +5,6 @@ namespace RaspberryPi.Application.Interfaces;
 
 public interface IWebsiteAppService
 {
-    Task<FactInfraDto> FetchAndStoreUniqueFactAsync();
+    Task<FactInfraResponse> FetchAndStoreUniqueFactAsync();
     Task<WeatherDto> GetWeatherAsync(string ipAddress);
 }

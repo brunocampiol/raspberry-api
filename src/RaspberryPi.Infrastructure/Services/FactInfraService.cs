@@ -20,9 +20,9 @@ public sealed class FactInfraService : IFactInfraService
         _settings = settings.Value;
     }
 
-    public async Task<FactInfraDto> GetRandomFactAsync(CancellationToken cancellationToken = default)
+    public async Task<FactInfraResponse> GetRandomFactAsync(CancellationToken cancellationToken = default)
     {
-        var path = $"v1/facts";
+        var path = "api/v2/facts/random?language=en";
         var uri = new Uri($"{_settings.BaseUrl}{path}");
 
         using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
@@ -31,9 +31,7 @@ public sealed class FactInfraService : IFactInfraService
                                 timeoutCts.Token);
 
         var httpClient = _httpClientFactory.CreateClient();
-
         var httpRequest = new HttpRequestMessage(HttpMethod.Get, uri);
-        httpRequest.Headers.Add("X-Api-Key", _settings.APIKey);
 
         var httpResponse = await httpClient.SendAsync(httpRequest, linkedCts.Token);
         var httpContent = await httpResponse.Content.ReadAsStringAsync();
@@ -47,15 +45,15 @@ public sealed class FactInfraService : IFactInfraService
         }
 
         var result = await httpResponse.Content
-                            .ReadFromJsonAsync<IEnumerable<FactInfraDto>>(
+                            .ReadFromJsonAsync<FactInfraResponse>(
                                 JsonDefaults.Options,
                                 cancellationToken);
 
-        if (result is null || !result.Any())
+        if (result is null)
         {
             throw new AppException($"Failed to deserialize the fact response or the response is empty: '{httpContent}'.");
         }
 
-        return result.First();
+        return result;
     }
 }

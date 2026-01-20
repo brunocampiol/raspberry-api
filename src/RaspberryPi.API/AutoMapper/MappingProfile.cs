@@ -10,7 +10,12 @@ namespace RaspberryPi.API.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<FactInfraDto, FactViewModel>();
+            CreateMap<FactInfraResponse, FactViewModel>()
+                .ForMember(
+                    dest => dest.Fact,
+                    options => options.MapFrom(src => src.Text))
+                .ReverseMap();
+
             CreateMap<WeatherDto, WeatherViewModel>();
 
             CreateMap<EmailViewModel, EmailDto>();

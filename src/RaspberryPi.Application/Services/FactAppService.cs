@@ -18,7 +18,7 @@ public sealed class FactAppService : IFactAppService
         _repository = repository;
     }
 
-    public async Task<FactInfraDto> FetchFactAsync(CancellationToken cancellationToken = default)
+    public async Task<FactInfraResponse> FetchFactAsync(CancellationToken cancellationToken = default)
     {
         var fact = await _infraService.GetRandomFactAsync(cancellationToken);
         return fact;
@@ -29,14 +29,14 @@ public sealed class FactAppService : IFactAppService
         return await _repository.GetAllAsync(null, cancellationToken);
     }
 
-    public async Task<FactInfraDto> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default)
+    public async Task<FactInfraResponse> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default)
     {
         var factResponse = await _infraService.GetRandomFactAsync(cancellationToken);
         var fact = new Fact
         {
             CreatedAt = DateTime.UtcNow,
-            Text = factResponse.Fact,
-            TextHash = factResponse.Fact.ToSHA256Hash()
+            Text = factResponse.Text,
+            TextHash = factResponse.Text.ToSHA256Hash()
         };
 
         if (!await _repository.HashExistsAsync(fact.TextHash, cancellationToken))

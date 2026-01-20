@@ -21,11 +21,11 @@ public class FactController : ControllerBase
     /// Retrieves the current fact infrastructure data asynchronously.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the fetch operation.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="FactInfraDto"/> with
+    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="FactInfraResponse"/> with
     /// the retrieved fact infrastructure data.</returns>
     [Time]
     [HttpGet]
-    public async Task<FactInfraDto> Fetch(CancellationToken cancellationToken)
+    public async Task<FactInfraResponse> Fetch(CancellationToken cancellationToken)
     {
         var result = await _service.FetchFactAsync(cancellationToken);
         return result;
