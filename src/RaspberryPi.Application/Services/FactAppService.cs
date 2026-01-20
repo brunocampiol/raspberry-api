@@ -39,7 +39,7 @@ public sealed class FactAppService : IFactAppService
             TextHash = factResponse.Fact.ToSHA256Hash()
         };
 
-        if (!await _repository.HashExistsAsync(fact.TextHash))
+        if (!await _repository.HashExistsAsync(fact.TextHash, cancellationToken))
         {
             await _repository.AddAsync(fact, cancellationToken);
         }
