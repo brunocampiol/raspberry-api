@@ -5,5 +5,5 @@ namespace RaspberryPi.Domain.Interfaces.Repositories;
 
 public interface IEmailOutboxRepository : IRepository<EmailOutbox>
 {
-    Task<EmailOutbox?> GetLastSentEmailAsync();
+    Task<EmailOutbox?> GetLastSentEmailAsync(CancellationToken cancellationToken = default);
 }

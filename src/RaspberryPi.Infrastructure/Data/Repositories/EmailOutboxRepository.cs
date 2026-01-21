@@ -12,11 +12,11 @@ public class EmailOutboxRepository : Repository<EmailOutbox>, IEmailOutboxReposi
     {
     }
 
-    public async Task<EmailOutbox?> GetLastSentEmailAsync()
+    public async Task<EmailOutbox?> GetLastSentEmailAsync(CancellationToken cancellationToken = default)
     {
         return await _dbSet
                         .AsNoTracking()
                         .OrderByDescending(e => e.SentAtUTC)
-                        .FirstOrDefaultAsync();
+                        .FirstOrDefaultAsync(cancellationToken);
     }
 }
