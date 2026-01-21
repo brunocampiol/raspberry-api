@@ -22,7 +22,7 @@ public class FactHealthCheck : IHealthCheck
     {
         try
         {
-            var path = $"v1/facts";
+            var path = $"api/v2/facts/random";
             var uri = new Uri($"{_settings.BaseUrl}{path}");
 
             using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(20));
@@ -45,11 +45,11 @@ public class FactHealthCheck : IHealthCheck
                 var httpContent = await response.Content.ReadAsStringAsync();
 
                 var result = await response.Content
-                                .ReadFromJsonAsync<IEnumerable<FactInfraResponse>>(
+                                .ReadFromJsonAsync<FactInfraResponse>(
                                     JsonDefaults.Options,
                                     cancellationToken);
 
-                if (result is null || !result.Any())
+                if (result is null)
                 {
                     return HealthCheckResult.Unhealthy($"Invalid response content: '{httpContent}'");
                 }
