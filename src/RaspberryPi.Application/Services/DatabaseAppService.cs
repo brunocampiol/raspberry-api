@@ -5,14 +5,14 @@ using System.Text.Json;
 
 namespace RaspberryPi.Application.Services;
 
-public sealed class InternalAppService : IInternalAppService
+public sealed class DatabaseAppService : IDatabaseAppService
 {
     private readonly IFactAppService _factAppService;
     private readonly IFeedbackAppService _feedbackAppService;
     private readonly IEmailAppService _emailAppService;
     private readonly IGeoLocationAppService _geolocationAppService;
 
-    public InternalAppService(IFactAppService factAppService,
+    public DatabaseAppService(IFactAppService factAppService,
                                IEmailAppService emailAppService,
                                IFeedbackAppService feedbackAppService,
                                IGeoLocationAppService geolocationAppService)

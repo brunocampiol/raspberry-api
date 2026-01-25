@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Application.Interfaces;
 
-public interface IInternalAppService
+public interface IDatabaseAppService
 {
     Task<string> GenerateDatabaseBackupAsJsonStringAsync();
     Task<int> ImportDatabaseBackupAsync(DbBackupDto backup);
