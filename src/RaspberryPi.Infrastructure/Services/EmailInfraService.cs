@@ -18,33 +18,36 @@ public sealed class EmailInfraService : IEmailInfraService
         _settings = settings.Value;
     }
 
-    public async Task SendEmailAsync(Email email)
+    public async Task SendEmailAsync(Email email, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(email);
         if (string.IsNullOrWhiteSpace(email.To))
         {
-            var errorMessage = "To email address is required and " +
+            var errorMessage = "Destination email address is required and " +
                                "cannot be null, empty or consists " +
                                "only of white-space characters.";
             throw new ArgumentException(errorMessage);
         }
 
         using var smtp = new SmtpClient();
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(TimeSpan.FromSeconds(20));
+
         try
         {
-            await smtp.ConnectAsync(_settings.SmtpAddress, _settings.SmtpPort)
-                      .ConfigureAwait(false);
-            await smtp.AuthenticateAsync(_settings.FromEmail, _settings.SmtpPassword)
-                      .ConfigureAwait(false);
+            await smtp.ConnectAsync(_settings.SmtpAddress, _settings.SmtpPort, true, cts.Token);
+            await smtp.AuthenticateAsync(_settings.FromEmail, _settings.SmtpPassword, cts.Token);
 
             var message = CreateMimeMessage(email);
-            await smtp.SendAsync(message);
-            await smtp.DisconnectAsync(true);
+
+            await smtp.SendAsync(message, cts.Token);
         }
         finally
         {
-            await smtp.DisconnectAsync(true)
-                      .ConfigureAwait(false);
+            if (smtp.IsConnected)
+            {
+                await smtp.DisconnectAsync(true);
+            }
         }
     }
 

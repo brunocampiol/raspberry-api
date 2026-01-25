@@ -4,5 +4,5 @@ namespace RaspberryPi.Infrastructure.Interfaces;
 
 public interface IEmailInfraService
 {
-    Task SendEmailAsync(Email email);
+    Task SendEmailAsync(Email email, CancellationToken cancellationToken = default);
 }
