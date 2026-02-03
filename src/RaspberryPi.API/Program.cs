@@ -188,7 +188,7 @@ builder.Services.AddScoped<IEmailOutboxRepository, EmailOutboxRepository>();
 
 var app = builder.Build();
 
-app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseMiddleware<ExceptionNotificationMiddleware>();
 
 MethodTimeLogger.Logger = app.Logger;
 
