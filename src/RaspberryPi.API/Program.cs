@@ -26,7 +26,7 @@ using RaspberryPi.Infrastructure.Models.Options;
 using RaspberryPi.Infrastructure.Services;
 using System.Text;
 
-const string _corsPolicyName = "AllowAll";
+const string _corsPolicyName = "corsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 var connectionString = config.GetConnectionString("SqlLite")
@@ -76,14 +76,20 @@ builder.Services.AddControllers(options =>
                     }
                 });
 
-// TODO use more specific CORS policy
+var origins = builder.Configuration
+                     .GetSection("Cors:AllowedOrigins")
+                     .Get<string[]>() ?? 
+                     throw new InvalidOperationException("Cors:AllowedOrigins configuration is missing.");
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(_corsPolicyName, builder =>
+    options.AddPolicy(_corsPolicyName, p =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        if (origins!.Contains("*")) p.AllowAnyOrigin();
+        else p.WithOrigins(origins);
+
+        p.AllowAnyMethod()
+         .AllowAnyHeader();
     });
 });
 
@@ -202,7 +208,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(_corsPolicyName); // TODO use more specific CORS policy
+app.UseCors(_corsPolicyName);
 
 app.UseSwagger(x =>
 {
