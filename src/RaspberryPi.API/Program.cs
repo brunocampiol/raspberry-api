@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using Org.BouncyCastle.Ocsp;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Filters;
 using RaspberryPi.API.HealthChecks;
@@ -104,11 +103,7 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
         document.Components ??= new OpenApiComponents();
-
-        // NOTE: the type is IDictionary<string, IOpenApiSecurityScheme>
         document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-
-        // Add Bearer scheme
         document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
@@ -116,8 +111,6 @@ builder.Services.AddOpenApi(options =>
             BearerFormat = "JWT",
             Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
         };
-
-        // Global requirement (no scopes for bearer)
         document.Security =
         [
             new OpenApiSecurityRequirement
@@ -129,7 +122,6 @@ builder.Services.AddOpenApi(options =>
             }
         ];
 
-        // Important when using references
         document.SetReferenceHostDocument();
 
         return Task.CompletedTask;
@@ -228,7 +220,7 @@ var fh = new ForwardedHeadersOptions
 fh.KnownProxies.Add(System.Net.IPAddress.Loopback);
 fh.KnownProxies.Add(System.Net.IPAddress.IPv6Loopback);
 
-//app.UseHttpsRedirection();
+
 app.UseForwardedHeaders(fh);
 
 app.Use((ctx, next) =>
@@ -246,29 +238,12 @@ app.Use((ctx, next) =>
     return next();
 });
 
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(_corsPolicyName);
 
-
-
 app.MapOpenApi();
-//app.UseSwagger(x =>
-//{
-//    x.PreSerializeFilters.Add((swaggerDoc, httpRequest) =>
-//    {
-//        if (!httpRequest.Headers.ContainsKey("X-Forwarded-Host")) return;
-
-//        var serverUrl = $"{httpRequest.Headers["X-Forwarded-Proto"]}://" +
-//                        $"{httpRequest.Headers["X-Forwarded-Host"]}/" +
-//                        $"{httpRequest.Headers["X-Forwarded-Prefix"]}";
-
-//        swaggerDoc.Servers = new List<OpenApiServer>()
-//        {
-//            new OpenApiServer { Url = serverUrl }
-//        };
-//    });
-//});
 app.UseSwaggerUI(options =>
 {
     options.RoutePrefix = "swagger";
