@@ -81,6 +81,8 @@ var origins = builder.Configuration
                      .Get<string[]>() ?? 
                      throw new InvalidOperationException("Cors:AllowedOrigins configuration is missing.");
 
+// TODO: Use Rate Limiting Middleware
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(_corsPolicyName, p =>
