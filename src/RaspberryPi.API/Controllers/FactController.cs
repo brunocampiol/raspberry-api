@@ -18,7 +18,7 @@ public class FactController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves the current fact infrastructure data asynchronously.
+    /// Retrieves a new fact.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the fetch operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="FactInfraResponse"/> with

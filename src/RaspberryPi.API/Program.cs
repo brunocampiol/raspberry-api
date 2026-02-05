@@ -1,10 +1,12 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using Org.BouncyCastle.Ocsp;
 using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Filters;
 using RaspberryPi.API.HealthChecks;
@@ -78,7 +80,7 @@ builder.Services.AddControllers(options =>
 
 var origins = builder.Configuration
                      .GetSection("Cors:AllowedOrigins")
-                     .Get<string[]>() ?? 
+                     .Get<string[]>() ??
                      throw new InvalidOperationException("Cors:AllowedOrigins configuration is missing.");
 
 // TODO: Use Rate Limiting Middleware
@@ -97,33 +99,40 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<RaspberryDbContext>(options => options.UseSqlite(connectionString));
 
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddOpenApi(options =>
 {
-    var xmlFile = $"{typeof(Program).Assembly.GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Description = "Please provide a valid token",
-        Name = "Authorization",
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-    });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
+        document.Components ??= new OpenApiComponents();
+
+        // NOTE: the type is IDictionary<string, IOpenApiSecurityScheme>
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+        // Add Bearer scheme
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
         {
-            new OpenApiSecurityScheme
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+        };
+
+        // Global requirement (no scopes for bearer)
+        document.Security =
+        [
+            new OpenApiSecurityRequirement
             {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    new OpenApiSecuritySchemeReference("Bearer"),
+                    new List<string>()
                 }
-            },
-            Array.Empty<string>()
-        }
+            }
+        ];
+
+        // Important when using references
+        document.SetReferenceHostDocument();
+
+        return Task.CompletedTask;
     });
 });
 
@@ -207,30 +216,64 @@ if (app.Environment.IsDevelopment())
     await db.Database.EnsureCreatedAsync();
 }
 
+var fh = new ForwardedHeadersOptions
+{
+    ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost,
+    ForwardLimit = 1
+};
+
+fh.KnownProxies.Add(System.Net.IPAddress.Loopback);
+fh.KnownProxies.Add(System.Net.IPAddress.IPv6Loopback);
+
 //app.UseHttpsRedirection();
+app.UseForwardedHeaders(fh);
+
+app.Use((ctx, next) =>
+{
+    if (ctx.Request.Headers.TryGetValue("X-Forwarded-Prefix", out var prefix) &&
+        !string.IsNullOrWhiteSpace(prefix))
+    {
+        var p = prefix.ToString().Trim();
+        if (!p.StartsWith('/')) p = "/" + p;
+        if (p.Length > 1 && p.EndsWith('/')) p = p.TrimEnd('/');
+
+        ctx.Request.PathBase = p;
+    }
+
+    return next();
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(_corsPolicyName);
 
-app.UseSwagger(x =>
-{
-    x.PreSerializeFilters.Add((swaggerDoc, httpRequest) =>
-    {
-        if (!httpRequest.Headers.ContainsKey("X-Forwarded-Host")) return;
 
-        var serverUrl = $"{httpRequest.Headers["X-Forwarded-Proto"]}://" +
-                        $"{httpRequest.Headers["X-Forwarded-Host"]}/" +
-                        $"{httpRequest.Headers["X-Forwarded-Prefix"]}";
 
-        swaggerDoc.Servers = new List<OpenApiServer>()
-        {
-            new OpenApiServer { Url = serverUrl }
-        };
-    });
-});
-app.UseSwaggerUI(x =>
+app.MapOpenApi();
+//app.UseSwagger(x =>
+//{
+//    x.PreSerializeFilters.Add((swaggerDoc, httpRequest) =>
+//    {
+//        if (!httpRequest.Headers.ContainsKey("X-Forwarded-Host")) return;
+
+//        var serverUrl = $"{httpRequest.Headers["X-Forwarded-Proto"]}://" +
+//                        $"{httpRequest.Headers["X-Forwarded-Host"]}/" +
+//                        $"{httpRequest.Headers["X-Forwarded-Prefix"]}";
+
+//        swaggerDoc.Servers = new List<OpenApiServer>()
+//        {
+//            new OpenApiServer { Url = serverUrl }
+//        };
+//    });
+//});
+app.UseSwaggerUI(options =>
 {
-    x.EnableTryItOutByDefault();
+    options.RoutePrefix = "swagger";
+    options.SwaggerEndpoint("../openapi/v1.json", "API v1");
+    options.EnableTryItOutByDefault();
 });
 
 app.MapHealthChecks("/ping", new HealthCheckOptions
