@@ -1,6 +1,7 @@
 ﻿using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
 using RaspberryPi.Infrastructure.Models.Facts;
@@ -72,5 +73,10 @@ public sealed class FactAppService : IFactAppService
     public async Task<Fact?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetFirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<PagedResult<Fact>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
+    {
+        return await _repository.SearchAsync(query, cancellationToken);
     }
 }

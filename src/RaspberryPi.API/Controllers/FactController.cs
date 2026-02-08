@@ -1,6 +1,7 @@
 ﻿using MethodTimer;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.Facts;
 
@@ -65,5 +66,18 @@ public class FactController : ControllerBase
     {
         var result = await _service.CountAllFactsAsync(cancellationToken);
         return result;
+    }
+
+    /// <summary>
+    /// Searches for facts in the database based on the provided query parameters, returning a paginated result set of matching facts.
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    public async Task<PagedResult<Fact>> Search(FactQuery query, CancellationToken cancellationToken)
+    {
+        return await _service.SearchAsync(query, cancellationToken);
     }
 }
