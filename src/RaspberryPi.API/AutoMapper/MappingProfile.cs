@@ -8,6 +8,7 @@ namespace RaspberryPi.API.AutoMapper
 {
     public class MappingProfile : Profile
     {
+        // TODO remove automapper
         public MappingProfile()
         {
             CreateMap<FactInfraResponse, FactViewModel>()
