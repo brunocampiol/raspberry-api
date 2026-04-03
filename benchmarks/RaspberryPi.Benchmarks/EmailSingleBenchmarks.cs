@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
-using RaspberryPi.API.AutoMapper;
+using RaspberryPi.Application.Mapping;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Infrastructure.Models.Emails;
 
@@ -13,17 +12,11 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class EmailSingleBenchmarks
 {
-    private IMapper _mapper;
     private EmailDto _source;
 
     [GlobalSetup]
     public void Setup()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-        config.AssertConfigurationIsValid();
-
-        _mapper = config.CreateMapper();
-
         _source = new EmailDto
         {
             To = "test@example.com",
@@ -34,7 +27,7 @@ public class EmailSingleBenchmarks
     }
 
     [Benchmark(Baseline = true)]
-    public Email Manual()
+    public Email Baseline()
         => new Email
         {
             To = _source.To,
@@ -44,6 +37,6 @@ public class EmailSingleBenchmarks
         };
 
     [Benchmark]
-    public Email AutoMapper()
-        => _mapper.Map<Email>(_source);
+    public Email Mapper()
+        => _source.MapToEmail();
 }

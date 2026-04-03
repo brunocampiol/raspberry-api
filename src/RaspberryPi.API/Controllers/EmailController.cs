@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MethodTimer;
+﻿using MethodTimer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
@@ -17,12 +17,10 @@ namespace RaspberryPi.API.Controllers;
 public class EmailController : ControllerBase
 {
     private readonly IEmailAppService _service;
-    private readonly IMapper _mapper;
 
-    public EmailController(IEmailAppService service, IMapper mapper)
+    public EmailController(IEmailAppService service)
     {
         _service = service;
-        _mapper = mapper;
     }
 
     /// <summary>
@@ -35,7 +33,7 @@ public class EmailController : ControllerBase
     [Authorize(Roles = "root")]
     public async Task<EmailOutbox> Send(EmailViewModel viewModel)
     {
-        var dto = _mapper.Map<EmailDto>(viewModel);
+        var dto = viewModel.MapToEmailDto();
         return await _service.SendEmailAsync(dto);
     }
 
@@ -50,7 +48,7 @@ public class EmailController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> SendInfra(EmailViewModel viewModel)
     {
-        var dto = _mapper.Map<EmailDto>(viewModel);
+        var dto = viewModel.MapToEmailDto();
         await _service.SendEmailInfraAsync(dto);
         return NoContent();
     }

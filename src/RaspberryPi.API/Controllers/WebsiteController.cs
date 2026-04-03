@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MethodTimer;
+﻿using MethodTimer;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Extensions;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 
@@ -15,12 +15,10 @@ namespace RaspberryPi.API.Controllers;
 public class WebsiteController : ControllerBase
 {
     private readonly IWebsiteAppService _service;
-    private readonly IMapper _mapper;
 
-    public WebsiteController(IWebsiteAppService service, IMapper mapper)
+    public WebsiteController(IWebsiteAppService service)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     /// <summary>
@@ -33,7 +31,7 @@ public class WebsiteController : ControllerBase
     {
         var clientIp = HttpContext.GetClientIpAddress();
         var result = await _service.GetWeatherAsync(clientIp);
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        var viewModel = result.MapToWeatherViewModel();
         return viewModel;
     }
 
@@ -46,7 +44,7 @@ public class WebsiteController : ControllerBase
     public async Task<FactViewModel> Fact()
     {
         var result = await _service.FetchAndStoreUniqueFactAsync();
-        var viewModel = _mapper.Map<FactViewModel>(result);
+        var viewModel = result.MapToFactViewModel();
         return viewModel;
     }
 }

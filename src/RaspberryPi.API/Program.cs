@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using RaspberryPi.API.AutoMapper;
 using RaspberryPi.API.Filters;
 using RaspberryPi.API.HealthChecks;
 using RaspberryPi.API.Helpers;
@@ -39,8 +38,6 @@ builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionNam
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
 builder.Services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
-
-builder.Services.AddAutoMapper(AutoMapperConfig.RegisterMappings());
 
 builder.Services.AddHealthChecks()
                 .AddSqlite(connectionString,

@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
-using RaspberryPi.API.AutoMapper;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Models.Dtos;
 
@@ -13,17 +12,11 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class WeatherSingleBenchmarks
 {
-    private IMapper _mapper;
     private WeatherDto _source;
 
     [GlobalSetup]
     public void Setup()
     {
-        var config = new MapperConfiguration(cfg => cfg.AddProfile<MappingProfile>());
-        config.AssertConfigurationIsValid();
-
-        _mapper = config.CreateMapper();
-
         _source = new WeatherDto
         {
             EnglishName = "City",
@@ -34,7 +27,7 @@ public class WeatherSingleBenchmarks
     }
 
     [Benchmark(Baseline = true)]
-    public WeatherViewModel Manual()
+    public WeatherViewModel Baseline()
         => new WeatherViewModel
         {
             EnglishName = _source.EnglishName,
@@ -43,7 +36,8 @@ public class WeatherSingleBenchmarks
             Temperature = _source.Temperature
         };
 
+
     [Benchmark]
-    public WeatherViewModel AutoMapper()
-        => _mapper.Map<WeatherViewModel>(_source);
+    public WeatherViewModel Mapper()
+        => _source.MapToWeatherViewModel();
 }
