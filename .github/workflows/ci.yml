@@ -1,0 +1,34 @@
+name: .NET Build and Test
+
+on:
+  push:
+    branches: [ "feature/actions" ]
+  pull_request:
+    branches: [ "feature/actions" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out your repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install the .NET SDK (version 10.0.x)
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'   # uses the latest patch of .NET 10
+
+      # 3. Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # 4. Build the solution (without restoring again)
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      # 5. Run tests (without building again)
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
