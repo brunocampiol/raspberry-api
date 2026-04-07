@@ -3,7 +3,7 @@
 Following are the benchmark results for the mapping of weather data using three different methods: Mapper, Manual, and AutoMapper. 
 The code related to AutoMapper has been removed and the mapper extension will be used instead.
 Manual is baseline means the mapping is done directly in the code without any abstraction. 
-Mapper is the custom mapping implemented via extensions.
+Mapper is the custom mapping implemented via extensions (using this).
 AutoMapper is, of course, the v14 popular library for object-to-object mapping in .NET.
 
 ## RaspberryPi.Benchmarks.WeatherSingleBenchmarks
