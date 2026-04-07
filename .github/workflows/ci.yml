@@ -1,4 +1,4 @@
-name: .NET Build, Test & Analyze
+name: Build, Test & Analyze
 
 on:
   push:
@@ -24,23 +24,6 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # ------------------------------------------------------------
-      # 1. FORMAT CHECK (Informational only – does not fail the build)
-      # ------------------------------------------------------------
-      - name: Check Code Formatting (dotnet format)
-        continue-on-error: true
-        run: dotnet format --verify-no-changes --verbosity diagnostic
-
-      # ------------------------------------------------------------
-      # 2. VULNERABILITY SCAN (Informational only – does not fail the build)
-      # ------------------------------------------------------------
-      - name: Scan for vulnerable NuGet packages
-        continue-on-error: true
-        run: dotnet list package --vulnerable --include-transitive
-
-      # ------------------------------------------------------------
-      # 3. BUILD & TEST (These *should* fail if there's a real problem)
-      # ------------------------------------------------------------
       - name: Restore dependencies
         run: dotnet restore
 
@@ -50,9 +33,10 @@ jobs:
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
 
-      # ------------------------------------------------------------
-      # 4. CODEQL (Security scanning – does not fail the build)
-      # ------------------------------------------------------------
+      - name: Scan for vulnerable NuGet packages
+        continue-on-error: true
+        run: dotnet list package --vulnerable --include-transitive
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
