@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MethodTimer;
+﻿using MethodTimer;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Extensions;
+using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Infrastructure.Models.Weather;
@@ -16,12 +16,10 @@ namespace RaspberryPi.API.Controllers;
 public class WeatherController : ControllerBase
 {
     private readonly IWeatherAppService _service;
-    private readonly IMapper _mapper;
 
-    public WeatherController(IWeatherAppService service, IMapper mapper)
+    public WeatherController(IWeatherAppService service)
     {
         _service = service;
-        _mapper = mapper;
     }
 
     /// <summary>
@@ -34,7 +32,7 @@ public class WeatherController : ControllerBase
     public async Task<WeatherViewModel> FromIpAddress(string ipAddress)
     {  
         var result = await _service.GetCurrentWeatherAsync(ipAddress);
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        var viewModel = result.MapToWeatherViewModel();
         return viewModel;
     }
 
@@ -48,7 +46,7 @@ public class WeatherController : ControllerBase
     {
         var clientIp = HttpContext.GetClientIpAddress();
         var result = await _service.GetCurrentWeatherAsync(clientIp);
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        var viewModel = result.MapToWeatherViewModel();
         return viewModel;
     }
 
@@ -61,7 +59,7 @@ public class WeatherController : ControllerBase
     public async Task<WeatherViewModel> FromRandomIpAddress()
     {
         var result = await _service.GetCurrentWeatherFromRandomIpAddressAsync();
-        var viewModel = _mapper.Map<WeatherViewModel>(result);
+        var viewModel = result.MapToWeatherViewModel();
         return viewModel;
     }
 
