@@ -2,9 +2,9 @@ name: Build, Test & Analyze
 
 on:
   push:
-    branches: [ "feature/actions" ]
+    branches: [ "feature/actions" ]    
   pull_request:
-    branches: [ "feature/actions" ]
+    branches: [ "main" ]
 
 permissions:
   actions: read
@@ -34,7 +34,6 @@ jobs:
         run: dotnet test --no-build --configuration Release --verbosity normal
 
       - name: Scan for vulnerable NuGet packages
-        continue-on-error: true
         run: dotnet list package --vulnerable --include-transitive
 
       - name: Initialize CodeQL
@@ -50,4 +49,3 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:csharp"
-        continue-on-error: true   # Prevents workflow failure even if upload fails
