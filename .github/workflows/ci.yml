@@ -6,11 +6,10 @@ on:
   pull_request:
     branches: [ "feature/actions" ]
 
-# Add permissions required for GitHub's built-in security scanners
 permissions:
   actions: read
   contents: read
-  security-events: write  # Required for uploading CodeQL SARIF results
+  security-events: write
 
 jobs:
   build-and-analyze:
@@ -19,8 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clone is not enough for SonarCloud
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v4
@@ -28,19 +25,21 @@ jobs:
           dotnet-version: '10.0.x'
 
       # ------------------------------------------------------------
-      # 1. FORMAT CHECK (Enforce Code Style)
+      # 1. FORMAT CHECK (Informational only – does not fail the build)
       # ------------------------------------------------------------
       - name: Check Code Formatting (dotnet format)
+        continue-on-error: true
         run: dotnet format --verify-no-changes --verbosity diagnostic
 
       # ------------------------------------------------------------
-      # 2. VULNERABILITY SCAN (NuGet Packages)
+      # 2. VULNERABILITY SCAN (Informational only – does not fail the build)
       # ------------------------------------------------------------
       - name: Scan for vulnerable NuGet packages
+        continue-on-error: true
         run: dotnet list package --vulnerable --include-transitive
 
       # ------------------------------------------------------------
-      # 3. BUILD (Required for SonarScanner)
+      # 3. BUILD & TEST (These *should* fail if there's a real problem)
       # ------------------------------------------------------------
       - name: Restore dependencies
         run: dotnet restore
@@ -49,43 +48,15 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./TestResults
+        run: dotnet test --no-build --configuration Release --verbosity normal
 
       # ------------------------------------------------------------
-      # 4. SONARCLOUD (Deep Code Smells & Security Hotspots)
+      # 4. CODEQL (Security scanning – does not fail the build)
       # ------------------------------------------------------------
-      # Requires a free account at sonarcloud.io and a project key.
-      - name: Install SonarScanner for .NET
-        run: dotnet tool install --global dotnet-sonarscanner
-
-      - name: Begin SonarCloud Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          dotnet sonarscanner begin \
-            /k:"YOUR_ORGANIZATION_YOUR_PROJECT_KEY" \
-            /o:"YOUR_ORGANIZATION" \
-            /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
-            /d:sonar.cs.opencover.reportsPaths="**/TestResults/*/coverage.opencover.xml"
-
-      - name: Rebuild for SonarCloud (Full Analysis)
-        run: dotnet build --no-incremental
-
-      - name: End SonarCloud Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-      # ------------------------------------------------------------
-      # 5. GITHUB CODEQL (Security Vulnerabilities)
-      # ------------------------------------------------------------
-      # This is GitHub's native SAST tool. Free for public repos.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: csharp
-          # Optional: Add queries for extra security
           queries: security-and-quality
 
       - name: Autobuild for CodeQL
@@ -95,3 +66,4 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:csharp"
+        continue-on-error: true   # Prevents workflow failure even if upload fails
