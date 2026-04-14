@@ -15,40 +15,32 @@ permissions:
   security-events: write
 
 jobs:
-  build-and-analyze:
+  build-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - run: dotnet restore
+      - run: dotnet build --no-restore --configuration Release
+      - run: dotnet test --no-build --configuration Release --verbosity normal
+      - run: dotnet list package --vulnerable --include-transitive
 
-      - name: Build
-        run: dotnet build --no-restore --configuration Release
+  codeql:
+    runs-on: ubuntu-latest
+    needs: build-test
 
-      - name: Test
-        run: dotnet test --no-build --configuration Release --verbosity normal
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Scan for vulnerable NuGet packages
-        run: dotnet list package --vulnerable --include-transitive
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v3
         with:
           languages: csharp
           queries: security-and-quality
 
-      - name: Autobuild for CodeQL
-        uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/autobuild@v3
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:csharp"
+      - uses: github/codeql-action/analyze@v3
