@@ -12,7 +12,7 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class FactSingleBenchmarks
 {
-    private FactInfraResponse _source;
+    private FactInfraResponse _source = null!;
 
     [GlobalSetup]
     public void Setup()

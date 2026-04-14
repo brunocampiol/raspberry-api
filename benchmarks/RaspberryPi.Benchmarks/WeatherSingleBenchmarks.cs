@@ -12,7 +12,7 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class WeatherSingleBenchmarks
 {
-    private WeatherDto _source;
+    private WeatherDto _source = null!;
 
     [GlobalSetup]
     public void Setup()

@@ -12,7 +12,7 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class EmailSingleBenchmarks
 {
-    private EmailDto _source;
+    private EmailDto _source = null!;
 
     [GlobalSetup]
     public void Setup()

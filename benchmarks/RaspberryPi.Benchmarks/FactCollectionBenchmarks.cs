@@ -12,7 +12,7 @@ namespace RaspberryPi.Benchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class FactCollectionBenchmarks
 {
-    private List<FactInfraResponse> _collection;
+    private List<FactInfraResponse> _collection = null!;
 
     [Params(10, 100, 1_000, 10_000)]
     public int N;
