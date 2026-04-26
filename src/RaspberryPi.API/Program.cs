@@ -236,9 +236,9 @@ app.Use((ctx, next) =>
 });
 
 //app.UseHttpsRedirection();
+app.UseCors(_corsPolicyName);
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors(_corsPolicyName);
 
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
