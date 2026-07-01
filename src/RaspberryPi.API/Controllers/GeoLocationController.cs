@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.API.Extensions;
 using RaspberryPi.Application.Interfaces;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using System.ComponentModel.DataAnnotations;
@@ -29,7 +30,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationInfraResponse> LookUp([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocationResult> LookUp([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpAsync(ipAddress);
     }
@@ -40,7 +41,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationInfraResponse> LookUpFromContextIpAddress()
+    public async Task<GeoLocationResult> LookUpFromContextIpAddress()
     {
         var clientIp = HttpContext.GetClientIpAddress();
         return await _appService.LookUpAsync(clientIp);
@@ -52,9 +53,20 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationInfraResponse> LookUpFromRandomIpAddress()
+    public async Task<GeoLocationResult> LookUpFromRandomIpAddress()
     {
         return await _appService.LookUpFromRandomIpAddressAsync();
+    }
+
+    /// <summary>
+    /// Returns geolocation data for Google IP address
+    /// </summary>
+    /// <returns></returns>
+    [Time]
+    [HttpGet]
+    public async Task<GeoLocationResult> LookUpFromGoogleIpAddress()
+    {
+        return await _appService.LookUpAsync("8.8.8.8");
     }
 
     /// <summary>

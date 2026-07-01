@@ -1,34 +1,43 @@
-﻿using RaspberryPi.Application.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
+using RaspberryPi.Domain.Interfaces.Services;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 
 namespace RaspberryPi.Application.Services;
 
 public sealed class GeoLocationAppService : IGeoLocationAppService
 {
-    private readonly IGeoLocationInfraService _geoLocationInfraService;
+    private readonly IGeoLocationProviderSelector _selector;
+    private readonly IGeoLocationProvider _service;
     private readonly IGeoLocationRepository _repository;
+    private readonly ILogger<GeoLocationAppService> _logger;
 
-    public GeoLocationAppService(IGeoLocationInfraService geoLocationService,
-                                IGeoLocationRepository repository)
+    public GeoLocationAppService(
+            IGeoLocationProviderSelector selector,
+            IGeoLocationRepository repository,
+            ILogger<GeoLocationAppService> logger)
     {
-        _repository = repository;
-        _geoLocationInfraService = geoLocationService;
+        _selector = selector ?? throw new ArgumentNullException(nameof(selector));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _service = _selector.GetNextAvailableProvider() ?? 
+            throw new InvalidOperationException("no geolocation service provider available");
     }
 
-    public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
+    // TODO add specific vendor responses for each service provider for troubleshooting
+
+    public async Task<GeoLocationResult> LookUpAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(ipAddress);
-        return await _geoLocationInfraService.LookUpAsync(ipAddress);
+        return await _service.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationInfraResponse> LookUpFromRandomIpAddressAsync()
+    public async Task<GeoLocationResult> LookUpFromRandomIpAddressAsync()
     {
         var ipAddress = RandomHelper.GenerateRandomIPAddress();
-        return await _geoLocationInfraService.LookUpAsync(ipAddress.ToString());
+        return await _service.GetGeoLocationAsync(ipAddress.ToString());
     }
 
     public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()

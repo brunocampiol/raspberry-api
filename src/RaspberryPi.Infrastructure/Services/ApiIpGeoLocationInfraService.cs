@@ -1,32 +1,36 @@
 ﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Helpers;
-using RaspberryPi.Infrastructure.Interfaces;
+using RaspberryPi.Domain.Interfaces.Services;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Options;
 using System.Net.Http.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
-// This class uses https://apiip.net/ service
+// This class uses http://apiip.net/api/check?accessKey=KEY&ip=8.8.8.8
 
-public class GeoLocationInfraService : IGeoLocationInfraService
+public class ApiIpGeoLocationInfraService : IGeoLocationProvider
 {
+    public string ProviderName => nameof(ApiIpGeoLocationInfraService);
+    public bool IsAvailable => false; // TODO enable it back once ready
+
     private readonly GeoLocationOptions _settings;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public GeoLocationInfraService(IOptions<GeoLocationOptions> settings,
+    public ApiIpGeoLocationInfraService(IOptions<GeoLocationOptions> settings,
                                 IHttpClientFactory httpClientFactory)
     {
         _settings = settings.Value;
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<GeoLocationInfraResponse> LookUpAsync(string ipAddress)
+    public async Task<GeoLocationResult> GetGeoLocationAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(ipAddress);
         var httpClient = _httpClientFactory.CreateClient();
-        var uri = new Uri($"{_settings.BaseUrl}api/check?accessKey={_settings.APIKey}&ip={ipAddress}");
+        var uri = new Uri($"{_settings.BaseUrl.OriginalString}/api/check?accessKey={_settings.APIKey}&ip={ipAddress}");
 
         var httpResponse = await httpClient.GetAsync(uri);
         var httpContent = await httpResponse.Content.ReadAsStringAsync();
@@ -38,11 +42,12 @@ public class GeoLocationInfraService : IGeoLocationInfraService
 
             throw new AppException(errorMessage);
         }
-
-        var location = await httpResponse.Content.ReadFromJsonAsync<GeoLocationInfraResponse>(JsonDefaults.Options)
-            ?? throw new AppException($"Unable to parse to {nameof(GeoLocationInfraResponse)} " +
-                                      $"from content '{httpContent}'. Request IP is '{ipAddress}'");
         
+        // TODO migrate to use example from new version
+        var location = await httpResponse.Content.ReadFromJsonAsync<ApiIpNetResponse>(JsonDefaults.Options)
+            ?? throw new AppException($"Unable to parse to {nameof(ApiIpNetResponse)} " +
+                                      $"from content '{httpContent}'. Request IP is '{ipAddress}'");
+
         var validationErrors = new List<string>();
         if (string.IsNullOrWhiteSpace(location.CountryCode))
         {
@@ -55,10 +60,18 @@ public class GeoLocationInfraService : IGeoLocationInfraService
         if (validationErrors.Count > 0)
         {
             var errorMessge = $"Given IP address '{ipAddress}', the returned data is missing " +
-                              $"'{string.Join('.',validationErrors)}'. The returned content is {httpContent}";
+                              $"'{string.Join('.', validationErrors)}'. The returned content is {httpContent}";
             throw new AppException(errorMessge);
         }
 
-        return location;
+        return new GeoLocationResult
+        {
+            Provider = ProviderName,
+            CountryCode = location.CountryCode!,
+            LocationName = location.City ?? location.RegionName ?? location.CountryName!,
+            Latitude = location.Latitude,
+            Longitude = location.Longitude,
+            PostalCode = location.PostalCode
+        };
     }
 }

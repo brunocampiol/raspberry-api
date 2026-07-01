@@ -36,6 +36,8 @@ builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName)
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
 builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
+builder.Services.Configure<IpGeoLocationOptions>(config.GetSection(IpGeoLocationOptions.SectionName));
+builder.Services.Configure<FreeIpApiGeoLocationOptions>(config.GetSection(FreeIpApiGeoLocationOptions.SectionName));
 builder.Services.Configure<IdentityAppOptions>(config.GetSection(IdentityAppOptions.SectionName));
 builder.Services.Configure<EmailOptions>(config.GetSection(EmailOptions.SectionName));
 
@@ -180,11 +182,15 @@ builder.Services.AddScoped<IWebsiteAppService, WebsiteAppService>();
 builder.Services.AddSingleton<IBuzzerService, BuzzerService>();
 builder.Services.AddSingleton<IJwtService, JwtService>();
 builder.Services.AddSingleton<IIdentityAppService, IdentityAppService>();
+builder.Services.AddSingleton<IGeoLocationProviderSelector, RoundRobinProviderSelector>();
 // Infra services
 builder.Services.AddSingleton<IEmailInfraService, EmailInfraService>();
 builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
-builder.Services.AddScoped<IGeoLocationInfraService, GeoLocationInfraService>();
 builder.Services.AddScoped<IFactInfraService, FactInfraService>();
+builder.Services.AddTransient<IGeoLocationProvider, FreeIpApiGeoLocationInfraService>();
+builder.Services.AddTransient<IGeoLocationProvider, IpGeoLocationInfraService>();
+builder.Services.AddTransient<IGeoLocationProvider, ApiIpGeoLocationInfraService>();
+
 // Repositories
 builder.Services.AddScoped<RaspberryDbContext>();
 builder.Services.AddScoped<IFeedbackMessageRepository, FeedbackMessageRepository>();

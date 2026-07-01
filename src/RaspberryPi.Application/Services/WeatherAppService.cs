@@ -6,9 +6,9 @@ using RaspberryPi.Domain.Core;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Weather;
 
 namespace RaspberryPi.Application.Services;
@@ -17,22 +17,20 @@ public sealed class WeatherAppService : IWeatherAppService
 {
     private readonly IWeatherInfraService _weatherInfraService;
     private readonly IGeoLocationRepository _geoLocationRepository;
-    private readonly IGeoLocationInfraService _geoLocationInfraService;
-    private readonly IEmailAppService _emailAppService;
+    private readonly IGeoLocationAppService _geoLocationAppService;
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger _logger;
 
     public WeatherAppService(IWeatherInfraService watherInfraService,
-                                IGeoLocationInfraService geoLocationInfraService,
+                                IGeoLocationAppService geoLocationAppService,
                                 IGeoLocationRepository geoLocationRepository,
                                 IEmailAppService emailAppService,
                                 IMemoryCache memoryCache,
                                 ILogger<WeatherAppService> logger)
     {
         _weatherInfraService = watherInfraService;
-        _geoLocationInfraService = geoLocationInfraService;
+        _geoLocationAppService = geoLocationAppService;
         _geoLocationRepository = geoLocationRepository;
-        _emailAppService = emailAppService;
         _memoryCache = memoryCache;
         _logger = logger;
     }
@@ -80,10 +78,9 @@ public sealed class WeatherAppService : IWeatherAppService
         }
 
         // Fallback naming to avoid null values
-        var parsedLocationName = lookupResult.City ?? lookupResult.RegionName ?? lookupResult.CountryName;
-        if (string.IsNullOrWhiteSpace(parsedLocationName))
+        if (string.IsNullOrWhiteSpace(lookupResult.LocationName))
         {
-            var message = "Unable to determine a city for ip address " +
+            var message = "Unable to determine a location name for ip address " +
                           $"'{ipAddress}'. Response: '{lookupResult.ToJson()}'";
             _logger.LogWarning(message);
             return WeatherDto.NotAvailable();
@@ -92,7 +89,7 @@ public sealed class WeatherAppService : IWeatherAppService
         var geoLocation = new GeoLocation
         {
             CountryCode = lookupResult.CountryCode,
-            LocationName = parsedLocationName,
+            LocationName = lookupResult.LocationName,
             Latitude = lookupResult.Latitude,
             Longitude = lookupResult.Longitude,
             CreatedAtUTC = DateTime.UtcNow
@@ -138,10 +135,9 @@ public sealed class WeatherAppService : IWeatherAppService
         }
 
         // Fallback naming to avoid null values
-        var parsedLocationName = lookupResult.City ?? lookupResult.RegionName ?? lookupResult.CountryName;
-        if (string.IsNullOrWhiteSpace(parsedLocationName))
+        if (string.IsNullOrWhiteSpace(lookupResult.LocationName))
         {
-            var message = "Unable to determine a city for ip address " +
+            var message = "Unable to determine a location name for ip address " +
                           $"'{ipAddress}'. Response: '{lookupResult.ToJson()}'";
             _logger.LogWarning(message);
             return WeatherDto.NotAvailable();
@@ -156,7 +152,7 @@ public sealed class WeatherAppService : IWeatherAppService
             geoLocation = new GeoLocation
             {
                 CountryCode = lookupResult.CountryCode,
-                LocationName = parsedLocationName,
+                LocationName = lookupResult.LocationName,
                 Latitude = lookupResult.Latitude,
                 Longitude = lookupResult.Longitude,
                 CreatedAtUTC = DateTime.UtcNow
@@ -169,20 +165,21 @@ public sealed class WeatherAppService : IWeatherAppService
         return viewModel;
     }
 
-    private async Task<GeoLocationInfraResponse> GetCachedLookUpAsync(string ipAddress)
+    private async Task<GeoLocationResult> GetCachedLookUpAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
         var cacheKey = $"Geolocation-{ipAddress}";
 
-        if (!_memoryCache.TryGetValue(cacheKey, out GeoLocationInfraResponse? geoLocationDetails))
+        if (!_memoryCache.TryGetValue(cacheKey, out GeoLocationResult? geoLocationDetails))
         {
-            geoLocationDetails = await _geoLocationInfraService.LookUpAsync(ipAddress);
+            geoLocationDetails = await _geoLocationAppService.LookUpAsync(ipAddress);
 
             // TODO use a configurable cache duration
             _memoryCache.Set(cacheKey, geoLocationDetails, TimeSpan.FromHours(12));
         }
 
-        return geoLocationDetails ?? new GeoLocationInfraResponse { Ip = ipAddress };
+        return geoLocationDetails ?? 
+            throw new InvalidOperationException($"Failed to get cached geolocation details for IP address {ipAddress}");
     }
 
     private async Task<WeatherDto> GetCachedWeatherDtoConditionsAsync(GeoLocation geoLocation)

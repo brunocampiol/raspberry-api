@@ -2,7 +2,9 @@
 
 namespace RaspberryPi.Infrastructure.Models.GeoLocation;
 
-public record GeoLocationInfraResponse
+// TODO delete this class and parse json directly instead
+
+public record ApiIpNetResponse
 {
     [JsonPropertyName("ip")]
     public required string Ip { get; init; }

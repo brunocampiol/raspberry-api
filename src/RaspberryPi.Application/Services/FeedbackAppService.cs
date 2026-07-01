@@ -4,8 +4,8 @@ using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
+using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 
 namespace RaspberryPi.Application.Services;
 
@@ -32,7 +32,7 @@ public class FeedbackAppService : IFeedbackAppService
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(message);
 
-        GeoLocationInfraResponse? lookup = null;
+        GeoLocationResult? lookup = null;
         if (!string.IsNullOrWhiteSpace(ipAddress))
         {
             try
@@ -49,10 +49,9 @@ public class FeedbackAppService : IFeedbackAppService
                 ? new FeedbackMessage
                 {
                     Message = message,
-                    City = lookup.City,
                     CountryCode = lookup.CountryCode,
                     PostalCode = lookup.PostalCode,
-                    RegionName = lookup.RegionName,
+                    RegionName = lookup.LocationName,
                     HttpHeaders = httpHeaders,
                     CreatedAtUTC = DateTime.UtcNow,
                 }
