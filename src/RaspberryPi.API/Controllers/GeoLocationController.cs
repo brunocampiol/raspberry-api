@@ -4,7 +4,6 @@ using RaspberryPi.API.Extensions;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers;

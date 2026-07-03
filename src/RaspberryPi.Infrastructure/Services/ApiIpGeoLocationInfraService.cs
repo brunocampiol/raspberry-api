@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Options;
-using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
@@ -14,7 +12,7 @@ namespace RaspberryPi.Infrastructure.Services;
 public class ApiIpGeoLocationInfraService : IGeoLocationProvider
 {
     public string ProviderName => nameof(ApiIpGeoLocationInfraService);
-    public bool IsAvailable => false; // TODO enable it back once ready
+    public bool IsAvailable => true;
 
     private readonly GeoLocationOptions _settings;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -41,20 +39,24 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
                                $"not in 2XX range: '{httpResponse.StatusCode}' --> '{httpContent}'";
             throw new AppException(errorMessage);
         }
-        
-        // TODO migrate to use example from new version
-        var location = await httpResponse.Content.ReadFromJsonAsync<ApiIpNetResponse>(JsonDefaults.Options)
-            ?? throw new AppException($"Unable to parse to {nameof(ApiIpNetResponse)} " +
-                                      $"from content '{httpContent}'. Request IP is '{ipAddress}'");
+
+        using var stream = await httpResponse.Content.ReadAsStreamAsync();
+        using var doc = await JsonDocument.ParseAsync(stream);
+        var root = doc.RootElement;
+
+        var countryCode = root.GetProperty("countryCode").GetString();
+        var region = root.GetProperty("regionName").GetString();
+        var latitude = root.GetProperty("latitude").GetDouble();
+        var longitude = root.GetProperty("longitude").GetDouble();
 
         var validationErrors = new List<string>();
-        if (string.IsNullOrWhiteSpace(location.CountryCode))
+        if (string.IsNullOrWhiteSpace(countryCode))
         {
-            validationErrors.Add($"The country code is null, empty or consists of white-space characters: '{location.CountryCode}'");
+            validationErrors.Add($"The 'countryCode' is null, empty or consists of white-space characters.");
         }
-        if (string.IsNullOrWhiteSpace(location.CountryName))
+        if (string.IsNullOrWhiteSpace(region))
         {
-            validationErrors.Add($"The country name is null, empty or consists of white-space characters: '{location.CountryName}'");
+            validationErrors.Add($"The 'region' is null, empty or consists of white-space characters.");
         }
         if (validationErrors.Count > 0)
         {
@@ -66,11 +68,10 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
         return new GeoLocationResult
         {
             Provider = ProviderName,
-            CountryCode = location.CountryCode!,
-            LocationName = location.City ?? location.RegionName ?? location.CountryName!,
-            Latitude = location.Latitude,
-            Longitude = location.Longitude,
-            PostalCode = location.PostalCode
+            CountryCode = countryCode!,
+            LocationName = region!,
+            Latitude = latitude,
+            Longitude = longitude
         };
     }
 }
