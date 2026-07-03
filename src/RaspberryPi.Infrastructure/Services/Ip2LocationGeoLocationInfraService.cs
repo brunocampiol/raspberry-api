@@ -33,10 +33,8 @@ public class Ip2LocationGeoLocationInfraService : IGeoLocationProvider
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            // TODO: better message - review
-            var errorMessage = $"HTTP response '{httpResponse.StatusCode}' " +
-                               $"is not in 2XX range: '{httpContent}'";
-
+            var errorMessage = $"Vendor '{ProviderName}' http response for IP '{ipAddress}' is " +
+                               $"not in 2XX range: '{httpResponse.StatusCode}' --> '{httpContent}'";
             throw new AppException(errorMessage);
         }
 

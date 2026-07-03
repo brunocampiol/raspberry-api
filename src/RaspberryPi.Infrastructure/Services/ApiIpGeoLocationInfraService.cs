@@ -37,9 +37,8 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var errorMessage = $"API IP response '{httpResponse.StatusCode}' " +
-                              $"is not in 2XX range: '{httpContent}'";
-
+            var errorMessage = $"Vendor '{ProviderName}' http response for IP '{ipAddress}' is " +
+                               $"not in 2XX range: '{httpResponse.StatusCode}' --> '{httpContent}'";
             throw new AppException(errorMessage);
         }
         

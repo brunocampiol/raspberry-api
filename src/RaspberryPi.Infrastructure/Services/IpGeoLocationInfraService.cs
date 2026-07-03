@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using RaspberryPi.Domain.Core;
-using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Services;
 using RaspberryPi.Domain.Models;
-using RaspberryPi.Infrastructure.Models.GeoLocation;
 using RaspberryPi.Infrastructure.Models.Options;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
@@ -41,10 +35,8 @@ public class IpGeoLocationInfraService : IGeoLocationProvider
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            // TODO: better message - review
-            var errorMessage = $"HTTP response '{httpResponse.StatusCode}' " +
-                               $"is not in 2XX range: '{httpContent}'";
-
+            var errorMessage = $"Vendor '{ProviderName}' http response for IP '{ipAddress}' is " +
+                               $"not in 2XX range: '{httpResponse.StatusCode}' --> '{httpContent}'";
             throw new AppException(errorMessage);
         }
 
