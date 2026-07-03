@@ -206,7 +206,7 @@ public sealed class WeatherAppService : IWeatherAppService
             };
              
             // TODO use a configurable cache duration
-            _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromMinutes(30));
+            _memoryCache.Set(cacheKey, weatherDto, TimeSpan.FromHours(24));
         }
 
         return weatherDto ?? WeatherDto.NotAvailable();
