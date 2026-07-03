@@ -35,6 +35,34 @@ public class GeoLocationController : ControllerBase
         return await _appService.LookUpAsync(ipAddress);
     }
 
+    [Time]
+    [HttpGet]
+    public async Task<GeoLocationResult> LookUpApiIpAsync([FromQuery][Required] string ipAddress)
+    {
+        return await _appService.LookUpApiIpAsync(ipAddress);
+    }
+
+    [Time]
+    [HttpGet]
+    public async Task<GeoLocationResult> LookUpFreeIpAsync([FromQuery][Required] string ipAddress)
+    {
+        return await _appService.LookUpFreeIpAsync(ipAddress);
+    }
+
+    [Time]
+    [HttpGet]
+    public async Task<GeoLocationResult> LookUpIp2LocationAsync([FromQuery][Required] string ipAddress)
+    {
+        return await _appService.LookUpIp2LocationAsync(ipAddress);
+    }
+
+    [Time]
+    [HttpGet]
+    public async Task<GeoLocationResult> LookUpIpGeoAsync([FromQuery][Required] string ipAddress)
+    {
+        return await _appService.LookUpIpGeoAsync(ipAddress);
+    }
+
     /// <summary>
     /// Returns geolocation data based on user IP address
     /// </summary>
