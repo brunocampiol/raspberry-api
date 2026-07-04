@@ -19,7 +19,7 @@ public sealed class WeatherAppService : IWeatherAppService
     private readonly IGeoLocationRepository _geoLocationRepository;
     private readonly IGeoLocationAppService _geoLocationAppService;
     private readonly IMemoryCache _memoryCache;
-    private readonly ILogger _logger;
+    private readonly ILogger<WeatherAppService> _logger;
 
     public WeatherAppService(IWeatherInfraService watherInfraService,
                                 IGeoLocationAppService geoLocationAppService,
