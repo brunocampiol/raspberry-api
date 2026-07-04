@@ -33,10 +33,9 @@ public class WeatherInfraService : IWeatherInfraService
 
         if (!httpResponse.IsSuccessStatusCode)
         {
-            var errorMessage = $"Failed to get PostalCodeSearch. " +
-                               $"The HTTP response '{httpResponse.StatusCode}' " +
-                               $"is not in 2XX range for '{uri}'. Received " +
-                               $"content is '{httpContent}'";
+            var errorMessage = $"Failed to get PostalCodeSearch for lat '{latitude}' and lon '{longitude}'. " +
+                               $"The HTTP response '{httpResponse.StatusCode}' is not in 2XX range for " +
+                               $"'{uri}'. Received content is '{httpContent}'";
             throw new AppException(errorMessage);
         }
 
