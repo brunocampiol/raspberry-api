@@ -126,4 +126,15 @@ public class GeoLocationController : ControllerBase
     {
         return await _appService.GetAllGeoLocationsFromDatabaseAsync();
     }
+
+    /// <summary>
+    /// Get all distinct countries from database sorted in ascending order (alphabetically)
+    /// </summary>
+    /// <returns></returns>
+    [Time]
+    [HttpGet]
+    public async Task<IReadOnlyList<string>> GetDistinctCountriesFromDatabaseAsync()
+    {
+        return await _appService.GetDistinctCountriesFromDatabaseAsync();
+    }
 }

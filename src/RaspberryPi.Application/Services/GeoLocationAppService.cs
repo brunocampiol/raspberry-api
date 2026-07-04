@@ -70,6 +70,11 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await _infraService.GetGeoLocationAsync(ipAddress.ToString());
     }
 
+    public async Task<IReadOnlyList<string>> GetDistinctCountriesFromDatabaseAsync()
+    {
+        return await _repository.GetDistinctCountriesFromDatabaseAsync();
+    }
+
     public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()
     {
         var dbResults = await _repository.GetAllAsync();
