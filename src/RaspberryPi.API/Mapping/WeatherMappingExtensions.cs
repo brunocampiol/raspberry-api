@@ -10,7 +10,7 @@ public static class WeatherMappingExtensions
         return new WeatherViewModel
         {
             CountryCode = source.CountryCode,
-            EnglishName = source.EnglishName,
+            LocationName = source.EnglishName,
             Temperature = source.Temperature,
             WeatherText = source.WeatherText
         };

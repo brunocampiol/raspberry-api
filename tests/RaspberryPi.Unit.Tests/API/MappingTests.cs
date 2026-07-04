@@ -54,7 +54,7 @@ public class MappingTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(source.EnglishName, result.EnglishName);
+        Assert.Equal(source.EnglishName, result.LocationName);
         Assert.Equal(source.CountryCode, result.CountryCode);
         Assert.Equal(source.WeatherText, result.WeatherText);
         Assert.Equal(source.Temperature, result.Temperature);
@@ -161,7 +161,7 @@ public class MappingTests
         Assert.Equal(source.Count, resultList.Count);
         for (int i = 0; i < source.Count; i++)
         {
-            Assert.Equal(source[i].EnglishName, resultList[i].EnglishName);
+            Assert.Equal(source[i].EnglishName, resultList[i].LocationName);
             Assert.Equal(source[i].CountryCode, resultList[i].CountryCode);
             Assert.Equal(source[i].WeatherText, resultList[i].WeatherText);
             Assert.Equal(source[i].Temperature, resultList[i].Temperature);

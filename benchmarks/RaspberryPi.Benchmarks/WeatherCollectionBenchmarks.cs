@@ -35,7 +35,7 @@ public class WeatherCollectionBenchmarks
     public List<WeatherViewModel> Baseline()
         => _collection.Select(x => new WeatherViewModel
         {
-            EnglishName = x.EnglishName,
+            LocationName = x.EnglishName,
             CountryCode = x.CountryCode,
             WeatherText = x.WeatherText,
             Temperature = x.Temperature

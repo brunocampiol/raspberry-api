@@ -30,7 +30,7 @@ public class WeatherSingleBenchmarks
     public WeatherViewModel Baseline()
         => new WeatherViewModel
         {
-            EnglishName = _source.EnglishName,
+            LocationName = _source.EnglishName,
             CountryCode = _source.CountryCode,
             WeatherText = _source.WeatherText,
             Temperature = _source.Temperature
