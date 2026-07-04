@@ -34,6 +34,11 @@ public class GeoLocationController : ControllerBase
         return await _appService.LookUpAsync(ipAddress);
     }
 
+    /// <summary>
+    /// Returns geolocation data based on given IP address using ApiIp service
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<GeoLocationResult> LookUpApiIpAsync([FromQuery][Required] string ipAddress)
@@ -41,6 +46,11 @@ public class GeoLocationController : ControllerBase
         return await _appService.LookUpApiIpAsync(ipAddress);
     }
 
+    /// <summary>
+    /// Returns geolocation data based on given IP address using FreeIp service
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<GeoLocationResult> LookUpFreeIpAsync([FromQuery][Required] string ipAddress)
@@ -48,6 +58,11 @@ public class GeoLocationController : ControllerBase
         return await _appService.LookUpFreeIpAsync(ipAddress);
     }
 
+    /// <summary>
+    /// Returns geolocation data based on given IP address using Ip2Location service
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<GeoLocationResult> LookUpIp2LocationAsync([FromQuery][Required] string ipAddress)
@@ -55,6 +70,11 @@ public class GeoLocationController : ControllerBase
         return await _appService.LookUpIp2LocationAsync(ipAddress);
     }
 
+    /// <summary>
+    /// Returns geolocation data based on given IP address using IpGeoLocation service
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <returns></returns>
     [Time]
     [HttpGet]
     public async Task<GeoLocationResult> LookUpIpGeoAsync([FromQuery][Required] string ipAddress)
