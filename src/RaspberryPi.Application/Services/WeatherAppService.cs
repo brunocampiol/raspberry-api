@@ -164,7 +164,8 @@ public sealed class WeatherAppService : IWeatherAppService
         var viewModel = await GetCachedWeatherDtoConditionsAsync(geoLocation);
         return viewModel;
     }
-
+    
+    // TODO cached location should be in the geolocation service
     private async Task<GeoLocationResult> GetCachedLookUpAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);

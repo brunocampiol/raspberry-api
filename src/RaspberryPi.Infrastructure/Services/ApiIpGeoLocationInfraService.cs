@@ -30,8 +30,8 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
         var httpClient = _httpClientFactory.CreateClient();
         var uri = new Uri($"{_settings.BaseUrl.OriginalString}/api/check?accessKey={_settings.APIKey}&ip={ipAddress}");
 
-        var httpResponse = await httpClient.GetAsync(uri);
-        var httpContent = await httpResponse.Content.ReadAsStringAsync();
+        var httpResponse = await httpClient.GetAsync(uri, cancellationToken);
+        var httpContent = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
@@ -40,24 +40,29 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
             throw new AppException(errorMessage);
         }
 
-        using var stream = await httpResponse.Content.ReadAsStreamAsync();
-        using var doc = await JsonDocument.ParseAsync(stream);
+        using var doc = JsonDocument.Parse(httpContent);
         var root = doc.RootElement;
 
-        var countryCode = root.GetProperty("countryCode").GetString();
-        var region = root.GetProperty("regionName").GetString();
-        var latitude = root.GetProperty("latitude").GetDouble();
-        var longitude = root.GetProperty("longitude").GetDouble();
+        var countryCode = root.TryGetProperty("countryCode", out var cc) ? cc.GetString() : null;
+        var region = root.TryGetProperty("regionName", out var rn) ? rn.GetString() : null;
+        var countryName = root.TryGetProperty("countryName", out var cn) ? cn.GetString() : null;
+        double? latitude = root.TryGetProperty("latitude", out var la) ? la.GetDouble() : null;
+        double? longitude = root.TryGetProperty("longitude", out var lo) ? lo.GetDouble() : null;
 
         var validationErrors = new List<string>();
         if (string.IsNullOrWhiteSpace(countryCode))
         {
             validationErrors.Add($"The 'countryCode' is null, empty or consists of white-space characters.");
         }
-        if (string.IsNullOrWhiteSpace(region))
+        if (!latitude.HasValue)
         {
-            validationErrors.Add($"The 'region' is null, empty or consists of white-space characters.");
+            validationErrors.Add($"The 'latitude' is null.");
         }
+        if (!longitude.HasValue)
+        {
+            validationErrors.Add($"The 'longitude' is null.");
+        }
+
         if (validationErrors.Count > 0)
         {
             var errorMessge = $"Given IP address '{ipAddress}', the returned data is missing " +
@@ -69,9 +74,9 @@ public class ApiIpGeoLocationInfraService : IGeoLocationProvider
         {
             Provider = ProviderName,
             CountryCode = countryCode!,
-            LocationName = region!,
-            Latitude = latitude,
-            Longitude = longitude
+            LocationName = region ?? countryName ?? countryCode!,
+            Latitude = latitude!.Value,
+            Longitude = longitude!.Value
         };
     }
 }

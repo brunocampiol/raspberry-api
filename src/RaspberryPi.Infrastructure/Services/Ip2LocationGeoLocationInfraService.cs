@@ -28,8 +28,8 @@ public class Ip2LocationGeoLocationInfraService : IGeoLocationProvider
         var httpClient = _httpClientFactory.CreateClient();
         var uri = new Uri($"{_settings.BaseUrl.OriginalString}/?key={_settings.APIKey}&ip={ipAddress}");
 
-        var httpResponse = await httpClient.GetAsync(uri);
-        var httpContent = await httpResponse.Content.ReadAsStringAsync();
+        var httpResponse = await httpClient.GetAsync(uri, cancellationToken);
+        var httpContent = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
@@ -38,22 +38,29 @@ public class Ip2LocationGeoLocationInfraService : IGeoLocationProvider
             throw new AppException(errorMessage);
         }
 
-        using var stream = await httpResponse.Content.ReadAsStreamAsync();
-        using var doc = await JsonDocument.ParseAsync(stream);
+        using var doc = JsonDocument.Parse(httpContent);
         var root = doc.RootElement;
 
-        var countryCode = root.GetProperty("country_code").GetString();
-        var city = root.GetProperty("city_name").GetString();
-        var region = root.GetProperty("region_name").GetString();
-        var latitude = root.GetProperty("latitude").GetDouble();
-        var longitude = root.GetProperty("longitude").GetDouble();
-        var postalCode = root.GetProperty("zip_code").GetString();
+        var countryCode = root.TryGetProperty("country_code", out var cc) ? cc.GetString() : null;
+        var city = root.TryGetProperty("city_name", out var cn) ? cn.GetString() : null;
+        var region = root.TryGetProperty("region_name", out var rn) ? rn.GetString() : null;
+        double? latitude = root.TryGetProperty("latitude", out var la) ? la.GetDouble() : null;
+        double? longitude = root.TryGetProperty("longitude", out var lo) ? lo.GetDouble() : null;
+        var postalCode = root.TryGetProperty("zip_code", out var zc) ? zc.GetString() : null;
 
         var validationErrors = new List<string>();
 
         if (string.IsNullOrWhiteSpace(countryCode))
         {
-            validationErrors.Add($"The country code is null, empty or consists of white-space characters: '{countryCode}'");
+            validationErrors.Add($"The 'countryCode' is null, empty or consists of white-space characters.");
+        }
+        if (!latitude.HasValue)
+        {
+            validationErrors.Add($"The 'latitude' is null.");
+        }
+        if (!longitude.HasValue)
+        {
+            validationErrors.Add($"The 'longitude' is null.");
         }
 
         if (validationErrors.Count > 0)
@@ -68,8 +75,8 @@ public class Ip2LocationGeoLocationInfraService : IGeoLocationProvider
             Provider = ProviderName,
             CountryCode = countryCode!,
             LocationName = city ?? region ?? countryCode!,
-            Latitude = latitude,
-            Longitude = longitude,
+            Latitude = latitude!.Value,
+            Longitude = longitude!.Value,
             PostalCode = postalCode
         };
     }

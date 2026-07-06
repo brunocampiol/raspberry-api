@@ -30,8 +30,8 @@ public class IpGeoLocationInfraService : IGeoLocationProvider
         var httpClient = _httpClientFactory.CreateClient();
         var uri = new Uri($"{_settings.BaseUrl.OriginalString}/v3/ipgeo?apiKey={_settings.APIKey}&ip={ipAddress}");
 
-        var httpResponse = await httpClient.GetAsync(uri);
-        var httpContent = await httpResponse.Content.ReadAsStringAsync();
+        var httpResponse = await httpClient.GetAsync(uri, cancellationToken);
+        var httpContent = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
 
         if (!httpResponse.IsSuccessStatusCode)
         {
@@ -40,36 +40,34 @@ public class IpGeoLocationInfraService : IGeoLocationProvider
             throw new AppException(errorMessage);
         }
 
-        using var stream = await httpResponse.Content.ReadAsStreamAsync();
-        using var doc = await JsonDocument.ParseAsync(stream);
+        using var doc = JsonDocument.Parse(httpContent);
         var root = doc.RootElement;
 
-        var location = root.GetProperty("location");
-        var countryCode = root.GetProperty("location").GetProperty("country_code2").GetString();
-        var city = root.GetProperty("location").GetProperty("city").GetString();
-        var district = root.GetProperty("location").GetProperty("district").GetString();
-        var latitude = root.GetProperty("location").GetProperty("latitude").GetString();
-        var longitude = root.GetProperty("location").GetProperty("longitude").GetString();
-        var postalCode = root.GetProperty("location").GetProperty("zipcode").GetString();
+        if (!root.TryGetProperty("location", out var location))
+        {
+            var errorMessage = $"Given IP address '{ipAddress}' and vendor '{ProviderName}', " +
+                               $"the returned data is missing 'location' property. The " +
+                               $"returned content is {httpContent}";
+            throw new AppException(errorMessage);
+        }
+
+        var countryCode = location.TryGetProperty("country_code2", out var cc) ? cc.GetString() : null;
+        var city = location.TryGetProperty("city", out var cn) ? cn.GetString() : null;
+        var region = location.TryGetProperty("district", out var rn) ? rn.GetString() : null;
+        var latitude = location.TryGetProperty("latitude", out var la) ? la.GetString() : null;
+        var longitude = location.TryGetProperty("longitude", out var lo) ? lo.GetString() : null;
+        var postalCode = location.TryGetProperty("zipcode", out var zc) ? zc.GetString() : null;
 
         var validationErrors = new List<string>();
 
-        // TODO add validation to the location object
-        //if (location. is null)
-        //{
-        //    validationErrors.Add("The location data is null or missing.");
-        //}
-        
         if (string.IsNullOrWhiteSpace(countryCode))
         {
-            validationErrors.Add($"The country code is null, empty or consists of white-space characters: '{countryCode}'");
+            validationErrors.Add($"The 'countryCode' is null, empty or consists of white-space characters.");
         }
-
         if (Double.TryParse(latitude, out var lat) == false)
         {
             validationErrors.Add($"The latitude is not a valid double: '{latitude}'");
         }
-
         if (Double.TryParse(longitude, out var lon) == false)
         {
             validationErrors.Add($"The longitude is not a valid double: '{longitude}'");
@@ -86,7 +84,7 @@ public class IpGeoLocationInfraService : IGeoLocationProvider
         {
             Provider = ProviderName,
             CountryCode = countryCode!,
-            LocationName = city ?? district ?? countryCode!,
+            LocationName = city ?? region ?? countryCode!,
             Latitude = lat,
             Longitude = lon,
             PostalCode = postalCode
