@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/Benchmarks/">
+    <Project Path="benchmarks/RaspberryPi.Benchmarks/RaspberryPi.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/Solution Files/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docs/BENCHMARK.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests/RaspberryPi.Unit.Tests/RaspberryPi.Unit.Tests.csproj" />
+  </Folder>
+  <Project Path="src/RaspberryPi.API/RaspberryPi.API.csproj" />
+  <Project Path="src/RaspberryPi.Application/RaspberryPi.Application.csproj" />
+  <Project Path="src/RaspberryPi.Domain/RaspberryPi.Domain.csproj" />
+  <Project Path="src/RaspberryPi.Infrastructure/RaspberryPi.Infrastructure.csproj" />
+</Solution>
