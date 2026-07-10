@@ -31,7 +31,7 @@ public class EmailController : ControllerBase
     [Time]
     [HttpPost]
     [Authorize(Roles = "root")]
-    public async Task<EmailOutbox> Send(EmailViewModel viewModel)
+    public async Task<EmailOutboxEntity> Send(EmailViewModel viewModel)
     {
         var dto = viewModel.MapToEmailDto();
         return await _service.SendEmailAsync(dto);
@@ -60,7 +60,7 @@ public class EmailController : ControllerBase
     [Time]
     [HttpGet]
     [Authorize(Roles = "root")]
-    public async Task<IEnumerable<EmailOutbox>> GetAll()
+    public async Task<IEnumerable<EmailOutboxEntity>> GetAll()
     {
         return await _service.GetAllAsync();
     }
@@ -71,7 +71,7 @@ public class EmailController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<EmailOutbox?> GetLastSentEmail()
+    public async Task<EmailOutboxEntity?> GetLastSentEmail()
     {
         return await _service.GetLastSentEmailAsync();
     }

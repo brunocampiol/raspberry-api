@@ -28,22 +28,22 @@ public class EmailAppService : IEmailAppService
         _logger = logger;
     }
 
-    public async Task<IEnumerable<EmailOutbox>> GetAllAsync()
+    public async Task<IEnumerable<EmailOutboxEntity>> GetAllAsync()
     {
         return await _repository.GetAllAsync();
     }
 
-    public async Task<EmailOutbox?> GetLastSentEmailAsync()
+    public async Task<EmailOutboxEntity?> GetLastSentEmailAsync()
     {
         return await _repository.GetLastSentEmailAsync();
     }
 
-    public async Task<EmailOutbox> SendEmailAsync(EmailDto emailDto)
+    public async Task<EmailOutboxEntity> SendEmailAsync(EmailDto emailDto)
     {
         var email = emailDto.MapToEmail();
         await _infraService.SendEmailAsync(email);
 
-        var sentEmail = new EmailOutbox
+        var sentEmail = new EmailOutboxEntity
         {
             Id = Guid.NewGuid(),
             From = _settings.FromEmail,
@@ -63,7 +63,7 @@ public class EmailAppService : IEmailAppService
         await _infraService.SendEmailAsync(email);
     }
 
-    public async Task<int> ImportBackupAsync(IEnumerable<EmailOutbox> emails)
+    public async Task<int> ImportBackupAsync(IEnumerable<EmailOutboxEntity> emails)
     {
         var emailIds = emails.Select(e => e.Id).ToList();
         var emailsInDb = await _repository.GetAllAsync(g => emailIds.Contains(g.Id));

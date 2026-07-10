@@ -244,8 +244,8 @@ app.Use((ctx, next) =>
 
 //app.UseHttpsRedirection();
 app.UseCors(_corsPolicyName);
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapOpenApi();
 app.UseSwaggerUI(options =>

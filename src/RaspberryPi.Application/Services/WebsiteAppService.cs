@@ -32,7 +32,7 @@ public sealed class WebsiteAppService : IWebsiteAppService
     /// 1. Validates the IP address input
     /// 2. Looks up geolocation information for the IP address (with caching)
     /// 3. Validates that a country code and location name can be determined
-    /// 4. Retrieves or creates a <see cref="GeoLocation"/> entity from the repository
+    /// 4. Retrieves or creates a <see cref="GeoLocationEntity"/> entity from the repository
     /// 5. Sends a notification email for newly discovered locations
     /// 6. Retrieves weather conditions for the location (with caching)
     /// 7. Returns formatted weather information

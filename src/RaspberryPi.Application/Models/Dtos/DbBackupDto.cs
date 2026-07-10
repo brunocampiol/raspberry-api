@@ -4,8 +4,8 @@ namespace RaspberryPi.Application.Models.Dtos;
 
 public record DbBackupDto
 {
-    public IEnumerable<Fact> Facts { get; init; } = [];
-    public IEnumerable<GeoLocation> GeoLocations { get; init; } = [];
-    public IEnumerable<FeedbackMessage> FeedbackMessages { get; init; } = [];
-    public IEnumerable<EmailOutbox> EmailsOutbox { get; init; } = [];
+    public IEnumerable<FactEntity> Facts { get; init; } = [];
+    public IEnumerable<GeoLocationEntity> GeoLocations { get; init; } = [];
+    public IEnumerable<FeedbackMessageEntity> FeedbackMessages { get; init; } = [];
+    public IEnumerable<EmailOutboxEntity> EmailsOutbox { get; init; } = [];
 }

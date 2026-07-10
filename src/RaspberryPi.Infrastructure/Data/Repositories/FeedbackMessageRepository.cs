@@ -4,7 +4,7 @@ using RaspberryPi.Infrastructure.Data.Context;
 
 namespace RaspberryPi.Infrastructure.Data.Repositories
 {
-    public class FeedbackMessageRepository : Repository<FeedbackMessage>, IFeedbackMessageRepository
+    public class FeedbackMessageRepository : Repository<FeedbackMessageEntity>, IFeedbackMessageRepository
     {
         public FeedbackMessageRepository(RaspberryDbContext context)
             : base(context)

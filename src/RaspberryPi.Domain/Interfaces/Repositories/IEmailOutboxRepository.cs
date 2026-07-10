@@ -3,7 +3,7 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Interfaces.Repositories;
 
-public interface IEmailOutboxRepository : IRepository<EmailOutbox>
+public interface IEmailOutboxRepository : IRepository<EmailOutboxEntity>
 {
-    Task<EmailOutbox?> GetLastSentEmailAsync(CancellationToken cancellationToken = default);
+    Task<EmailOutboxEntity?> GetLastSentEmailAsync(CancellationToken cancellationToken = default);
 }

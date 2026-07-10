@@ -45,8 +45,8 @@ public class FeedbackAppService : IFeedbackAppService
             }
         }
 
-        FeedbackMessage feedback = lookup is not null
-                ? new FeedbackMessage
+        FeedbackMessageEntity feedback = lookup is not null
+                ? new FeedbackMessageEntity
                 {
                     Message = message,
                     CountryCode = lookup.CountryCode,
@@ -55,7 +55,7 @@ public class FeedbackAppService : IFeedbackAppService
                     HttpHeaders = httpHeaders,
                     CreatedAtUTC = DateTime.UtcNow,
                 }
-                : new FeedbackMessage
+                : new FeedbackMessageEntity
                 {
                     Message = message,
                     HttpHeaders = httpHeaders,
@@ -73,7 +73,7 @@ public class FeedbackAppService : IFeedbackAppService
         await _emailAppService.TrySendEmailAsync(email);
     }
 
-    public async Task<int> ImportBackupAsync(IEnumerable<FeedbackMessage> messages)
+    public async Task<int> ImportBackupAsync(IEnumerable<FeedbackMessageEntity> messages)
     {
         var messageIds = messages.Select(e => e.Id).ToList();
         var messagesInDb = await _repository.GetAllAsync(g => messageIds.Contains(g.Id));
@@ -90,7 +90,7 @@ public class FeedbackAppService : IFeedbackAppService
         return messages.Count();
     }
 
-    public async Task<IEnumerable<FeedbackMessage>> GetAllAsync()
+    public async Task<IEnumerable<FeedbackMessageEntity>> GetAllAsync()
     {
         return await _repository.GetAllAsync();
     }

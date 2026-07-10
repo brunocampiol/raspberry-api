@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Domain.Models.Entity;
 
-public class FeedbackMessage : EntityBase
+public class FeedbackMessageEntity : EntityBase
 {
     public required string Message { get; init; }
     public string? CountryCode { get; init; }

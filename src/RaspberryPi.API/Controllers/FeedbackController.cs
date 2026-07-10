@@ -70,7 +70,7 @@ public class FeedbackController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IEnumerable<FeedbackMessage>> GetAll()
+    public async Task<IEnumerable<FeedbackMessageEntity>> GetAll()
     {
         return await _feedbackAppService.GetAllAsync();
     }

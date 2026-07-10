@@ -75,13 +75,13 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await _repository.GetDistinctCountriesFromDatabaseAsync();
     }
 
-    public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabaseAsync()
+    public async Task<IEnumerable<GeoLocationEntity>> GetAllGeoLocationsFromDatabaseAsync()
     {
         var dbResults = await _repository.GetAllAsync();
         return dbResults;
     }
 
-    public async Task<int> ImportBackupAsync(IEnumerable<GeoLocation> geoLocations)
+    public async Task<int> ImportBackupAsync(IEnumerable<GeoLocationEntity> geoLocations)
     {
         var geoLocationIds = geoLocations.Select(e => e.Id).ToList();
         var geoLocationsInDb = await _repository.GetAllAsync(g => geoLocationIds.Contains(g.Id));

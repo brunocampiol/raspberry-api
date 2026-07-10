@@ -5,14 +5,14 @@ using RaspberryPi.Infrastructure.Data.Context;
 
 namespace RaspberryPi.Infrastructure.Data.Repositories;
 
-public class EmailOutboxRepository : Repository<EmailOutbox>, IEmailOutboxRepository
+public class EmailOutboxRepository : Repository<EmailOutboxEntity>, IEmailOutboxRepository
 {
     public EmailOutboxRepository(RaspberryDbContext context)
         : base(context)
     {
     }
 
-    public async Task<EmailOutbox?> GetLastSentEmailAsync(CancellationToken cancellationToken = default)
+    public async Task<EmailOutboxEntity?> GetLastSentEmailAsync(CancellationToken cancellationToken = default)
     {
         return await _dbSet
                         .AsNoTracking()

@@ -86,7 +86,7 @@ public sealed class WeatherAppService : IWeatherAppService
             return WeatherDto.NotAvailable();
         }
 
-        var geoLocation = new GeoLocation
+        var geoLocation = new GeoLocationEntity
         {
             CountryCode = lookupResult.CountryCode,
             LocationName = lookupResult.LocationName,
@@ -149,7 +149,7 @@ public sealed class WeatherAppService : IWeatherAppService
 
         if (geoLocation is null)
         {
-            geoLocation = new GeoLocation
+            geoLocation = new GeoLocationEntity
             {
                 CountryCode = lookupResult.CountryCode,
                 LocationName = lookupResult.LocationName,
@@ -183,7 +183,7 @@ public sealed class WeatherAppService : IWeatherAppService
             throw new InvalidOperationException($"Failed to get cached geolocation details for IP address {ipAddress}");
     }
 
-    private async Task<WeatherDto> GetCachedWeatherDtoConditionsAsync(GeoLocation geoLocation)
+    private async Task<WeatherDto> GetCachedWeatherDtoConditionsAsync(GeoLocationEntity geoLocation)
     {
         ArgumentNullException.ThrowIfNull(geoLocation);
         var cacheKey = $"Weather-{geoLocation.CountryCode}-{geoLocation.LocationName}";

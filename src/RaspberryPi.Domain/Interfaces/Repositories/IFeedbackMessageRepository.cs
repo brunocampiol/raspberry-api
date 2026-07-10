@@ -3,7 +3,7 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Interfaces.Repositories
 {
-    public interface IFeedbackMessageRepository : IRepository<FeedbackMessage>
+    public interface IFeedbackMessageRepository : IRepository<FeedbackMessageEntity>
     {
     }
 }

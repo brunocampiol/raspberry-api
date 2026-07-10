@@ -122,7 +122,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<IEnumerable<GeoLocation>> GetAllGeoLocationsFromDatabase()
+    public async Task<IEnumerable<GeoLocationEntity>> GetAllGeoLocationsFromDatabase()
     {
         return await _appService.GetAllGeoLocationsFromDatabaseAsync();
     }

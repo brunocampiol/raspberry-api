@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Domain.Models.Entity;
 
-public class GeoLocation : EntityBase
+public class GeoLocationEntity : EntityBase
 {
     public required string CountryCode { get; init; }
     public string? PostalCode { get; init; }

@@ -2,7 +2,7 @@
 
 namespace RaspberryPi.Domain.Models.Entity;
 
-public class EmailOutbox : EntityBase
+public class EmailOutboxEntity : EntityBase
 {
     public required string From { get; init; }
     public required string To { get; init; }

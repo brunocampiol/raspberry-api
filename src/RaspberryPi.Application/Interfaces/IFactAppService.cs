@@ -6,11 +6,11 @@ namespace RaspberryPi.Application.Interfaces;
 
 public interface IFactAppService
 {
-    Task<Fact?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default);
+    Task<FactEntity?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default);
     Task<FactInfraResponse> FetchFactAsync(CancellationToken cancellationToken = default);
     Task<FactInfraResponse> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default);
-    Task<IEnumerable<Fact>> GetAllFactsAsync(CancellationToken cancellationToken = default);
+    Task<IEnumerable<FactEntity>> GetAllFactsAsync(CancellationToken cancellationToken = default);
     Task<long> CountAllFactsAsync(CancellationToken cancellationToken = default);
-    Task<int> ImportBackupAsync(IEnumerable<Fact> facts, CancellationToken cancellationToken = default);
-    Task<PagedResult<Fact>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default);
+    Task<int> ImportBackupAsync(IEnumerable<FactEntity> facts, CancellationToken cancellationToken = default);
+    Task<PagedResult<FactEntity>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default);
 }

@@ -5,10 +5,10 @@ namespace RaspberryPi.Infrastructure.Data.Context
 {
     public class RaspberryDbContext : DbContext
     {
-        public DbSet<Fact> Facts { get; set; }
-        public DbSet<GeoLocation> GeoLocations { get; set; }
-        public DbSet<EmailOutbox> EmailsOutbox { get; set; }
-        public DbSet<FeedbackMessage> FeedbackMessages { get; set; }
+        public DbSet<FactEntity> FactEntities { get; set; }
+        public DbSet<GeoLocationEntity> GeoLocationEntities { get; set; }
+        public DbSet<EmailOutboxEntity> EmailOutboxEntities { get; set; }
+        public DbSet<FeedbackMessageEntity> FeedbackMessageEntities { get; set; }
 
         public RaspberryDbContext(DbContextOptions<RaspberryDbContext> options)
             : base(options)

@@ -8,7 +8,7 @@ using RaspberryPi.Infrastructure.Data.Context;
 
 namespace RaspberryPi.Infrastructure.Data.Repositories;
 
-public class FactRepository : Repository<Fact>, IFactRepository
+public class FactRepository : Repository<FactEntity>, IFactRepository
 {
     public FactRepository(RaspberryDbContext context)
         : base(context)
@@ -20,7 +20,7 @@ public class FactRepository : Repository<Fact>, IFactRepository
         return await _dbSet.AsNoTracking().LongCountAsync(cancellationToken);
     }
 
-    public async Task<Fact?> GetFirstOrDefaultAsync(CancellationToken cancellationToken = default)
+    public async Task<FactEntity?> GetFirstOrDefaultAsync(CancellationToken cancellationToken = default)
     {
         return await _dbSet.FirstOrDefaultAsync(cancellationToken);
     }
@@ -30,12 +30,12 @@ public class FactRepository : Repository<Fact>, IFactRepository
         return await _dbSet.AnyAsync(x => x.TextHash == hashValue, cancellationToken);
     }
 
-    public async Task<PagedResult<Fact>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<FactEntity>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
     {
         var spec = new FactsSearchSpec(query);
         var facts = _dbSet.AsQueryable();
 
-        IQueryable<Fact> countQuery = facts;
+        IQueryable<FactEntity> countQuery = facts;
         if (spec.AsNoTracking) countQuery = countQuery.AsNoTracking();
         if (spec.Criteria is not null) countQuery = countQuery.Where(spec.Criteria);
 
@@ -43,6 +43,6 @@ public class FactRepository : Repository<Fact>, IFactRepository
         var pagedQuery = SpecificationEvaluator.GetQuery(facts, spec);
         var items = await pagedQuery.ToListAsync(cancellationToken);
 
-        return new PagedResult<Fact>(query.Page, query.PageSize, total, items);
+        return new PagedResult<FactEntity>(query.Page, query.PageSize, total, items);
     }
 }

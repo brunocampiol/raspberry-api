@@ -5,7 +5,7 @@ using RaspberryPi.Infrastructure.Data.Context;
 
 namespace RaspberryPi.Infrastructure.Data.Repositories;
 
-public class GeoLocationRepository : Repository<GeoLocation>, IGeoLocationRepository
+public class GeoLocationRepository : Repository<GeoLocationEntity>, IGeoLocationRepository
 {
     public GeoLocationRepository(RaspberryDbContext context)
         :base(context) 
@@ -13,7 +13,7 @@ public class GeoLocationRepository : Repository<GeoLocation>, IGeoLocationReposi
 
     }
 
-    public async Task<GeoLocation?> GetAsync(string countryCode, double latitude, double longitude)
+    public async Task<GeoLocationEntity?> GetAsync(string countryCode, double latitude, double longitude)
     {
         // Round values to 3 decimal places
         var roundedLatitude = Math.Round(latitude, 3);

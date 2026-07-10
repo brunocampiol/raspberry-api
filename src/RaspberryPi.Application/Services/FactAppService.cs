@@ -25,7 +25,7 @@ public sealed class FactAppService : IFactAppService
         return fact;
     }
 
-    public async Task<IEnumerable<Fact>> GetAllFactsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<FactEntity>> GetAllFactsAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetAllAsync(null, cancellationToken);
     }
@@ -33,7 +33,7 @@ public sealed class FactAppService : IFactAppService
     public async Task<FactInfraResponse> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default)
     {
         var factResponse = await _infraService.GetRandomFactAsync(cancellationToken);
-        var fact = new Fact
+        var fact = new FactEntity
         {
             CreatedAt = DateTime.UtcNow,
             Text = factResponse.Text,
@@ -53,7 +53,7 @@ public sealed class FactAppService : IFactAppService
         return await _repository.CountAllDatabaseFacts(cancellationToken);
     }
 
-    public async Task<int> ImportBackupAsync(IEnumerable<Fact> facts, CancellationToken cancellationToken = default)
+    public async Task<int> ImportBackupAsync(IEnumerable<FactEntity> facts, CancellationToken cancellationToken = default)
     {
         var factIds = facts.Select(e => e.Id).ToList();
         var factsInDb = await _repository.GetAllAsync(g => factIds.Contains(g.Id), cancellationToken);
@@ -70,12 +70,12 @@ public sealed class FactAppService : IFactAppService
         return facts.Count();
     }
 
-    public async Task<Fact?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default)
+    public async Task<FactEntity?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetFirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<PagedResult<Fact>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<FactEntity>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
     {
         return await _repository.SearchAsync(query, cancellationToken);
     }

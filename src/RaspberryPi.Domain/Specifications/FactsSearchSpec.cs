@@ -4,7 +4,7 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Specifications;
 
-public sealed class FactsSearchSpec : Specification<Fact>
+public sealed class FactsSearchSpec : Specification<FactEntity>
 {
     public FactsSearchSpec(FactQuery q)
     {

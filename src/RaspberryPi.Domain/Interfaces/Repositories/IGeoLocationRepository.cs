@@ -3,9 +3,9 @@ using RaspberryPi.Domain.Models.Entity;
 
 namespace RaspberryPi.Domain.Interfaces.Repositories;
 
-public interface IGeoLocationRepository : IRepository<GeoLocation>
+public interface IGeoLocationRepository : IRepository<GeoLocationEntity>
 {
-    Task<GeoLocation?> GetAsync(string countryCode, double latitude, double longitude);
+    Task<GeoLocationEntity?> GetAsync(string countryCode, double latitude, double longitude);
 
     Task<IReadOnlyList<string>> GetDistinctCountriesFromDatabaseAsync();
 }
