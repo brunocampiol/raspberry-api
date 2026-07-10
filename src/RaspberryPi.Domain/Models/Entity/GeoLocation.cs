@@ -2,8 +2,6 @@
 
 namespace RaspberryPi.Domain.Models.Entity;
 
-// TODO what about change everything to GeoLocationEntity / GeoLocationData / GeoLocationRecord
-
 public class GeoLocation : EntityBase
 {
     public required string CountryCode { get; init; }
