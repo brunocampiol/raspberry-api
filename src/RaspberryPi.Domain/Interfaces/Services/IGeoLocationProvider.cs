@@ -6,7 +6,7 @@ public interface IGeoLocationProvider
 {
     string ProviderName { get; }    // Human-readable identifier
     bool IsAvailable { get; } // Simple health flag (could be updated by a health monitor)
-    Task<GeoLocationResult> GetGeoLocationAsync(
+    Task<GeoLocation> GetGeoLocationAsync(
         string ipAddress,
         CancellationToken cancellationToken = default);
 }

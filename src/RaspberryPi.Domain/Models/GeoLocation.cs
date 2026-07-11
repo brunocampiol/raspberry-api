@@ -3,7 +3,7 @@
 /// <summary>
 /// Standardised geo location response from any provider.
 /// </summary>
-public class GeoLocationResult
+public class GeoLocation
 {
     public string? PostalCode { get; init; }
     public required string Provider { get; init; }

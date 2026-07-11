@@ -166,12 +166,12 @@ public sealed class WeatherAppService : IWeatherAppService
     }
     
     // TODO cached location should be in the geolocation service
-    private async Task<GeoLocationResult> GetCachedLookUpAsync(string ipAddress)
+    private async Task<GeoLocation> GetCachedLookUpAsync(string ipAddress)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
         var cacheKey = $"Geolocation-{ipAddress}";
 
-        if (!_memoryCache.TryGetValue(cacheKey, out GeoLocationResult? geoLocationDetails))
+        if (!_memoryCache.TryGetValue(cacheKey, out GeoLocation? geoLocationDetails))
         {
             geoLocationDetails = await _geoLocationAppService.LookUpAsync(ipAddress);
 

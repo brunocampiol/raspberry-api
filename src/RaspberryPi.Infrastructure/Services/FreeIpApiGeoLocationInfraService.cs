@@ -24,7 +24,7 @@ public class FreeIpApiGeoLocationInfraService : IGeoLocationProvider
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<GeoLocationResult> GetGeoLocationAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> GetGeoLocationAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(ipAddress);
         var httpClient = _httpClientFactory.CreateClient();
@@ -72,7 +72,7 @@ public class FreeIpApiGeoLocationInfraService : IGeoLocationProvider
             throw new AppException(errorMessge);
         }
 
-        return new GeoLocationResult
+        return new GeoLocation
         {
             Provider = ProviderName,
             CountryCode = countryCode!,

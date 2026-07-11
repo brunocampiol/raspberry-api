@@ -27,12 +27,12 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         _providers = providers ?? throw new ArgumentNullException(nameof(providers));
     }
 
-    public async Task<GeoLocationResult> LookUpAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> LookUpAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         return await _infraService.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationResult> LookUpApiIpAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> LookUpApiIpAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         var providerName = nameof(ApiIpGeoLocationInfraService);
         var provider = _providers.FirstOrDefault(p => p.ProviderName == providerName);
@@ -40,7 +40,7 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await provider.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationResult> LookUpFreeIpAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> LookUpFreeIpAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         var providerName = nameof(FreeIpApiGeoLocationInfraService);
         var provider = _providers.FirstOrDefault(p => p.ProviderName == providerName);
@@ -48,7 +48,7 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await provider.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationResult> LookUpIp2LocationAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> LookUpIp2LocationAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         var providerName = nameof(Ip2LocationGeoLocationInfraService);
         var provider = _providers.FirstOrDefault(p => p.ProviderName == providerName);
@@ -56,7 +56,7 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await provider.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationResult> LookUpIpGeoAsync(string ipAddress, CancellationToken cancellationToken = default)
+    public async Task<GeoLocation> LookUpIpGeoAsync(string ipAddress, CancellationToken cancellationToken = default)
     {
         var providerName = nameof(IpGeoLocationInfraService);
         var provider = _providers.FirstOrDefault(p => p.ProviderName == providerName);
@@ -64,7 +64,7 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await provider.GetGeoLocationAsync(ipAddress, cancellationToken);
     }
 
-    public async Task<GeoLocationResult> LookUpFromRandomIpAddressAsync()
+    public async Task<GeoLocation> LookUpFromRandomIpAddressAsync()
     {
         var ipAddress = RandomHelper.GenerateRandomIPAddress();
         return await _infraService.GetGeoLocationAsync(ipAddress.ToString());

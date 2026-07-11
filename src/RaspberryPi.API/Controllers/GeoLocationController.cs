@@ -29,7 +29,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUp([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocation> LookUp([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpAsync(ipAddress);
     }
@@ -41,7 +41,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpApiIpAsync([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocation> LookUpApiIpAsync([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpApiIpAsync(ipAddress);
     }
@@ -53,7 +53,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpFreeIpAsync([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocation> LookUpFreeIpAsync([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpFreeIpAsync(ipAddress);
     }
@@ -65,7 +65,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpIp2LocationAsync([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocation> LookUpIp2LocationAsync([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpIp2LocationAsync(ipAddress);
     }
@@ -77,7 +77,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpIpGeoAsync([FromQuery][Required] string ipAddress)
+    public async Task<GeoLocation> LookUpIpGeoAsync([FromQuery][Required] string ipAddress)
     {
         return await _appService.LookUpIpGeoAsync(ipAddress);
     }
@@ -88,7 +88,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpFromContextIpAddress()
+    public async Task<GeoLocation> LookUpFromContextIpAddress()
     {
         var clientIp = HttpContext.GetClientIpAddress();
         return await _appService.LookUpAsync(clientIp);
@@ -100,7 +100,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpFromRandomIpAddress()
+    public async Task<GeoLocation> LookUpFromRandomIpAddress()
     {
         return await _appService.LookUpFromRandomIpAddressAsync();
     }
@@ -111,7 +111,7 @@ public class GeoLocationController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<GeoLocationResult> LookUpFromGoogleIpAddress()
+    public async Task<GeoLocation> LookUpFromGoogleIpAddress()
     {
         return await _appService.LookUpAsync("8.8.8.8");
     }
