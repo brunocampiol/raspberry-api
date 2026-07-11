@@ -11,6 +11,7 @@ public interface IGeoLocationAppService
     Task<GeoLocation> LookUpIp2LocationAsync(string ipAddress, CancellationToken cancellationToken = default);
     Task<GeoLocation> LookUpIpGeoAsync(string ipAddress, CancellationToken cancellationToken = default);
     Task<GeoLocation> LookUpFromRandomIpAddressAsync();
+    Task<GeoLocation> GetCachedLookUpAsync(string ipAddress);
     Task<IReadOnlyList<string>> GetDistinctCountriesFromDatabaseAsync();
     Task<IEnumerable<GeoLocationEntity>> GetAllGeoLocationsFromDatabaseAsync();
     Task<int> ImportBackupAsync(IEnumerable<GeoLocationEntity> geoLocations);

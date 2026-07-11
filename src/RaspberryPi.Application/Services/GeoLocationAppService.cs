@@ -1,4 +1,5 @@
-﻿using RaspberryPi.Application.Interfaces;
+﻿using Microsoft.Extensions.Caching.Memory;
+using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Interfaces.Services;
@@ -13,18 +14,21 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
     private readonly IGeoLocationProviderSelector _selector;
     private readonly IGeoLocationProvider _infraService;
     private readonly IGeoLocationRepository _repository;
+    private readonly IMemoryCache _memoryCache;
     private readonly IEnumerable<IGeoLocationProvider> _providers;
 
     public GeoLocationAppService(
             IGeoLocationProviderSelector selector,
             IGeoLocationRepository repository,
+            IMemoryCache memoryCache,
             IEnumerable<IGeoLocationProvider> providers)
     {
+        _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
+        _providers = providers ?? throw new ArgumentNullException(nameof(providers));
         _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _infraService = _selector.GetNextAvailableProvider() ?? 
-            throw new InvalidOperationException("no geolocation service provider available");
-        _providers = providers ?? throw new ArgumentNullException(nameof(providers));
+            throw new InvalidOperationException("no geolocation service provider available");   
     }
 
     public async Task<GeoLocation> LookUpAsync(string ipAddress, CancellationToken cancellationToken = default)
@@ -70,6 +74,25 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
         return await _infraService.GetGeoLocationAsync(ipAddress.ToString());
     }
 
+    public async Task<GeoLocation> GetCachedLookUpAsync(string ipAddress)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(ipAddress);
+        var cacheKey = $"Geolocation-{ipAddress}";
+
+        if (!_memoryCache.TryGetValue(cacheKey, out GeoLocation? geoLocationDetails))
+        {
+            geoLocationDetails = await LookUpAsync(ipAddress);
+
+            // TODO use a configurable cache duration
+            _memoryCache.Set(cacheKey, geoLocationDetails, TimeSpan.FromHours(12));
+
+            await InsertIntoDatabaseIfNewLocationAsync(geoLocationDetails);
+        }        
+
+        return geoLocationDetails ??
+            throw new InvalidOperationException($"Failed to get cached geolocation details for IP address {ipAddress}");
+    }
+
     public async Task<IReadOnlyList<string>> GetDistinctCountriesFromDatabaseAsync()
     {
         return await _repository.GetDistinctCountriesFromDatabaseAsync();
@@ -96,5 +119,28 @@ public sealed class GeoLocationAppService : IGeoLocationAppService
 
         await _repository.AddRangeAsync(geoLocations);
         return geoLocations.Count();
+    }
+
+    private async Task InsertIntoDatabaseIfNewLocationAsync(GeoLocation geoLocation)
+    {
+        ArgumentNullException.ThrowIfNull(geoLocation);
+
+        var entity = await _repository.GetAsync(geoLocation.CountryCode,
+                                                geoLocation.Latitude,
+                                                geoLocation.Longitude);
+
+        if (entity is null)
+        {
+            entity = new GeoLocationEntity
+            {
+                CountryCode = geoLocation.CountryCode,
+                LocationName = geoLocation.LocationName,
+                Latitude = geoLocation.Latitude,
+                Longitude = geoLocation.Longitude,
+                CreatedAtUTC = DateTime.UtcNow
+            };
+
+            await _repository.AddAsync(entity);
+        }
     }
 }
