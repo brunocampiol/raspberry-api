@@ -25,6 +25,25 @@ public sealed class FactAppService : IFactAppService
         return fact;
     }
 
+    public async Task<FactEntity?> AddAsync(string factText, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(factText);
+
+        var fact = new FactEntity
+        {
+            CreatedAt = DateTime.UtcNow,
+            Text = factText,
+            TextHash = factText.ToSHA256Hash()
+        };
+        if (!await _repository.HashExistsAsync(fact.TextHash, cancellationToken))
+        {
+            await _repository.AddAsync(fact, cancellationToken);
+            return fact;
+        }
+
+        return null;
+    }
+
     public async Task<IEnumerable<FactEntity>> GetAllFactsAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetAllAsync(null, cancellationToken);

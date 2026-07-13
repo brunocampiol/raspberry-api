@@ -6,6 +6,7 @@ namespace RaspberryPi.Application.Interfaces;
 
 public interface IFactAppService
 {
+    Task<FactEntity?> AddAsync(string factText, CancellationToken cancellationToken = default);
     Task<FactEntity?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default);
     Task<FactInfraResponse> FetchFactAsync(CancellationToken cancellationToken = default);
     Task<FactInfraResponse> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default);

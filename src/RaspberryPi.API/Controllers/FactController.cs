@@ -1,9 +1,11 @@
 ﻿using MethodTimer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Models.Facts;
+using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers;
 
@@ -79,5 +81,19 @@ public class FactController : ControllerBase
     public async Task<PagedResult<FactEntity>> Search(FactQuery query, CancellationToken cancellationToken)
     {
         return await _service.SearchAsync(query, cancellationToken);
+    }
+
+    /// <summary>
+    /// Adds a new fact to the database based on the provided text.
+    /// </summary>
+    /// <param name="text">Required and must not be null or empty</param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [Time]
+    [HttpPost]
+    [Authorize(Roles = "root")]
+    public async Task<FactEntity?> Add([Required][FromBody]string text, CancellationToken cancellationToken)
+    {
+        return await _service.AddAsync(text, cancellationToken);
     }
 }
