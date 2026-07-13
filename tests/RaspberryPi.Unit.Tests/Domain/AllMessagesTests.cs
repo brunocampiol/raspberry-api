@@ -212,4 +212,67 @@ public class AllMessagesTests
         Assert.Contains("Exception 1", result);
         Assert.Contains("Exception 100", result);
     }
+
+    [Fact]
+    public void AllMessages_WithAggregateExceptionAsInnerException_UsesSeparatorThenParentheses()
+    {
+        // Arrange - a regular exception wraps an AggregateException
+        var ex1 = new TimeoutException("Timed out");
+        var ex2 = new IOException("Disk error");
+        var aggregateEx = new AggregateException("Batch failed", ex1, ex2);
+        var outerEx = new ApplicationException("Processing failed", aggregateEx);
+        var expected = "Processing failed --> Batch failed (Timed out) (Disk error)";
+        // Act
+        var result = outerEx.AllMessages();
+        // Assert
+        Assert.Equal(expected, result);
+    }
+    [Fact]
+    public void AllMessages_WithAggregateExceptionContainingSingleInnerException_UsesParentheses()
+    {
+        // Arrange
+        var innerEx = new InvalidOperationException("Only failure");
+        var aggregateEx = new AggregateException("One error", innerEx);
+        var expected = "One error (Only failure)";
+        // Act
+        var result = aggregateEx.AllMessages();
+        // Assert
+        Assert.Equal(expected, result);
+    }
+    [Fact]
+    public void AllMessages_WithAggregateExceptionWhereInnerExceptionHasItsOwnChain_RecursesChain()
+    {
+        // Arrange - inner exception inside an aggregate itself has an inner exception
+        var rootCause = new IOException("File not found");
+        var innerEx = new InvalidOperationException("Could not load resource", rootCause);
+        var aggregateEx = new AggregateException("Startup failed", innerEx);
+        var expected = "Startup failed (Could not load resource --> File not found)";
+        // Act
+        var result = aggregateEx.AllMessages();
+        // Assert
+        Assert.Equal(expected, result);
+    }
+    [Fact]
+    public void AllMessages_WithEmptyAggregateException_ReturnsOnlyAggregateMessage()
+    {
+        // Arrange - AggregateException with no inner exceptions (empty collection)
+        var aggregateEx = new AggregateException("No inner errors", []);
+        var expected = "No inner errors";
+        // Act
+        var result = aggregateEx.AllMessages();
+        // Assert
+        Assert.Equal(expected, result);
+    }
+    [Fact]
+    public void AllMessages_WithExceptionHavingWhitespaceMessage_PreservesWhitespace()
+    {
+        // Arrange
+        var ex = new Exception("   ");
+        var expected = "   ";
+        // Act
+        var result = ex.AllMessages();
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
 }
