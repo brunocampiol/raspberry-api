@@ -30,7 +30,7 @@ public class DatabaseController : ControllerBase
 
     [Time]
     [HttpPost]
-    //[Authorize(Roles = "root")]
+    [Authorize(Roles = "root")]
     public void Migrate()
     {
         _context.Database.Migrate();
