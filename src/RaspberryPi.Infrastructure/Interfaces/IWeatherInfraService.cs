@@ -1,8 +1,8 @@
-﻿using RaspberryPi.Infrastructure.Models.Weather;
+﻿using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.Infrastructure.Interfaces;
 
 public interface IWeatherInfraService
 {
-    Task<WeatherInfraResponse> CurrentAsync(double latitude, double longitude);
+    Task<Weather> CurrentAsync(double latitude, double longitude);
 }

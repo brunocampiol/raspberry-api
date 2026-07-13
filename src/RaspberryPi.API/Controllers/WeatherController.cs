@@ -4,7 +4,7 @@ using RaspberryPi.API.Extensions;
 using RaspberryPi.API.Mapping;
 using RaspberryPi.API.Models.ViewModels;
 using RaspberryPi.Application.Interfaces;
-using RaspberryPi.Infrastructure.Models.Weather;
+using RaspberryPi.Domain.Models;
 
 namespace RaspberryPi.API.Controllers;
 
@@ -72,7 +72,7 @@ public class WeatherController : ControllerBase
     /// <exception cref="BadHttpRequestException"></exception>
     [Time]
     [HttpGet]
-    public async Task<WeatherInfraResponse> Current(double latitude, double longitude)
+    public async Task<Weather> Current(double latitude, double longitude)
     {
         if (latitude < -90 || latitude > 90)
         {
@@ -95,7 +95,7 @@ public class WeatherController : ControllerBase
     /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<WeatherInfraResponse> CurrentRandom()
+    public async Task<Weather> CurrentRandom()
     {
         var random = new Random();
         var latitude = (random.NextDouble() * 180 - 90);   // -90 to 90

@@ -8,6 +8,7 @@ using System.Net.Http.Json;
 
 namespace RaspberryPi.Infrastructure.Services;
 
+// TODO: delete this service
 public sealed class FactInfraService : IFactInfraService
 {
     private readonly FactOptions _settings;

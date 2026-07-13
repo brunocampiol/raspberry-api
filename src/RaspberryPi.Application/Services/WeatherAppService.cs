@@ -8,7 +8,6 @@ using RaspberryPi.Domain.Helpers;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
 using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.Weather;
 
 namespace RaspberryPi.Application.Services;
 
@@ -39,7 +38,7 @@ public sealed class WeatherAppService : IWeatherAppService
     /// <param name="longitude"></param>
     /// <returns></returns>
     /// <exception cref="AppException"></exception>
-    public async Task<WeatherInfraResponse> GetInfraWeatherAsync(double latitude, double longitude)
+    public async Task<Weather> GetInfraWeatherAsync(double latitude, double longitude)
     {
         if (latitude < -90 || latitude > 90)
         {
@@ -91,20 +90,14 @@ public sealed class WeatherAppService : IWeatherAppService
             CreatedAtUTC = DateTime.UtcNow
         };
 
-        var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
-        if (infraWeather.Main is null)
-        {
-            var errorMessage = "Weather main data is null for coordinates: " +
-                               $"({geoLocation.Latitude}, {geoLocation.Longitude})";
-            throw new AppException(errorMessage);
-        }
+        var weather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
 
         var weatherDto = new WeatherDto()
         {
             EnglishName = geoLocation.LocationName,
             CountryCode = geoLocation.CountryCode,
-            WeatherText = GetWeatherDescription(infraWeather),
-            Temperature = $"{infraWeather.Main.Temperature:0.0} °C",
+            WeatherText = weather.Description,
+            Temperature = $"{weather.TemperatureCelcius:0.0} °C",
         };
 
         return weatherDto;
@@ -149,20 +142,14 @@ public sealed class WeatherAppService : IWeatherAppService
 
         if (!_memoryCache.TryGetValue(cacheKey, out WeatherDto? weatherDto))
         {
-            var infraWeather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
-            if (infraWeather.Main is null)
-            {
-                var errorMessage = "Weather main data is null for coordinates: " +
-                                   $"({geoLocation.Latitude}, {geoLocation.Longitude})";
-                throw new AppException(errorMessage);
-            }
+            var weather = await _weatherInfraService.CurrentAsync(geoLocation.Latitude, geoLocation.Longitude);
 
             weatherDto = new WeatherDto()
             {
                 EnglishName = geoLocation.LocationName,
                 CountryCode = geoLocation.CountryCode,
-                WeatherText = GetWeatherDescription(infraWeather),
-                Temperature = $"{infraWeather.Main.Temperature:0.0} °C",
+                WeatherText = weather.Description,
+                Temperature = $"{weather.TemperatureCelcius:0.0} °C",
             };
              
             // TODO use a configurable cache duration
@@ -171,31 +158,4 @@ public sealed class WeatherAppService : IWeatherAppService
 
         return weatherDto ?? WeatherDto.NotAvailable();
     }
-
-    private static string GetWeatherDescription(WeatherInfraResponse weatherResponse)
-    {
-        const string noWeather = "No weather data available";
-
-        if (weatherResponse?.Weather == null || weatherResponse.Weather.Length == 0)
-        {
-            return noWeather;
-        }
-
-        if (weatherResponse.Weather.Length == 1)
-        {
-            var firstWeather = weatherResponse.Weather[0].Description;
-            if (string.IsNullOrWhiteSpace(firstWeather))
-            {
-                return noWeather;
-            }
-
-            return firstWeather.Trim().CapitalizeFirstLetter();
-        }
-
-        // For multiple descriptions, combine them
-        var descriptions = weatherResponse.Weather.Select(w => w.Description).ToArray();
-        var allDescriptions = string.Join(" and ", descriptions);
-        return allDescriptions.Trim().CapitalizeFirstLetter();
-    }
-
 }
