@@ -48,7 +48,6 @@ public abstract class Repository<T> : IRepository<T>
 
     public virtual async Task RemoveAllAsync(CancellationToken cancellationToken = default)
     {
-        // ExecuteDeleteAsync supports cancellation token in EF Core 7+
         await _dbSet.ExecuteDeleteAsync(cancellationToken);
     }
 

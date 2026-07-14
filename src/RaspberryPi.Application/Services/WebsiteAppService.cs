@@ -1,7 +1,6 @@
 ﻿using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Application.Models.Dtos;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.Facts;
 
 namespace RaspberryPi.Application.Services;
 
@@ -17,9 +16,15 @@ public sealed class WebsiteAppService : IWebsiteAppService
         _factAppService = factAppService ?? throw new ArgumentNullException(nameof(factAppService));
     }
 
-    public async Task<FactInfraResponse> FetchAndStoreUniqueFactAsync()
+    // TODO: Returning a hard-coded user-facing fallback string from the application service mixes presentation
+    // concerns into the application layer and makes the API response ambiguous (a valid fact vs. an error/message).
+    // Prefer returning `string?` (or a result type) and let the API/controller decide how to represent 'no fact'
+    // (e.g., 404/204, ProblemDetails, localized message).
+    public async Task<string> GetRandomFactAsync()
     {
-        return await _factAppService.FetchAndStoreUniqueFactAsync();
+        var fact = await _factAppService.GetRandomFactAsync();
+        if (fact is null) return "No fact available today.";
+        return fact;
     }
 
     /// <summary>

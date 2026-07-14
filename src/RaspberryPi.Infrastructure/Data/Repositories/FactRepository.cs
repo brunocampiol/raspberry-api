@@ -25,6 +25,13 @@ public class FactRepository : Repository<FactEntity>, IFactRepository
         return await _dbSet.FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<FactEntity?> GetRandomFactAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.AsNoTracking()
+                           .OrderBy(x => EF.Functions.Random())
+                           .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<bool> HashExistsAsync(string hashValue, CancellationToken cancellationToken = default)
     {
         return await _dbSet.AnyAsync(x => x.TextHash == hashValue, cancellationToken);

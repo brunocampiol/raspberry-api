@@ -12,8 +12,6 @@ var config = ManualConfig.Create(DefaultConfig.Instance)
 
 var benchmarks = new[]
 {
-    typeof(FactSingleBenchmarks),
-    typeof(FactCollectionBenchmarks),
     typeof(WeatherSingleBenchmarks),
     typeof(WeatherCollectionBenchmarks),
     typeof(EmailSingleBenchmarks),

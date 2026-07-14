@@ -3,26 +3,16 @@ using RaspberryPi.Domain.Extensions;
 using RaspberryPi.Domain.Interfaces.Repositories;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Interfaces;
-using RaspberryPi.Infrastructure.Models.Facts;
 
 namespace RaspberryPi.Application.Services;
 
 public sealed class FactAppService : IFactAppService
 {
-    private readonly IFactInfraService _infraService;
     private readonly IFactRepository _repository;
 
-    public FactAppService(IFactInfraService factsService, IFactRepository repository)
+    public FactAppService(IFactRepository repository)
     {
-        _infraService = factsService;
         _repository = repository;
-    }
-
-    public async Task<FactInfraResponse> FetchFactAsync(CancellationToken cancellationToken = default)
-    {
-        var fact = await _infraService.GetRandomFactAsync(cancellationToken);
-        return fact;
     }
 
     public async Task<FactEntity?> AddAsync(string factText, CancellationToken cancellationToken = default)
@@ -47,24 +37,6 @@ public sealed class FactAppService : IFactAppService
     public async Task<IEnumerable<FactEntity>> GetAllFactsAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetAllAsync(null, cancellationToken);
-    }
-
-    public async Task<FactInfraResponse> FetchAndStoreUniqueFactAsync(CancellationToken cancellationToken = default)
-    {
-        var factResponse = await _infraService.GetRandomFactAsync(cancellationToken);
-        var fact = new FactEntity
-        {
-            CreatedAt = DateTime.UtcNow,
-            Text = factResponse.Text,
-            TextHash = factResponse.Text.ToSHA256Hash()
-        };
-
-        if (!await _repository.HashExistsAsync(fact.TextHash, cancellationToken))
-        {
-            await _repository.AddAsync(fact, cancellationToken);
-        }
-
-        return factResponse;
     }
 
     public async Task<long> CountAllFactsAsync(CancellationToken cancellationToken = default)
@@ -92,6 +64,12 @@ public sealed class FactAppService : IFactAppService
     public async Task<FactEntity?> GetFirstOrDefaultFactAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetFirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<string?> GetRandomFactAsync(CancellationToken cancellationToken = default)
+    {
+        var fact = await _repository.GetRandomFactAsync(cancellationToken);
+        return fact?.Text;
     }
 
     public async Task<PagedResult<FactEntity>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)

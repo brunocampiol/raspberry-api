@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using RaspberryPi.Application.Interfaces;
 using RaspberryPi.Domain.Models;
 using RaspberryPi.Domain.Models.Entity;
-using RaspberryPi.Infrastructure.Models.Facts;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaspberryPi.API.Controllers;
@@ -21,17 +20,15 @@ public class FactController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves a new fact.
+    /// Retrieves a random fact.
     /// </summary>
-    /// <param name="cancellationToken">A cancellation token that can be used to cancel the fetch operation.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains a <see cref="FactInfraResponse"/> with
-    /// the retrieved fact infrastructure data.</returns>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [Time]
     [HttpGet]
-    public async Task<FactInfraResponse> Fetch(CancellationToken cancellationToken)
+    public async Task<string?> Random(CancellationToken cancellationToken)
     {
-        var result = await _service.FetchFactAsync(cancellationToken);
-        return result;
+        return await _service.GetRandomFactAsync(cancellationToken);
     }
 
     /// <summary>

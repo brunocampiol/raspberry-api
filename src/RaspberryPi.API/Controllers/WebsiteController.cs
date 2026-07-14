@@ -43,8 +43,7 @@ public class WebsiteController : ControllerBase
     [HttpGet]
     public async Task<FactViewModel> Fact()
     {
-        var result = await _service.FetchAndStoreUniqueFactAsync();
-        var viewModel = result.MapToFactViewModel();
-        return viewModel;
+        var result = await _service.GetRandomFactAsync();
+        return new FactViewModel { Fact = result };
     }
 }

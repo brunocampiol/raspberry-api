@@ -34,7 +34,6 @@ var connectionString = config.GetConnectionString("SqlLite")
 
 builder.Services.Configure<JwtOptions>(config.GetSection(JwtOptions.SectionName));
 builder.Services.Configure<WeatherOptions>(config.GetSection(WeatherOptions.SectionName));
-builder.Services.Configure<FactOptions>(config.GetSection(FactOptions.SectionName));
 builder.Services.Configure<GeoLocationOptions>(config.GetSection(GeoLocationOptions.SectionName));
 builder.Services.Configure<IpGeoLocationOptions>(config.GetSection(IpGeoLocationOptions.SectionName));
 builder.Services.Configure<Ip2LocationGeoLocationOptions>(config.GetSection(Ip2LocationGeoLocationOptions.SectionName));
@@ -51,9 +50,6 @@ builder.Services.AddHealthChecks()
                             tags: ["api"])
                 .AddCheck<GeoLocationHealthCheck>(
                             name: "geolocation",
-                            tags: ["api"])
-                .AddCheck<FactHealthCheck>(
-                            name: "fact",
                             tags: ["api"]);
 
 
@@ -187,7 +183,6 @@ builder.Services.AddSingleton<IGeoLocationProviderSelector, RoundRobinProviderSe
 // Infra services
 builder.Services.AddSingleton<IEmailInfraService, EmailInfraService>();
 builder.Services.AddScoped<IWeatherInfraService, WeatherInfraService>();
-builder.Services.AddScoped<IFactInfraService, FactInfraService>();
 builder.Services.AddTransient<IGeoLocationProvider, FreeIpApiGeoLocationInfraService>();
 builder.Services.AddTransient<IGeoLocationProvider, IpGeoLocationInfraService>();
 builder.Services.AddTransient<IGeoLocationProvider, ApiIpGeoLocationInfraService>();
