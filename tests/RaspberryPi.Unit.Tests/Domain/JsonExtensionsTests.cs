@@ -1,4 +1,5 @@
 ﻿using RaspberryPi.Domain.Extensions;
+using System.Drawing;
 using System.Text.Json;
 
 namespace RaspberryPi.Unit.Tests.Domain;
@@ -114,10 +115,9 @@ public class JsonExtensionsTests
         var json = "{\"x\":10,\"Y\":20}";
 
         // Act
-        var point = json.FromJson<System.Drawing.Point>();
+        var point = json.FromJson<Point>();
 
         // Assert
-        Assert.NotNull(point);
         Assert.Equal(10, point!.X);
         Assert.Equal(20, point.Y);
     }
@@ -197,7 +197,6 @@ public class JsonExtensionsTests
         var output = json.FromJson<DateTime>();
 
         // Assert
-        Assert.NotNull(output);
         Assert.Equal(input, output);
         Assert.Equal(DateTimeKind.Utc, output.Kind);
     }
@@ -213,7 +212,6 @@ public class JsonExtensionsTests
         var output = json.FromJson<DateTimeOffset>();
 
         // Assert
-        Assert.NotNull(output);
         Assert.Equal(input, output);
         Assert.Equal(input.Offset, output.Offset);
     }

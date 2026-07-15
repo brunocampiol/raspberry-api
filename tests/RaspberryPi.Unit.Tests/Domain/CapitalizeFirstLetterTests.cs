@@ -40,7 +40,7 @@ public class CapitalizeFirstLetterTests
     [InlineData("")]
     [InlineData("   ")]
     [InlineData(null)]
-    public void CapitalizeFirstLetter_WhenInputIsNullOrWhiteSpace_ReturnsOriginalInput(string input)
+    public void CapitalizeFirstLetter_WhenInputIsNullOrWhiteSpace_ReturnsOriginalInput(string? input)
     {
         // Arrange
         // Input provided via InlineData
