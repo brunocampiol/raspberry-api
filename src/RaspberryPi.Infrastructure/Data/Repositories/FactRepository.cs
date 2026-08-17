@@ -40,14 +40,15 @@ public class FactRepository : Repository<FactEntity>, IFactRepository
     public async Task<PagedResult<FactEntity>> SearchAsync(FactQuery query, CancellationToken cancellationToken = default)
     {
         var spec = new FactsSearchSpec(query);
-        var facts = _dbSet.AsQueryable();
+        var baseQuery = _dbSet.AsQueryable();
+        if (spec.AsNoTracking) baseQuery = baseQuery.AsNoTracking();
 
-        IQueryable<FactEntity> countQuery = facts;
-        if (spec.AsNoTracking) countQuery = countQuery.AsNoTracking();
-        if (spec.Criteria is not null) countQuery = countQuery.Where(spec.Criteria);
+        var countQuery = spec.Criteria is not null 
+            ? baseQuery.Where(spec.Criteria) 
+            : baseQuery;
 
         var total = await countQuery.CountAsync(cancellationToken);
-        var pagedQuery = SpecificationEvaluator.GetQuery(facts, spec);
+        var pagedQuery = SpecificationEvaluator.GetQuery(baseQuery, spec);
         var items = await pagedQuery.ToListAsync(cancellationToken);
 
         return new PagedResult<FactEntity>(query.Page, query.PageSize, total, items);

@@ -9,10 +9,6 @@ public static class SpecificationEvaluator
     {
         var query = inputQuery;
 
-        // TODO fix the AsNoTracking
-        //if (spec.AsNoTracking)
-        //    query = query.AsNoTracking();
-
         if (spec.Criteria is not null)
             query = query.Where(spec.Criteria);
 
