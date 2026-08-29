@@ -1,6 +1,6 @@
 ﻿namespace RaspberryPi.Domain.Core;
 
-public class AppException : Exception
+public class AppException : ApplicationException
 {
     public AppException() { }
 
